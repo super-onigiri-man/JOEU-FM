@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-05-25T07:25:37.786Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.50" etag="ijLnP7rSLkP9XJDJYYmF" version="21.3.3" type="device">
+<mxfile host="app.diagrams.net" modified="2023-05-25T07:33:03.580Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.50" etag="VnNpIXCYqGXHxJsIBu8K" version="21.3.3" type="device">
   <diagram id="CCrA8Vp4w4gkzFXh-mRi" name="ページ1">
     <mxGraphModel dx="1121" dy="467" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -144,7 +144,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="zPPFa_1tEiWSTrwrJcsz-202" value="BOOK" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="440" y="131" width="220.00000000000023" height="188.9999999999999" as="geometry" />
+          <mxGeometry x="440" y="131" width="220.00000000000023" height="189" as="geometry" />
         </mxCell>
         <mxCell id="zPPFa_1tEiWSTrwrJcsz-203" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;" vertex="1" parent="zPPFa_1tEiWSTrwrJcsz-202">
           <mxGeometry y="30" width="220.00000000000023" height="30" as="geometry" />
@@ -167,7 +167,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="zPPFa_1tEiWSTrwrJcsz-208" value="AFFILIATIONID(INT(8))" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="zPPFa_1tEiWSTrwrJcsz-206">
+        <mxCell id="zPPFa_1tEiWSTrwrJcsz-208" value="AFFILIATION_ID(INT(8))" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="zPPFa_1tEiWSTrwrJcsz-206">
           <mxGeometry x="30" width="190.00000000000023" height="30" as="geometry">
             <mxRectangle width="190.00000000000023" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -308,7 +308,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="zPPFa_1tEiWSTrwrJcsz-241" value="LENTID(INT(8))" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1" parent="zPPFa_1tEiWSTrwrJcsz-239">
+        <mxCell id="zPPFa_1tEiWSTrwrJcsz-241" value="LENT_ID(INT(8))" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1" parent="zPPFa_1tEiWSTrwrJcsz-239">
           <mxGeometry x="30" width="150" height="30" as="geometry">
             <mxRectangle width="150" height="30" as="alternateBounds" />
           </mxGeometry>
