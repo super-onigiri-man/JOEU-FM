@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup #スクレイピング（取得）用
 import datetime #日付計算用
 import mojimoji
+from openpyxl import Workbook
+
 
 #scoreを元にしたオリコンシングル・オリコンデジタル・ビルボード総合ランキング
 
@@ -177,6 +179,78 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
       #   print(f"{i+1}位: {format(score, '.1f')} {song} / {artist}") #10位から20位までのランキング
       score = score - 0.3 #scoreを-0.3する
 
+def HaruyaRank():
+    wb = openpyxl.load_workbook("1002ベストヒット愛媛.xlsx")
+    #ワークブック内のアクティブなシートを取得
+    ws = wb.active
+
+    HaruyaData = [[mojimoji.zen_to_han(ws["D4"].value, kana=False),mojimoji.zen_to_han(ws["C4"].value, kana=False),6.0],
+                  [mojimoji.zen_to_han(ws["D5"].value, kana=False),mojimoji.zen_to_han(ws["C5"].value, kana=False),5.7],
+                  [mojimoji.zen_to_han(ws["D6"].value, kana=False),mojimoji.zen_to_han(ws["C6"].value, kana=False),5.4],
+                  [mojimoji.zen_to_han(ws["D7"].value, kana=False),mojimoji.zen_to_han(ws["C7"].value, kana=False),5.1],
+                  [mojimoji.zen_to_han(ws["D8"].value, kana=False),mojimoji.zen_to_han(ws["C8"].value, kana=False),4.8],
+                  [mojimoji.zen_to_han(ws["D9"].value, kana=False),mojimoji.zen_to_han(ws["C9"].value, kana=False),4.5],
+                  [mojimoji.zen_to_han(ws["D10"].value, kana=False),mojimoji.zen_to_han(ws["C10"].value, kana=False),4.2],
+                  [mojimoji.zen_to_han(ws["D11"].value, kana=False),mojimoji.zen_to_han(ws["C11"].value, kana=False),3.9],
+                  [mojimoji.zen_to_han(ws["D12"].value, kana=False),mojimoji.zen_to_han(ws["C12"].value, kana=False),3.6],
+                  [mojimoji.zen_to_han(ws["D13"].value, kana=False),mojimoji.zen_to_han(ws["C13"].value, kana=False),3.3],
+                  [mojimoji.zen_to_han(ws["D14"].value, kana=False),mojimoji.zen_to_han(ws["C14"].value, kana=False),3.0],
+                  [mojimoji.zen_to_han(ws["D15"].value, kana=False),mojimoji.zen_to_han(ws["C15"].value, kana=False),2.7],
+                  [mojimoji.zen_to_han(ws["D16"].value, kana=False),mojimoji.zen_to_han(ws["C16"].value, kana=False),2.4],
+                  [mojimoji.zen_to_han(ws["D17"].value, kana=False),mojimoji.zen_to_han(ws["C17"].value, kana=False),2.1],
+                  [mojimoji.zen_to_han(ws["D18"].value, kana=False),mojimoji.zen_to_han(ws["C18"].value, kana=False),1.8],
+                  [mojimoji.zen_to_han(ws["D19"].value, kana=False),mojimoji.zen_to_han(ws["C19"].value, kana=False),1.5],
+                  [mojimoji.zen_to_han(ws["D20"].value, kana=False),mojimoji.zen_to_han(ws["C20"].value, kana=False),1.2],
+                  [mojimoji.zen_to_han(ws["D21"].value, kana=False),mojimoji.zen_to_han(ws["C21"].value, kana=False),0.9],
+                  [mojimoji.zen_to_han(ws["D22"].value, kana=False),mojimoji.zen_to_han(ws["C22"].value, kana=False),0.6],
+                  [mojimoji.zen_to_han(ws["D23"].value, kana=False),mojimoji.zen_to_han(ws["C23"].value, kana=False),0.3],
+                  ]
+
+def insertOriconWeekData():
+   for entry in OriconWeekData:
+    title, artist, score = entry
+    # 既存のデータがあればScoreを足して更新、なければ新規追加
+    cursor.execute('''
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart)
+        VALUES (?, ?, ?, 0, 0, 0)
+        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
+    ''', (title,artist, score, score))
+
+def insertOriconDegitalData():
+   for entry in OriconDigitalData:
+    title, artist, score = entry
+    # 既存のデータがあればScoreを足して更新、なければ新規追加
+    cursor.execute('''
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart)
+        VALUES (?, ?, ?, 0, 0, 0)
+        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
+    ''', (title, artist, score, score))
+
+def insertBillboardData():
+   for entry in BillboardData:
+    title, artist, score = entry
+    # 既存のデータがあればScoreを足して更新、なければ新規追加
+    cursor.execute('''
+        INSERT INTO music_master (Title, Artist, Score,Last_Rank, Last_Number, On_Chart)
+        VALUES (?, ?, ?, 0, 0, 0)
+        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
+    ''', (title, artist, score, score))
+
+def insertHaruyaData():
+   for entry in HaruyaData:
+    title, artist, score = entry
+    # 既存のデータがあればScoreを足して更新、なければ新規追加
+    cursor.execute('''
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart)
+        VALUES (?, ?, ?, 0, 0, 0)
+        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
+    ''', (title, artist, score, score))
+
+# コミットして変更を保存
+conn.commit()
+
+# コミットして変更を保存
+conn.commit()
 
 OriconTodays()
 OriconWeekRank(OriconTodays())
