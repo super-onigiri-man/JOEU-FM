@@ -3,8 +3,11 @@ from bs4 import BeautifulSoup #スクレイピング（取得）用
 import datetime #日付計算用
 import mojimoji
 from openpyxl import Workbook
+import sqlite3
 
-
+dbname = ('test.db')
+conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
+cursor = conn.cursor() #カーソルオブジェクトを作成
 #scoreを元にしたオリコンシングル・オリコンデジタル・ビルボード総合ランキング
 
 # オリコン週間ランキング用
@@ -39,6 +42,62 @@ def OriconTodays():
         Oriconday = d_today + datetime.timedelta(days=2)
     elif (todayweek == 6):# 今日が日曜日
         Oriconday = d_today + datetime.timedelta(days=1)
+
+    return Oriconday
+
+def OriconLastWeek():
+    # 今日の日付を求める
+    d_today = datetime.date.today()
+    # 今日の曜日を求める
+    todayweek = datetime.date.today().weekday()
+    # print(d_today, todayweek)
+
+    # オリコンの発表は毎週水曜日のため、火曜日までは先週のランキングを表示
+    # 日付は来週の月曜日付となる。
+    if (todayweek == 0):  # 今日が月曜日(先週(今週月曜日)のランキング表示)
+        Oriconday = d_today - datetime.timedelta(days=7)
+    elif (todayweek == 1):  # 今日が火曜日(先週(今週月曜日)のランキング表示)
+        Oriconday = d_today - datetime.timedelta(days=8)
+    elif (todayweek == 2):  # 今日が水曜日
+        Oriconday = d_today - datetime.timedelta(days=2)
+    elif (todayweek == 3):  # 今日が木曜日
+        Oriconday = d_today - datetime.timedelta(days=3)
+    elif (todayweek == 4):  # 今日が金曜日
+        Oriconday = d_today - datetime.timedelta(days=4)
+    elif (todayweek == 5):  # 今日が土曜日
+        Oriconday = d_today - datetime.timedelta(days=5)
+    elif (todayweek == 6):  # 今日が日曜日
+        Oriconday = d_today - datetime.timedelta(days=6)
+
+    return Oriconday
+
+
+def OriconSelectWeek():
+    # 日付の入力を促す
+    date = input("2020年8月3日以降の日付を入力してください (YYYY-MM-DD): ")
+
+    # 入力された日付をdatetimeオブジェクトに変換
+    dt = datetime.datetime.strptime(date, "%Y-%m-%d")
+    dt = dt.date()
+    # 曜日を取得
+    weekday = dt.weekday()
+
+    # オリコンの発表は毎週水曜日のため、火曜日までは先週のランキングを表示
+    # 日付は来週の月曜日付となる。
+    if (weekday == 0):  # 今日が月曜日
+        Oriconday = dt
+    elif (weekday == 1):  # 今日が火曜日
+        Oriconday = dt - datetime.timedelta(days=1)
+    elif (weekday == 2):  # 今日が水曜日
+        Oriconday = dt - datetime.timedelta(days=2)
+    elif (weekday == 3):  # 今日が木曜日
+        Oriconday = dt - datetime.timedelta(days=3)
+    elif (weekday == 4):  # 今日が金曜日
+        Oriconday = dt - datetime.timedelta(days=4)
+    elif (weekday == 5):  # 今日が土曜日
+        Oriconday = dt - datetime.timedelta(days=5)
+    elif (weekday == 6):  # 今日が日曜日
+        Oriconday = dt - datetime.timedelta(days=6)
 
     return Oriconday
 
@@ -252,9 +311,19 @@ conn.commit()
 # コミットして変更を保存
 conn.commit()
 
-OriconTodays()
-OriconWeekRank(OriconTodays())
-print()
-OriconDigitalRank(OriconTodays())
-print()
-BillboadRank(OriconTodays())
+#明屋書店,DBインサートを追加すること！
+def GetThisWeekRank():
+  OriconTodays()
+  OriconWeekRank(OriconTodays())
+  print()
+  OriconDigitalRank(OriconTodays())
+  print()
+  BillboadRank(OriconTodays())
+
+def GetLastWeekRank():
+  OriconLastWeek()
+  OriconWeekRank(OriconLastWeek())
+  print()
+  OriconDigitalRank(OriconLastWeek())
+  print()
+  BillboadRank(OriconLastWeek())

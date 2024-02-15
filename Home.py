@@ -41,10 +41,11 @@ while True:
     event, values = window.read()
 
     if event == '今週データ生成':
-       import GetThisWeekRank
+       from GetData import GetThisWeekRank
        import ViewDeta
        exit
     if event == '先週データ生成':
+       from GetData import GetLastWeekRank
        break
     if event == '任意週生成':
        break
