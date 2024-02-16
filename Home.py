@@ -1,4 +1,5 @@
 import PySimpleGUI as sg
+import os
 
 #先程確認して決めたテーマカラーをsg.themeで設定
 sg.theme('SystemDefault')
@@ -35,13 +36,17 @@ layout = [
 
 window = sg.Window('FMベストヒットランキング自動生成システム', layout, resizable=True)
 
+os.remove('test.db')
+
 #GUI表示実行部分
 while True:
     # ウィンドウ表示
     event, values = window.read()
 
     if event == '今週データ生成':
-       from GetData import GetThisWeekRank
+       import CreateDB
+       import GetData
+       GetData.GetThisWeekRank() 
        import ViewDeta
        exit
     if event == '先週データ生成':
@@ -57,7 +62,7 @@ while True:
 
     #クローズボタンの処理
     if event is None:
-        print('exit')
+      # print('exit')
         break
 
 window.close()

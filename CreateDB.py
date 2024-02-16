@@ -16,7 +16,7 @@ sql = """CREATE TABLE music_master (
 #↑DBのフォーマット設定（別のところに書いておきます）
 cursor.execute(sql)#executeコマンドでSQL文を実行
 conn.commit()#データベースにコミット(Excelでいう上書き保存。自動コミット設定なので不要だが一応・・)
-with open(r'C:\Users\wiiue\JOEU-FM\楽曲データ.csv', 'r') as f:
+with open(r'C:\Users\wiiue\JOEU-FM\楽曲データ.csv',encoding='UTF-8') as f:
     # CSVリーダーオブジェクトを作成
     csv_reader = csv.reader(f)
     for row in csv_reader:

@@ -4,6 +4,7 @@ import datetime #日付計算用
 import mojimoji
 from openpyxl import Workbook
 import sqlite3
+import pandas as pd
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -308,8 +309,6 @@ def insertHaruyaData():
 # コミットして変更を保存
 conn.commit()
 
-# コミットして変更を保存
-conn.commit()
 
 #明屋書店,DBインサートを追加すること！
 def GetThisWeekRank():
@@ -319,6 +318,10 @@ def GetThisWeekRank():
   OriconDigitalRank(OriconTodays())
   print()
   BillboadRank(OriconTodays())
+  print()
+  insertOriconWeekData()
+  insertOriconDegitalData()
+  insertBillboardData()
 
 def GetLastWeekRank():
   OriconLastWeek()
