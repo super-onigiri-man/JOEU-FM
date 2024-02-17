@@ -11,13 +11,14 @@ cursor = conn.cursor() #カーソルオブジェクトを作成
 # Scoreの高い順に上位25件を取得
 
 
-# top_20_query = 
-cursor.execute('''
+top_20_query = '''
     SELECT * FROM music_master
     WHERE Score IS NOT NULL AND Score != ''
     ORDER BY Score DESC
     LIMIT 20
-''').fetchall()
+'''
+
+top_20_results = cursor.execute(top_20_query).fetchall()
 
 # コミットして変更を保存
 conn.commit()
@@ -30,12 +31,17 @@ ORDER BY Score DESC
 LIMIT 60''', conn)
 
 def reload():
-    cursor.execute('''
+    global df
+    global top_20_results
+
+    top_20_query ='''
         SELECT * FROM music_master
         WHERE Score IS NOT NULL AND Score != ''
         ORDER BY Score DESC
         LIMIT 20
-    ''').fetchall()
+    '''
+
+    top_20_results = cursor.execute(top_20_query).fetchall()
 
     # コミットして変更を保存
     conn.commit()
@@ -49,18 +55,25 @@ def reload():
     ''', conn)
     # df = df.head(20)
 
+def deleterow(Title,Artist):
+    params = (Title, Artist)
+    cursor.execute("DELETE FROM music_master WHERE Title = ? AND Artist = ?;", params)
+        
+def updatescore(Title,Artist,Score):
+    params = (Score,Title,Artist)
+    cursor.execute("UPDATE music_master SET Score = ? WHERE Title = ? AND Artist= ?;",params)
 
 # df = df.head(20)
 
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
-header_list = ['楽曲名','アーティスト','得点','最終ランクイン回','チャートイン回数']
+header_list = ['楽曲名','アーティスト','得点','前回の順位','前回ランクイン','ランクイン回数']
 # PySimpleGUIのレイアウト
 layout = [
-    [sg.Table(values=table_data, headings=header_list, auto_size_columns=True,enable_events=True,key='-TABLE-',
+    [sg.Table(values=table_data, headings=header_list, auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(20))))],
 
-    [sg.Button('削除',size=(10,1),key='削除'),sg.Button('更新',size=(10,1),key='更新'),sg.Button('Excel書き込み',size=(10,1),key='書き込み')]
+    [sg.Button('削除',size=(10,1),key='削除'),sg.Button('得点修正',size=(10,1),key='得点修正'),sg.Button('Excel書き込み',size=(12,1),key='書き込み',button_color=('white', 'red'))]
 ]
 
 # ウィンドウを作成
@@ -73,17 +86,63 @@ while True:
         break
 
     elif event == '削除':
+        
         selected_rows = values['-TABLE-']
         if selected_rows:
-            # 選択された行の番号を取得
-            selected_row_index = selected_rows[0]
-             # 選択された行を削除
-            df.drop(selected_row_index, inplace=True)
-            reload()
-            # テーブルのデータを更新
-            table_data = df.values.tolist()
-            # テーブルを更新
-            window['-TABLE-'].update(values=table_data)
+            # 選択された行を取得
+            selected_row_index = values['-TABLE-'][0]
+
+            # 選択された行の情報を取得
+            selected_row_Title = table_data[selected_row_index][0]
+            # print(selected_row_Title)
+            selected_row_Artist = table_data[selected_row_index][1]
+            # print(selected_row_Artist)
+            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認')
+            if result == 'OK':
+                # sg.popup('削除しました')
+                # 選択された行を削除
+                deleterow(selected_row_Title,selected_row_Artist)
+                reload()
+                # テーブルのデータを更新
+                table_data = df.values.tolist()
+                # テーブルを更新
+                window['-TABLE-'].update(values=table_data)
+            elif result == 'Cancel':
+                # sg.popup('キャンセルが選択されました')
+                continue
+
+    elif event ==  '得点修正':
+        selected_rows = values['-TABLE-']
+        if selected_rows:
+            # 選択された行を取得
+            selected_row_index = values['-TABLE-'][0]
+
+            # 選択された行の情報を取得
+            selected_row_Title = table_data[selected_row_index][0]
+            # print(selected_row_Title)
+            selected_row_Artist = table_data[selected_row_index][1]
+            # print(selected_row_Artist)
+            selected_row_Score = table_data[selected_row_index][2]
+
+            NewScore = sg.popup_get_text('得点を入力してください', '得点修正')
+
+            result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点を\n'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新しますか？')
+            if result2 == 'OK':
+                # sg.popup('削除しました')
+                # 選択された行を削除
+                updatescore(selected_row_Title,selected_row_Artist,NewScore)
+                reload()
+                # テーブルのデータを更新
+                table_data = df.values.tolist()
+                # テーブルを更新
+                window['-TABLE-'].update(values=table_data)
+            elif result2 == 'Cancel':
+                # sg.popup('キャンセルが選択されました')
+                continue
+
+    elif event == '書き込み':
+        continue
+
 
 # ウィンドウを閉じる
 window.close()

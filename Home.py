@@ -1,6 +1,9 @@
 import PySimpleGUI as sg
 import os
 
+os.chdir('C:\\Users\\wiiue\\JOEU-FM')
+
+
 #先程確認して決めたテーマカラーをsg.themeで設定
 sg.theme('SystemDefault')
 
@@ -36,7 +39,9 @@ layout = [
 
 window = sg.Window('FMベストヒットランキング自動生成システム', layout, resizable=True)
 
-os.remove('test.db')
+
+if os.path.exists('test.db') == True:
+   os.remove('test.db')
 
 #GUI表示実行部分
 while True:
@@ -50,7 +55,9 @@ while True:
        import ViewDeta
        exit
     if event == '先週データ生成':
-       from GetData import GetLastWeekRank
+       import CreateDB
+       import GetData
+       GetData.GetLastWeekRank() 
        break
     if event == '任意週生成':
        break
