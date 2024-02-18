@@ -53,7 +53,10 @@ while True:
        import GetData
        GetData.GetThisWeekRank() 
        import ViewDeta
-       exit
+       import CreateExcel
+       CreateExcel.MajicalExcel(GetData.GetThisWeekDate())
+       import WriteCSV
+       WriteCSV.WriteCSV(GetData.GetThisWeekDate())
     if event == '先週データ生成':
        import CreateDB
        import GetData
@@ -62,7 +65,8 @@ while True:
     if event == '任意週生成':
        break
     if event == '管理者':
-       break
+       import CreateDB
+       import AdminUser
     if event == 'ランキング修正':
        break
 

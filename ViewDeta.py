@@ -83,7 +83,7 @@ window = sg.Window('FMベストヒットランキング自動生成システム'
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
-        break
+        exit()
 
     elif event == '削除':
         
@@ -141,8 +141,7 @@ while True:
                 continue
 
     elif event == '書き込み':
-        continue
-
+        window.close()
 
 # ウィンドウを閉じる
 window.close()

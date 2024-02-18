@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup #スクレイピング（取得）用
 import datetime #日付計算用
 import mojimoji
-from openpyxl import Workbook
+import openpyxl
 import sqlite3
 import pandas as pd
 
@@ -322,6 +322,7 @@ def GetThisWeekRank():
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
+  return OriconTodays()
 
 def GetLastWeekRank():
   OriconLastWeek()
@@ -330,3 +331,7 @@ def GetLastWeekRank():
   OriconDigitalRank(OriconLastWeek())
   print()
   BillboadRank(OriconLastWeek())
+
+
+def GetThisWeekDate():
+   return OriconTodays()
