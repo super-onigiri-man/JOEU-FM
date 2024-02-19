@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 import pandas as pd
 import sqlite3
 
-dbname = (r'C:\Users\wiiue\JOEU-FM\test.db')
+dbname = ('C:\\Users\\wiiue\\JOEU-FM\\test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
@@ -83,7 +83,7 @@ window = sg.Window('FMベストヒットランキング自動生成システム'
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
-        exit()
+        break
 
     elif event == '削除':
         
@@ -141,7 +141,8 @@ while True:
                 continue
 
     elif event == '書き込み':
-        window.close()
+        break
+        
 
 # ウィンドウを閉じる
 window.close()

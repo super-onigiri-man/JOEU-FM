@@ -4,6 +4,7 @@ import sqlite3
 from datetime import datetime
 import csv
 import shutil
+import PySimpleGUI as sg
 
 dbname = ('C:\\Users\\wiiue\\JOEU-FM\\test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -50,10 +51,10 @@ def WriteCSV(Oriconday):
 
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberが空文字もしくは0の場合はその曲を消す（ランクインしなかった曲）
 
-    # コミットとクローズ
+    # コミット
     conn.commit()
 
-    with open('楽曲データ.csv', 'w', newline='') as f:
+    with open('楽曲データ.csv', 'w', newline='',encoding='UTF-8') as f:
         # CSVライターオブジェクトを作成
         csv_writer = csv.writer(f)
 
@@ -65,6 +66,9 @@ def WriteCSV(Oriconday):
         for row in rows:
             csv_writer.writerow(row)
 
-    shutil.move((str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx'), 'C:\\Users\\wiiue\\Downloads\\'+(str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx'))
+    sg.popup_ok('CSVファイルに書き込みました')
+
+    # csv.save(str(year)+'-'+str(+month)+'-'+str(day)+'楽曲データ.csv')
+    # shutil.move((str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx'), 'C:\\Users\\wiiue\\Downloads\\'+(str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx'))
 
     

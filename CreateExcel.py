@@ -7,7 +7,7 @@ import PySimpleGUI as sg
 import sys
 def MajicalExcel(Oriconday):
 
-    dbname = (r'C:\Users\wiiue\JOEU-FM\test.db')
+    dbname = ('C:\\Users\\wiiue\\JOEU-FM\\test.db')
     conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
     cursor = conn.cursor() #カーソルオブジェクトを作成
 
@@ -116,4 +116,4 @@ def MajicalExcel(Oriconday):
 
     result = sg.popup_ok('正常に処理されました')
 
- 
+    return 0

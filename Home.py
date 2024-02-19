@@ -61,7 +61,9 @@ while True:
        import CreateDB
        import GetData
        GetData.GetLastWeekRank() 
-       break
+       import ViewDeta
+       import CreateExcel
+       CreateExcel.MajicalExcel(GetData.GetThisWeekDate())
     if event == '任意週生成':
        break
     if event == '管理者':

@@ -6,7 +6,7 @@ import openpyxl
 import sqlite3
 import pandas as pd
 
-dbname = ('test.db')
+dbname = ('C:\\Users\\wiiue\\JOEU-FM\\test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
 #scoreを元にしたオリコンシングル・オリコンデジタル・ビルボード総合ランキング
@@ -322,7 +322,7 @@ def GetThisWeekRank():
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
-  return OriconTodays()
+
 
 def GetLastWeekRank():
   OriconLastWeek()
@@ -331,7 +331,13 @@ def GetLastWeekRank():
   OriconDigitalRank(OriconLastWeek())
   print()
   BillboadRank(OriconLastWeek())
+  insertOriconWeekData()
+  insertOriconDegitalData()
+  insertBillboardData()
 
 
 def GetThisWeekDate():
    return OriconTodays()
+
+def GetLastWeekDate():
+   return OriconLastWeek()
