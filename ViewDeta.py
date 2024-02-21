@@ -20,6 +20,8 @@ top_20_query = '''
 
 top_20_results = cursor.execute(top_20_query).fetchall()
 
+cursor.execute("DELETE FROM music_master WHERE Artist = '';")
+
 # コミットして変更を保存
 conn.commit()
 

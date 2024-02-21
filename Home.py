@@ -37,16 +37,19 @@ while True:
     event, values = window.read()
 
     if event == '今週データ生成':
-      #  HaruyaData = values['-HaruyaData-']
+      #  HaruyaDat
+      # 
+       HaruyaPath = values['-HaruyaExcel-']
        import CreateDB
        import GetData
-       GetData.GetThisWeekRank() 
+       GetData.GetThisWeekRank(HaruyaPath) 
        import ViewDeta
        import CreateExcel
        CreateExcel.MajicalExcel(GetData.GetThisWeekDate())
        import WriteCSV
        WriteCSV.WriteCSV(GetData.GetThisWeekDate())
     if event == '先週データ生成':
+       sg.popup_ok('このモードでは明屋書店のデータは取得しません')
        import CreateDB
        import GetData
        GetData.GetLastWeekRank() 
@@ -56,6 +59,7 @@ while True:
        sg.popup('過去回のためCSVには書き込みできません')
 
     if event == '任意週生成':
+      sg.popup_ok('このモードでは明屋書店のデータは取得しません')
       layout = [
       [sg.InputText(key='-input1-'), 
       sg.CalendarButton('Date', target='-input1-', format="%Y-%m-%d"),

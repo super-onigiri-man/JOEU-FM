@@ -42,7 +42,7 @@ def MajicalExcel(Oriconday):
     # this_rank_number = int(input())
     rank = 1
     # 見出しのNo.と日付
-    sheet.cell(row=3, column=2).value = "Ｎｏ." str(this_rank_number) #No.の書き込み
+    sheet.cell(row=3, column=2).value = "Ｎｏ."+str(this_rank_number) #No.の書き込み
     sheet.merge_cells(start_row = 3 ,start_column=2 ,end_row =3 , end_column = 4) #セル結合
 
     sheet.cell(row=3, column=6).value = str(Oriconday.year)+"年"+str(Oriconday.month)+"月"+str(Oriconday.day)+"日"#日付の書き込み
@@ -72,7 +72,7 @@ def MajicalExcel(Oriconday):
 
         # ランキング再登場曲
         # Last_NumberがThis_Numberより2以上差がある場合、セルに「再」を入力
-        elif (this_rank_number - last_number) >= 2 :
+        elif int(this_rank_number) - int(last_number) >= 2 :
             sheet.cell(row=idx+5, column=2).value = rank#ThisWeek
             sheet.cell(row=idx+5, column=2).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="000000")
             sheet.merge_cells(start_row = idx +5 ,start_column=2 ,end_row = idx +6 , end_column = 2)
@@ -105,8 +105,7 @@ def MajicalExcel(Oriconday):
             rank+=1
 
     # Excelファイルを保存
-    workbook.save = str(Oriconday)+'ベストヒットランキング.xlsx'
+    workbook.save(str(Oriconday)+'ベストヒットランキング.xlsx')
 
     result = sg.popup_ok('正常に処理されました')
 
-    return 0

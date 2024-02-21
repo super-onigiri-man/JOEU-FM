@@ -239,9 +239,9 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
       #   print(f"{i+1}位: {format(score, '.1f')} {song} / {artist}") #10位から20位までのランキング
       score = score - 0.3 #scoreを-0.3する
 
-def HaruyaRank():
+def HaruyaRank(HaruyaPath):
     # Excelファイルを読み込む
-    wb = openpyxl.load_workbook("0219ベストヒット愛媛.xlsx")
+    wb = openpyxl.load_workbook(HaruyaPath)
     ws = wb.active
 
     # データを2次元配列に挿入する
@@ -257,6 +257,8 @@ def HaruyaRank():
                 HaruyaData.append([song_name_b.strip(), artist_name, point])
             else:
                 HaruyaData.append([song_name.strip(), artist_name, point])
+
+    print('明屋書店データOK')
 
 def insertOriconWeekData():
    for entry in OriconWeekData:
@@ -303,12 +305,12 @@ conn.commit()
 
 
 #明屋書店,DBインサートを追加すること！
-def GetThisWeekRank():
+def GetThisWeekRank(HaruyaPath):
   OriconTodays()
   OriconWeekRank(OriconTodays())
   OriconDigitalRank(OriconTodays())
   BillboadRank(OriconTodays())
-  HaruyaRank()
+  HaruyaRank(HaruyaPath)
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
