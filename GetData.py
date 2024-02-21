@@ -240,31 +240,23 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
       score = score - 0.3 #scoreを-0.3する
 
 def HaruyaRank():
-    wb = openpyxl.load_workbook("1002ベストヒット愛媛.xlsx")
-    #ワークブック内のアクティブなシートを取得
+    # Excelファイルを読み込む
+    wb = openpyxl.load_workbook("0219ベストヒット愛媛.xlsx")
     ws = wb.active
 
-    HaruyaData = [[mojimoji.zen_to_han(ws["D4"].value, kana=False),mojimoji.zen_to_han(ws["C4"].value, kana=False),6.0],
-                  [mojimoji.zen_to_han(ws["D5"].value, kana=False),mojimoji.zen_to_han(ws["C5"].value, kana=False),5.7],
-                  [mojimoji.zen_to_han(ws["D6"].value, kana=False),mojimoji.zen_to_han(ws["C6"].value, kana=False),5.4],
-                  [mojimoji.zen_to_han(ws["D7"].value, kana=False),mojimoji.zen_to_han(ws["C7"].value, kana=False),5.1],
-                  [mojimoji.zen_to_han(ws["D8"].value, kana=False),mojimoji.zen_to_han(ws["C8"].value, kana=False),4.8],
-                  [mojimoji.zen_to_han(ws["D9"].value, kana=False),mojimoji.zen_to_han(ws["C9"].value, kana=False),4.5],
-                  [mojimoji.zen_to_han(ws["D10"].value, kana=False),mojimoji.zen_to_han(ws["C10"].value, kana=False),4.2],
-                  [mojimoji.zen_to_han(ws["D11"].value, kana=False),mojimoji.zen_to_han(ws["C11"].value, kana=False),3.9],
-                  [mojimoji.zen_to_han(ws["D12"].value, kana=False),mojimoji.zen_to_han(ws["C12"].value, kana=False),3.6],
-                  [mojimoji.zen_to_han(ws["D13"].value, kana=False),mojimoji.zen_to_han(ws["C13"].value, kana=False),3.3],
-                  [mojimoji.zen_to_han(ws["D14"].value, kana=False),mojimoji.zen_to_han(ws["C14"].value, kana=False),3.0],
-                  [mojimoji.zen_to_han(ws["D15"].value, kana=False),mojimoji.zen_to_han(ws["C15"].value, kana=False),2.7],
-                  [mojimoji.zen_to_han(ws["D16"].value, kana=False),mojimoji.zen_to_han(ws["C16"].value, kana=False),2.4],
-                  [mojimoji.zen_to_han(ws["D17"].value, kana=False),mojimoji.zen_to_han(ws["C17"].value, kana=False),2.1],
-                  [mojimoji.zen_to_han(ws["D18"].value, kana=False),mojimoji.zen_to_han(ws["C18"].value, kana=False),1.8],
-                  [mojimoji.zen_to_han(ws["D19"].value, kana=False),mojimoji.zen_to_han(ws["C19"].value, kana=False),1.5],
-                  [mojimoji.zen_to_han(ws["D20"].value, kana=False),mojimoji.zen_to_han(ws["C20"].value, kana=False),1.2],
-                  [mojimoji.zen_to_han(ws["D21"].value, kana=False),mojimoji.zen_to_han(ws["C21"].value, kana=False),0.9],
-                  [mojimoji.zen_to_han(ws["D22"].value, kana=False),mojimoji.zen_to_han(ws["C22"].value, kana=False),0.6],
-                  [mojimoji.zen_to_han(ws["D23"].value, kana=False),mojimoji.zen_to_han(ws["C23"].value, kana=False),0.3],
-                  ]
+    # データを2次元配列に挿入する
+    HaruyaData = []
+    for row in range(4, 24):
+        song_names = mojimoji.zen_to_han(ws[f"D{row}"].value, kana=False).split('/')
+        artist_name = mojimoji.zen_to_han(ws[f"C{row}"].value, kana=False)
+        point = round(6.0 - ((row - 4) * 0.3), 2)  # 点数を計算する
+        for song_name in song_names:
+            if "/" in song_name:
+                song_name_a, song_name_b = song_name.split("/")
+                HaruyaData.append([song_name_a.strip(), artist_name, point])
+                HaruyaData.append([song_name_b.strip(), artist_name, point])
+            else:
+                HaruyaData.append([song_name.strip(), artist_name, point])
 
 def insertOriconWeekData():
    for entry in OriconWeekData:
@@ -316,9 +308,11 @@ def GetThisWeekRank():
   OriconWeekRank(OriconTodays())
   OriconDigitalRank(OriconTodays())
   BillboadRank(OriconTodays())
+  HaruyaRank()
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
+  insertHaruyaData()
 
 
 def GetLastWeekRank():

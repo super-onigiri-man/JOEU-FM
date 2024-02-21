@@ -42,7 +42,7 @@ def MajicalExcel(Oriconday):
     # this_rank_number = int(input())
     rank = 1
     # 見出しのNo.と日付
-    sheet.cell(row=3, column=2).value = "Ｎｏ."+str(+this_rank_number) #No.の書き込み
+    sheet.cell(row=3, column=2).value = "Ｎｏ." str(this_rank_number) #No.の書き込み
     sheet.merge_cells(start_row = 3 ,start_column=2 ,end_row =3 , end_column = 4) #セル結合
 
     sheet.cell(row=3, column=6).value = str(Oriconday.year)+"年"+str(Oriconday.month)+"月"+str(Oriconday.day)+"日"#日付の書き込み
