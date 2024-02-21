@@ -11,20 +11,8 @@ layout = [
 
 [
     sg.Text("明屋書店Excelデータ"),
-    sg.InputText('ファイルを選択', key='-INPUTTEXT-', enable_events=True,size=(41,1)), 
-    sg.FileBrowse(button_text='選択', font=('メイリオ',8), size=(5,1), key="-FILENAME-")
-],
-
-[
-    sg.Text("ランキングフォーマット"),
-    sg.InputText('ファイルを選択', key='-INPUTTEXT-', enable_events=True,size=(37,1)), 
-    sg.FileBrowse(button_text='選択', font=('メイリオ',8), size=(5,1), key="-FILENAME-")
-],
-
-[
-    sg.Text("楽曲データCSV"),
-    sg.InputText('ファイルを選択', key='-INPUTTEXT-', enable_events=True,), 
-    sg.FileBrowse(button_text='選択', font=('メイリオ',8), size=(5,1), key="-FILENAME-")
+    sg.InputText('ファイルを選択', key='-HaruyaExcel-', enable_events=True,size=(41,1)), 
+    sg.FileBrowse(button_text='選択', font=('メイリオ',8), size=(5,1), key="-HaruyaExcel-")
 ],
 
 [   sg.Button('今週のデータを生成する',size=(30,3),key='今週データ生成')],
@@ -49,6 +37,7 @@ while True:
     event, values = window.read()
 
     if event == '今週データ生成':
+      #  HaruyaData = values['-HaruyaData-']
        import CreateDB
        import GetData
        GetData.GetThisWeekRank() 
@@ -63,9 +52,36 @@ while True:
        GetData.GetLastWeekRank() 
        import ViewDeta
        import CreateExcel
-       CreateExcel.MajicalExcel(GetData.GetThisWeekDate())
+       CreateExcel.MajicalExcel(GetData.GetLastWeekDate())
+       sg.popup('過去回のためCSVには書き込みできません')
+
     if event == '任意週生成':
-       break
+      layout = [
+      [sg.InputText(key='-input1-'), 
+      sg.CalendarButton('Date', target='-input1-', format="%Y-%m-%d"),
+      sg.Button('OK')]
+      ]
+
+      window = sg.Window('カレンダーからの入力', layout)
+
+      while True:
+         event, values = window.read()  # イベントの入力を待つ
+         if event == sg.WINDOW_CLOSED:
+            break
+         elif event == 'OK':
+            SelectDay = values['-input1-']
+            if SelectDay:
+               import CreateDB
+               import GetData
+               GetData.GetSelectWeekRank(SelectDay)
+               import ViewDeta
+               import CreateExcel
+               CreateExcel.MajicalExcel(GetData.GetSelectWeekDate())
+               sg.popup('過去回のためCSVには書き込みできません')
+            break  # 処理が終了したらループを抜ける
+
+         window.close()
+
     if event == '管理者':
        import CreateDB
        import AdminUser

@@ -51,7 +51,7 @@ def reload():
         SELECT * FROM music_master
         WHERE Score IS NOT NULL AND Score != ''
         ORDER BY Score DESC
-        LIMIT 60
+        LIMIT 200
     ''', conn)
     # df = df.head(20)
 
@@ -100,7 +100,7 @@ header_list = ['楽曲名','アーティスト','得点','前回の順位','前�
 # PySimpleGUIのレイアウト
 layout = [
     [sg.Table(values=table_data, headings=header_list, auto_size_columns=False,enable_events=True,key='-TABLE-',
-              display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(20))))],
+              display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(200))))],
 
     [sg.Button('削除',size=(10,3),key='削除'),
      sg.Button('追加',size=(10,3),key='追加'),

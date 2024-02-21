@@ -73,12 +73,12 @@ def OriconLastWeek():
     return Oriconday
 
 
-def OriconSelectWeek():
+def OriconSelectWeek(SelectDay):
     # 日付の入力を促す
-    date = input("2020年8月3日以降の日付を入力してください (YYYY-MM-DD): ")
+    # date = input("2020年8月3日以降の日付を入力してください (YYYY-MM-DD): ")
 
     # 入力された日付をdatetimeオブジェクトに変換
-    dt = datetime.datetime.strptime(date, "%Y-%m-%d")
+    dt = datetime.datetime.strptime(SelectDay, "%Y-%m-%d")
     dt = dt.date()
     # 曜日を取得
     weekday = dt.weekday()
@@ -314,11 +314,8 @@ conn.commit()
 def GetThisWeekRank():
   OriconTodays()
   OriconWeekRank(OriconTodays())
-  print()
   OriconDigitalRank(OriconTodays())
-  print()
   BillboadRank(OriconTodays())
-  print()
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
@@ -327,10 +324,17 @@ def GetThisWeekRank():
 def GetLastWeekRank():
   OriconLastWeek()
   OriconWeekRank(OriconLastWeek())
-  print()
   OriconDigitalRank(OriconLastWeek())
-  print()
   BillboadRank(OriconLastWeek())
+  insertOriconWeekData()
+  insertOriconDegitalData()
+  insertBillboardData()
+
+def GetSelectWeekRank(SelectDay):
+  OSW=OriconSelectWeek(SelectDay)
+  OriconWeekRank(OSW)
+  OriconDigitalRank(OSW)
+  BillboadRank(OSW)
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
@@ -341,3 +345,6 @@ def GetThisWeekDate():
 
 def GetLastWeekDate():
    return OriconLastWeek()
+
+def GetSelectWeekDate():
+   return OriconSelectWeek()

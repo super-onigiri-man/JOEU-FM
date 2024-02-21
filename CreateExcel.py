@@ -2,7 +2,7 @@ from openpyxl.styles import Font, PatternFill
 from openpyxl import load_workbook
 from openpyxl.styles.alignment import Alignment
 import sqlite3
-from datetime import datetime
+import datetime
 import PySimpleGUI as sg
 import sys
 def MajicalExcel(Oriconday):
@@ -28,13 +28,6 @@ def MajicalExcel(Oriconday):
     # コミットして変更を保存
     conn.commit()
 
-    date_string = str(Oriconday)
-    date_obj = datetime.strptime(date_string, "%Y-%m-%d")
-    Oriconday = int(date_obj.strftime("%Y%m%d"))
-
-    year = Oriconday // 10000
-    month = (Oriconday % 10000) // 100
-    day = Oriconday % 100 
 
     # 最終回の確認
     # クエリの実行
@@ -43,7 +36,7 @@ def MajicalExcel(Oriconday):
     # 結果の取得
     max_last_number = cursor.fetchone()[0]
     # 今回のベストヒットランキング回数の値を設定
-    this_rank_number = int(sg.popup_get_text('ベストヒットランキングのNoを入力してください\n現在、DBに登録されている最新Noは'+str(max_last_number)+'です', '曲名'))
+    this_rank_number = sg.popup_get_text('ベストヒットランキングのNoを入力してください\n現在、DBに登録されている最新Noは'+str(max_last_number)+'です', '曲名')
     # print("ベストヒットランキングのNoを入力してください")
     # print("現在、DBに登録されている最新Noは"+str(max_last_number)+"です")
     # this_rank_number = int(input())
@@ -52,7 +45,7 @@ def MajicalExcel(Oriconday):
     sheet.cell(row=3, column=2).value = "Ｎｏ."+str(+this_rank_number) #No.の書き込み
     sheet.merge_cells(start_row = 3 ,start_column=2 ,end_row =3 , end_column = 4) #セル結合
 
-    sheet.cell(row=3, column=6).value = str(year)+"年"+str(month)+"月"+str(day)+"日"#日付の書き込み
+    sheet.cell(row=3, column=6).value = str(Oriconday.year)+"年"+str(Oriconday.month)+"月"+str(Oriconday.day)+"日"#日付の書き込み
 
     # ランキングセルにデータを書き込み
     for idx in range(1, len(top_20_results)*2, 2):
@@ -112,7 +105,7 @@ def MajicalExcel(Oriconday):
             rank+=1
 
     # Excelファイルを保存
-    workbook.save(str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx')
+    workbook.save = str(Oriconday)+'ベストヒットランキング.xlsx'
 
     result = sg.popup_ok('正常に処理されました')
 

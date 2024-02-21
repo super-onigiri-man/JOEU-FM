@@ -1,7 +1,7 @@
 import mojimoji
 import openpyxl
 import sqlite3
-from datetime import datetime
+import datetime
 import csv
 import shutil
 import PySimpleGUI as sg
@@ -11,14 +11,7 @@ conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
 def WriteCSV(Oriconday):
-    date_string = str(Oriconday)
-    date_obj = datetime.strptime(date_string, "%Y-%m-%d")
-    Oriconday = int(date_obj.strftime("%Y%m%d"))
-
-    year = Oriconday // 10000
-    month = (Oriconday % 10000) // 100
-    day = Oriconday % 100 
-    excel_file = (str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx')
+    excel_file = str(Oriconday)+'ベストヒットランキング.xlsx'
     workbook = openpyxl.load_workbook(excel_file)
     sheet = workbook.active
 
