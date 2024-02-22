@@ -327,6 +327,7 @@ def GetLastWeekRank():
   insertBillboardData()
 
 def GetSelectWeekRank(SelectDay):
+  global OSW
   OSW=OriconSelectWeek(SelectDay)
   OriconWeekRank(OSW)
   OriconDigitalRank(OSW)
@@ -334,6 +335,7 @@ def GetSelectWeekRank(SelectDay):
   insertOriconWeekData()
   insertOriconDegitalData()
   insertBillboardData()
+  
 
 
 def GetThisWeekDate():
@@ -343,4 +345,4 @@ def GetLastWeekDate():
    return OriconLastWeek()
 
 def GetSelectWeekDate():
-   return OriconSelectWeek()
+   return OSW

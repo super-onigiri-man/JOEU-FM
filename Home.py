@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import os
 
-os.chdir('C:\\Users\\wiiue\\JOEU-FM')
+os.chdir('C:\\')
 
 
 #先程確認して決めたテーマカラーをsg.themeで設定
@@ -56,10 +56,10 @@ while True:
        import ViewDeta
        import CreateExcel
        CreateExcel.MajicalExcel(GetData.GetLastWeekDate())
-       sg.popup('過去回のためCSVには書き込みできません')
+       sg.popup('過去回のためDBには書き込みできません')
 
     if event == '任意週生成':
-      sg.popup_ok('このモードでは明屋書店のデータは取得しません')
+      sg.popup_ok('このモードでは明屋書店のデータは取得しません\n日付は2020年8月3日以降を入力してください')
       layout = [
       [sg.InputText(key='-input1-'), 
       sg.CalendarButton('Date', target='-input1-', format="%Y-%m-%d"),
@@ -81,16 +81,41 @@ while True:
                import ViewDeta
                import CreateExcel
                CreateExcel.MajicalExcel(GetData.GetSelectWeekDate())
-               sg.popup('過去回のためCSVには書き込みできません')
+               sg.popup('過去回のためDBには書き込みできません')
             break  # 処理が終了したらループを抜ける
 
-         window.close()
+      window.close()
 
     if event == '管理者':
        import CreateDB
        import AdminUser
+
+   
     if event == 'ランキング修正':
-       break
+      sg.popup_ok('このモードでは明屋書店のデータは取得しません\n最新回以外のランキングは修正できません')
+      layout= [[sg.Text("ランキングデータ"),
+      sg.InputText('ファイルを選択', key='-HaruyaExcel-', enable_events=True,size=(41,1)), 
+      sg.FileBrowse(button_text='選択', font=('メイリオ',8), size=(5,1), key="-RankExcel-"),
+      sg.Button('OK')]
+      ]
+      window = sg.Window('ランキングデータ取得', layout)
+
+      while True:
+         event, values = window.read()  # イベントの入力を待つ
+         if event == sg.WINDOW_CLOSED:
+            break
+         elif event == 'OK':
+            FilePath = values['-RankExcel-']
+            if FilePath:
+               import CreateDB
+               import RevisionRank
+               RevisionRank.RevisionRank(FilePath)
+            break  # 処理が終了したらループを抜ける
+
+      window.close()
+
+
+
 
 
     #クローズボタンの処理
