@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import os
 
-os.chdir('C:\\')
+os.chdir('C:\\Users\\wiiue\\JOEU-FM\\')
 
 
 #先程確認して決めたテーマカラーをsg.themeで設定
@@ -48,6 +48,7 @@ while True:
        CreateExcel.MajicalExcel(GetData.GetThisWeekDate())
        import WriteCSV
        WriteCSV.WriteCSV(GetData.GetThisWeekDate())
+       
     if event == '先週データ生成':
        sg.popup_ok('このモードでは明屋書店のデータは取得しません')
        import CreateDB

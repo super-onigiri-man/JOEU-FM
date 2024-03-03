@@ -245,7 +245,6 @@ def HaruyaRank(HaruyaPath):
     ws = wb.active
 
     # データを2次元配列に挿入する
-    HaruyaData = []
     for row in range(4, 24):
         song_names = mojimoji.zen_to_han(ws[f"D{row}"].value, kana=False).split('/')
         artist_name = mojimoji.zen_to_han(ws[f"C{row}"].value, kana=False)
@@ -259,6 +258,7 @@ def HaruyaRank(HaruyaPath):
                 HaruyaData.append([song_name.strip(), artist_name, point])
 
     print('明屋書店データOK')
+    # print(HaruyaData)
 
 def insertOriconWeekData():
    for entry in OriconWeekData:
@@ -270,6 +270,8 @@ def insertOriconWeekData():
         ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
     ''', (title,artist, score, score))
 
+    conn.commit()
+
 def insertOriconDegitalData():
    for entry in OriconDigitalData:
     title, artist, score = entry
@@ -279,6 +281,8 @@ def insertOriconDegitalData():
         VALUES (?, ?, ?, 0, 0, 0)
         ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
     ''', (title, artist, score, score))
+
+    conn.commit()
 
 def insertBillboardData():
    for entry in BillboardData:
@@ -290,7 +294,10 @@ def insertBillboardData():
         ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
     ''', (title, artist, score, score))
 
+    conn.commit()
+
 def insertHaruyaData():
+   print(HaruyaData)
    for entry in HaruyaData:
     title, artist, score = entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
@@ -300,8 +307,7 @@ def insertHaruyaData():
         ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
     ''', (title, artist, score, score))
 
-# コミットして変更を保存
-conn.commit()
+    conn.commit()
 
 
 #明屋書店,DBインサートを追加すること！
@@ -315,6 +321,10 @@ def GetThisWeekRank(HaruyaPath):
   insertOriconDegitalData()
   insertBillboardData()
   insertHaruyaData()
+  print(OriconWeekData)
+  print(OriconDigitalData)
+  print(BillboardData)
+  print(HaruyaData)
 
 
 def GetLastWeekRank():
