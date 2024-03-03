@@ -321,10 +321,6 @@ def GetThisWeekRank(HaruyaPath):
   insertOriconDegitalData()
   insertBillboardData()
   insertHaruyaData()
-  print(OriconWeekData)
-  print(OriconDigitalData)
-  print(BillboardData)
-  print(HaruyaData)
 
 
 def GetLastWeekRank():
