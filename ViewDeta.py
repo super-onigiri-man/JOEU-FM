@@ -60,6 +60,11 @@ def reload():
 def deleterow(Title,Artist):
     params = (Title, Artist)
     cursor.execute("DELETE FROM music_master WHERE Title = ? AND Artist = ?;", params)
+
+def deleteartist(Artist):
+    params = (Artist,)
+    cursor.execute("DELETE FROM music_master WHERE Artist = ?;", params)
+
         
 def updatescore(Title,Artist,Score):
     params = (Score,Title,Artist)
@@ -80,6 +85,7 @@ layout = [
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(20))))],
 
     [sg.Button('削除',size=(10,1),key='削除'),
+     sg.Button('アーティスト名で削除',size=(18,1),key='アーティスト名で削除'),
      sg.Button('得点修正',size=(10,1),key='得点修正'),
      sg.Button('3点追加',size=(10,1),key = '3点追加'),
      sg.Button('Excel書き込み',size=(12,1),key='書き込み',button_color=('white', 'red'))
@@ -93,7 +99,10 @@ window = sg.Window('FMベストヒットランキング自動生成システム'
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
-        break
+        exit()
+
+    if event is None:
+        exit()
 
     elif event == '削除':
         
@@ -112,6 +121,32 @@ while True:
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 deleterow(selected_row_Title,selected_row_Artist)
+                reload()
+                # テーブルのデータを更新
+                table_data = df.values.tolist()
+                # テーブルを更新
+                window['-TABLE-'].update(values=table_data)
+            elif result == 'Cancel':
+                # sg.popup('キャンセルが選択されました')
+                continue
+
+    elif event == 'アーティスト名で削除':
+        
+        selected_rows = values['-TABLE-']
+        if selected_rows:
+            # 選択された行を取得
+            selected_row_index = values['-TABLE-'][0]
+
+            # 選択された行の情報を取得
+            selected_row_Title = table_data[selected_row_index][0]
+            # print(selected_row_Title)
+            selected_row_Artist = table_data[selected_row_index][1]
+            # print(selected_row_Artist)
+            result = sg.popup_ok_cancel('【警告！】'+selected_row_Artist+'の曲をすべて削除しますか？',title='削除確認')
+            if result == 'OK':
+                # sg.popup('削除しました')
+                # 選択された行を削除
+                deleteartist(selected_row_Artist)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()

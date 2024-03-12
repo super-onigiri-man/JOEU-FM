@@ -4,7 +4,7 @@ from openpyxl.styles.alignment import Alignment
 import sqlite3
 import datetime
 import PySimpleGUI as sg
-import sys
+import sys,os
 def MajicalExcel(Oriconday):
 
     dbname = ('test.db')
@@ -36,7 +36,7 @@ def MajicalExcel(Oriconday):
     # 結果の取得
     max_last_number = cursor.fetchone()[0]
     # 今回のベストヒットランキング回数の値を設定
-    this_rank_number = sg.popup_get_text('ベストヒットランキングのNoを入力してください\n現在、DBに登録されている最新Noは'+str(max_last_number)+'です', '曲名')
+    this_rank_number = sg.popup_get_text('ベストヒットランキングのNoを入力してください\n現在、DBに登録されている最新Noは'+str(max_last_number)+'です', '回数確認')
     # print("ベストヒットランキングのNoを入力してください")
     # print("現在、DBに登録されている最新Noは"+str(max_last_number)+"です")
     # this_rank_number = int(input())
@@ -105,7 +105,16 @@ def MajicalExcel(Oriconday):
             rank+=1
 
     # Excelファイルを保存
+    workbook.save('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+
+    user_folder = os.path.expanduser("~")
+    folder = os.path.join(user_folder, "Downloads")
+
+    os.chdir(folder)
+
     workbook.save(str(Oriconday)+'ベストヒットランキング.xlsx')
+
+    os.chdir(os.path.dirname(sys.argv[0]))
 
     result = sg.popup_ok('正常に処理されました')
 

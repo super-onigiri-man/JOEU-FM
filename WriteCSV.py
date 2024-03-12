@@ -11,7 +11,7 @@ conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
 def WriteCSV(Oriconday):
-    excel_file = str(Oriconday)+'ベストヒットランキング.xlsx'
+    excel_file = 'Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx'
     workbook = openpyxl.load_workbook(excel_file)
     sheet = workbook.active
 
@@ -26,7 +26,7 @@ def WriteCSV(Oriconday):
         this_number = this_number.replace('No.','')
 
         if "再" in str(sheet['C' + str(row)].value) or "圏外" in str(sheet['C' + str(row)].value) :
-            last_number = int(this_number) - 1
+            last_number = int(this_number)
         elif "初" in str(sheet['C' + str(row)].value):
             on_chart = 1
             last_number = this_number
@@ -60,8 +60,5 @@ def WriteCSV(Oriconday):
             csv_writer.writerow(row)
 
     sg.popup_ok('CSVファイルに書き込みました')
-
-    # csv.save(str(year)+'-'+str(+month)+'-'+str(day)+'楽曲データ.csv')
-    # shutil.move((str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx'), 'C:\\Users\\wiiue\\Downloads\\'+(str(year)+'-'+str(+month)+'-'+str(day)+'ベストヒットランキング.xlsx'))
 
     

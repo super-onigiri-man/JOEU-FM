@@ -4,6 +4,8 @@ import sqlite3
 dbname = ('test.db')#データベース名.db拡張子で設定
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
+
+
 sql = """CREATE TABLE music_master (
     Title TEXT,
     Artist TEXT,

@@ -1,7 +1,9 @@
 import PySimpleGUI as sg
 import os
+import sys
 
-os.chdir('C:\\Users\\wiiue\\JOEU-FM\\')
+# os.chdir('C:\\Users\\wiiue\\JOEU-FM\\')
+os.chdir(os.path.dirname(sys.argv[0]))
 
 
 #先程確認して決めたテーマカラーをsg.themeで設定
@@ -25,7 +27,7 @@ layout = [
 ]
 
 
-window = sg.Window('FMベストヒットランキング自動生成システム', layout, resizable=True)
+window = sg.Window('FM Besthit Automatic Create System', layout, resizable=True)
 
 
 if os.path.exists('test.db') == True:
@@ -37,10 +39,11 @@ while True:
     event, values = window.read()
 
     if event == '今週データ生成':
-      #  HaruyaDat
-      # 
+      
        HaruyaPath = values['-HaruyaExcel-']
+       
        import CreateDB
+       
        import GetData
        GetData.GetThisWeekRank(HaruyaPath) 
        import ViewDeta
@@ -51,7 +54,9 @@ while True:
        
     if event == '先週データ生成':
        sg.popup_ok('このモードでは明屋書店のデータは取得しません')
+       
        import CreateDB
+       
        import GetData
        GetData.GetLastWeekRank() 
        import ViewDeta
@@ -61,6 +66,7 @@ while True:
 
     if event == '任意週生成':
       sg.popup_ok('このモードでは明屋書店のデータは取得しません\n日付は2020年8月3日以降を入力してください')
+      
       layout = [
       [sg.InputText(key='-input1-'), 
       sg.CalendarButton('Date', target='-input1-', format="%Y-%m-%d"),
@@ -71,12 +77,14 @@ while True:
 
       while True:
          event, values = window.read()  # イベントの入力を待つ
+       
          if event == sg.WINDOW_CLOSED:
             break
          elif event == 'OK':
             SelectDay = values['-input1-']
             if SelectDay:
                import CreateDB
+               
                import GetData
                GetData.GetSelectWeekRank(SelectDay)
                import ViewDeta
@@ -88,7 +96,9 @@ while True:
       window.close()
 
     if event == '管理者':
+       
        import CreateDB
+       
        import AdminUser
 
    
@@ -109,15 +119,12 @@ while True:
             FilePath = values['-RankExcel-']
             if FilePath:
                import CreateDB
+               
                import RevisionRank
                RevisionRank.RevisionRank(FilePath)
             break  # 処理が終了したらループを抜ける
 
       window.close()
-
-
-
-
 
     #クローズボタンの処理
     if event is None:
