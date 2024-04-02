@@ -326,7 +326,7 @@ def insertHaruyaData():
     conn.commit()
 
 
-#明屋書店,DBインサートを追加すること！
+
 def GetThisWeekRank(HaruyaPath):
   OriconTodays()
   OriconWeekRank(OriconTodays())

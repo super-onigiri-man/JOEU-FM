@@ -1,0 +1,108 @@
+from openpyxl import load_workbook
+import openpyxl
+import os
+import sys
+import PySimpleGUI as sg
+
+def convert_variable(var):#数字か文字列を判別して返す関数
+    try:
+        # 数値に変換を試みる
+        return float(var) if '.' in var else int(var)
+    except ValueError:
+        # 数値に変換できない場合は文字列として扱う
+        return str(var)
+
+import GetData
+Oriconday = GetData.GetThisWeekDate()
+# コピー元のExcelファイルを開く
+source_wb = load_workbook('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+source_ws = source_wb.active
+
+# コピー先のExcelファイルを開く
+target_wb = load_workbook('grc.xlsx')
+target_ws = target_wb['チャート']
+
+#Noコピペ
+target_ws['B2'].value = source_ws['B3'].value
+
+#日付コピペ
+target_ws['F2'].value = source_ws['F3'].value
+
+#ThisWeekコピペ
+for i in range(5, 44,2):
+    source_cell = f'B{i + 1}'
+    target_cell = f'B{i}'
+    target_ws[target_cell].value = source_ws[source_cell].value
+
+#LastWeekコピペ
+for i in range(5, 44,2):
+    source_cell = f'C{i + 1}'
+    target_cell = f'C{i}'
+    target_ws[target_cell].value = source_ws[source_cell].value
+
+#Onchartコピペ
+for i in range(5, 44,2):
+    source_cell = f'D{i + 1}'
+    target_cell = f'D{i}'
+    target_ws[target_cell].value = source_ws[source_cell].value
+
+#タイトルコピペ
+for i in range(5, 44,2):
+    source_cell = f'E{i + 1}'
+    target_cell = f'E{i}'
+    target_ws[target_cell].value = source_ws[source_cell].value
+
+#タイトルコピペ
+for i in range(5, 44,2):
+    source_cell = f'F{i + 1}'
+    target_cell = f'F{i}'
+    target_ws[target_cell].value = source_ws[source_cell].value
+
+
+def glossingover(SellNumber):
+    
+    if str(target_ws['C'+str(SellNumber)].value) == '初':
+        Rank = '初登場です'
+
+    elif str(target_ws['C'+str(SellNumber)].value) == '再':
+        Rank = '再登場です'
+
+    elif str(target_ws['B'+str(SellNumber)].value) == str(target_ws['C'+str(SellNumber)].value):#先週と同じ
+        Rank = '前回と同じです'
+
+    elif str(target_ws['B'+str(SellNumber)].value) < str(target_ws['C'+str(SellNumber)].value):#先週からランクアップ
+        Rank = '前回'+ str(target_ws['C'+str(SellNumber)].value) + '位からアップ'
+
+    elif str(target_ws['B'+str(SellNumber)].value) > str(target_ws['C'+str(SellNumber)].value):#先週からランクダウン
+        Rank = '前回'+ str(target_ws['C'+str(SellNumber)].value) + '位からダウン'
+
+    return  Rank
+
+rank5 = glossingover(13)
+rank4 = glossingover(11)
+rank3 = glossingover(9)
+rank2 = glossingover(7)
+rank1 = glossingover(5)
+
+# 原稿言い回し実装
+target_ws = target_wb['原稿']
+
+target_ws['C15'] = rank5
+target_ws['C19'] = rank4
+target_ws['C26'] = rank3
+target_ws['C36'] = rank2
+target_ws['C46'] = rank1
+
+# ユーザーのダウンロードフォルダに移動
+user_folder = os.path.expanduser("~")
+folder = os.path.join(user_folder, "Downloads")
+os.chdir(folder)
+
+# コピー先のExcelファイルを保存
+target_wb.save(str(Oriconday)+'ベストヒット原稿.xlsx')
+
+# 元のディレクトリに戻る
+os.chdir(os.path.dirname(sys.argv[0]))
+
+# メッセージ表示
+sg.popup('原稿を作成しました')
