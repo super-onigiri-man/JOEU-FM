@@ -4,13 +4,6 @@ import os
 import sys
 import PySimpleGUI as sg
 
-def convert_variable(var):#数字か文字列を判別して返す関数
-    try:
-        # 数値に変換を試みる
-        return float(var) if '.' in var else int(var)
-    except ValueError:
-        # 数値に変換できない場合は文字列として扱う
-        return str(var)
 
 import GetData
 Oriconday = GetData.GetThisWeekDate()
@@ -60,20 +53,28 @@ for i in range(5, 44,2):
 
 
 def glossingover(SellNumber):
+
+    # ここ前回ランキングと差異がある場合はstrじゃなくてintでは？（20240424）
+    # intであれば正確な判断ができるのでは？
     
+    # 初登場
     if str(target_ws['C'+str(SellNumber)].value) == '初':
         Rank = '初登場です'
 
+    # 再登場
     elif str(target_ws['C'+str(SellNumber)].value) == '再':
         Rank = '再登場です'
 
-    elif str(target_ws['B'+str(SellNumber)].value) == str(target_ws['C'+str(SellNumber)].value):#先週と同じ
+    # 前回と同じ
+    elif str(target_ws['B'+str(SellNumber)].value) == str(target_ws['C'+str(SellNumber)].value):
         Rank = '前回と同じです'
 
-    elif str(target_ws['B'+str(SellNumber)].value) < str(target_ws['C'+str(SellNumber)].value):#先週からランクアップ
+    # 前回からランクアップ
+    elif str(target_ws['B'+str(SellNumber)].value) < str(target_ws['C'+str(SellNumber)].value):
         Rank = '前回'+ str(target_ws['C'+str(SellNumber)].value) + '位からアップ'
 
-    elif str(target_ws['B'+str(SellNumber)].value) > str(target_ws['C'+str(SellNumber)].value):#先週からランクダウン
+    # 前回からランクダウン
+    elif str(target_ws['B'+str(SellNumber)].value) > str(target_ws['C'+str(SellNumber)].value):
         Rank = '前回'+ str(target_ws['C'+str(SellNumber)].value) + '位からダウン'
 
     return  Rank
