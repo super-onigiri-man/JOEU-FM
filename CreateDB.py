@@ -1,11 +1,23 @@
 import csv
 import sqlite3
 import PySimpleGUI as sg
+import requests
 
 dbname = ('test.db')#データベース名.db拡張子で設定
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
+try:
+    url='https://github.com/super-onigiri-man/JOEU-FM/blob/main/%E6%A5%BD%E6%9B%B2%E3%83%87%E3%83%BC%E3%82%BF.csv'
+    filename='楽曲データ.csv'
+
+    urlData = requests.get(url).content
+
+    with open(filename ,mode='wb') as f: # wb でバイト型を書き込める
+        f.write(urlData)
+
+except Exception as e:
+        sg.popup_error("楽曲データ.csvを取得できませんでした。\n 管理者へお問い合わせください",title="エラー")
 try:
     sql = """CREATE TABLE music_master (
         Title TEXT,

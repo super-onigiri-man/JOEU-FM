@@ -58,11 +58,11 @@ def glossingover(SellNumber):
     # intであれば正確な判断ができるのでは？
     
     # 初登場
-    if str(target_ws['C'+str(SellNumber)].value) == '初':
+    if ord(target_ws['C'+(SellNumber)].value) == 21021:
         Rank = '初登場です'
 
     # 再登場
-    elif str(target_ws['C'+str(SellNumber)].value) == '再':
+    elif ord(target_ws['C'+(SellNumber)].value) == 20877:
         Rank = '再登場です'
 
     # 前回と同じ
