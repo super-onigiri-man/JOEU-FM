@@ -24,9 +24,6 @@ layout = [
 [   sg.Button('任意の週のデータを生成する',size=(30,3),key='任意週生成'),
     sg.Button('管理者用',size=(10,3),key='管理者'),
     sg.Button('ランキング修正',size=(12,3),key='ランキング修正')],
-
-[   sg.Button('エラーログ出力',size=(12,3),key='エラーログ'),
-    sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除')]
     
 
 # [   sg.Button('オリコン週間\nランキング',size=(15,3),key='オリコン週間'),sg.Button('オリコンデジタル\nランキング',size=(15,3),key='オリコンデジタル'),sg.Button('ビルボードJAPAN\nHOT100',size=(15,3),key='ビルボード')]
@@ -137,32 +134,6 @@ while True:
                import RevisionRank
                RevisionRank.RevisionRank(FilePath)
             break  # 処理が終了したらループを抜ける
-
-    if event == 'エラーログ':
-         # Excelファイルを保存
-        import shutil
-
-        user_folder = os.path.expanduser("~")
-        folder = os.path.join(user_folder, "Downloads")
-
-        shutil.copy('error.log', folder)
-
-        os.chdir(os.path.dirname(sys.argv[0]))
-
-        sg.popup_ok('エラーログをダウンロードフォルダにコピーしました')
-
-    if event == 'エラーログ削除':
-
-       result = sg.popup_yes_no("エラーログを削除しますか？\nこの操作エラーログ送信後に行ってください!", title="確認") 
-
-       if result == 'Yes':
-          os.remove('error.log')
-          sg.popup('エラーログを削除しました')
-      
-       else:
-          break
-
-      
 
     #クローズボタンの処理
     if event is None:

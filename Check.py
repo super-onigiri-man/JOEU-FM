@@ -39,8 +39,6 @@ if is_file:
             RevisionRank.RevisionRank('Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx')
 
             os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
-
-            sg.popup('削除しました')
         
         except Exception as e:
             import traceback

@@ -1,6 +1,8 @@
 import PySimpleGUI as sg
 import pandas as pd
 import sqlite3
+import os
+import sys
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -104,6 +106,8 @@ layout = [
 
     [sg.Button('削除',size=(10,3),key='削除'),
      sg.Button('追加',size=(10,3),key='追加'),
+     sg.Button('エラーログ出力',size=(12,3),key='エラーログ'),
+     sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除')
     #  sg.Button('曲名検索',size=(12,3),key='曲名検索'),
     #  sg.Button('アーティスト名検索',size=(18,3),key='アーティスト名検索')
     ],
@@ -199,7 +203,31 @@ while True:
         # テーブルのデータを更新
         table_data = df.values.tolist()
         # テーブルを更新
-        window['-TABLE-'].update(values=table_data)   
+        window['-TABLE-'].update(values=table_data)  
+
+    elif event == 'エラーログ':
+         # Excelファイルを保存
+        import shutil
+
+        user_folder = os.path.expanduser("~")
+        folder = os.path.join(user_folder, "Downloads")
+
+        shutil.copy('error.log', folder)
+
+        os.chdir(os.path.dirname(sys.argv[0]))
+
+        sg.popup_ok('エラーログをダウンロードフォルダにコピーしました')
+
+    elif event == 'エラーログ削除':
+
+       result = sg.popup_yes_no("エラーログを削除しますか？\nこの操作エラーログ送信後に行ってください!", title="確認") 
+
+       if result == 'Yes':
+          os.remove('error.log')
+          sg.popup('エラーログを削除しました')
+      
+       else:
+          break 
 
     # elif event == '曲名検索':
     #     SerchTitle = sg.popup_get_text('検索したい曲名を入力してください\n あいまい検索は最後に%をつけてください', '曲名')
