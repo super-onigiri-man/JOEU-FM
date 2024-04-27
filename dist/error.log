@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "GetData.py", line 269, in HaruyaRank
+  File "openpyxl\reader\excel.py", line 344, in load_workbook
+  File "openpyxl\reader\excel.py", line 123, in __init__
+  File "openpyxl\reader\excel.py", line 93, in _validate_archive
+openpyxl.utils.exceptions.InvalidFileException: openpyxl does not support  file format, please check you can open it with Excel first. Supported formats are: .xlsx,.xlsm,.xltx,.xltm
