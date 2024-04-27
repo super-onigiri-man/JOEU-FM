@@ -8,36 +8,56 @@ conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
 try:
-    url='https://github.com/super-onigiri-man/JOEU-FM/blob/main/%E6%A5%BD%E6%9B%B2%E3%83%87%E3%83%BC%E3%82%BF.csv'
-    filename='楽曲データ.csv'
+    layout = [
+        [sg.Text('DB作成中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
+        [sg.Button('読み込み中止')]
+    ]
 
-    urlData = requests.get(url).content
+    window = sg.Window('DB作成中...', layout,finalize=True)
 
-    with open(filename ,mode='wb') as f: # wb でバイト型を書き込める
-        f.write(urlData)
+    def update_progress_bar(progress_bar, value):
+        progress_bar.update_bar(value)
+        window.refresh()
+
+    while True:
+
+        update_progress_bar(window['progressbar'], 0)
+        
+        sql = """CREATE TABLE music_master (
+            Title TEXT,
+            Artist TEXT,
+            Score DOUBLE,
+            Last_Rank INT,
+            Last_Number INT,
+            On_Chart INT,
+            PRIMARY KEY (Title, Artist)
+        );"""
+        #↑DBのフォーマット設定（別のところに書いておきます）
+        cursor.execute(sql)#executeコマンドでSQL文を実行
+        conn.commit()#データベースにコミット(Excelでいう上書き保存。自動コミット設定なので不要だが一応・・)
+
+        update_progress_bar(window['progressbar'], 36)
+
+        with open('楽曲データ.csv',encoding='utf-8') as f:
+            # CSVリーダーオブジェクトを作成
+            csv_reader = csv.reader(f)
+            for row in csv_reader:
+                # テーブルにデータを挿入
+                cursor.execute("INSERT INTO music_master VALUES (?,?,?,?,?,?)", (row[0], row[1],row[2],row[3],row[4],row[5]))
+
+        update_progress_bar(window['progressbar'], 72)
+
+        window.close()
+
+        event, values = window.read()
+        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
+                    break
 
 except Exception as e:
-        sg.popup_error("楽曲データ.csvを取得できませんでした。\n 管理者へお問い合わせください",title="エラー")
-try:
-    sql = """CREATE TABLE music_master (
-        Title TEXT,
-        Artist TEXT,
-        Score DOUBLE,
-        Last_Rank INT,
-        Last_Number INT,
-        On_Chart INT,
-        PRIMARY KEY (Title, Artist)
-    );"""
-    #↑DBのフォーマット設定（別のところに書いておきます）
-    cursor.execute(sql)#executeコマンドでSQL文を実行
-    conn.commit()#データベースにコミット(Excelでいう上書き保存。自動コミット設定なので不要だが一応・・)
-    with open('楽曲データ.csv',encoding='utf-8') as f:
-        # CSVリーダーオブジェクトを作成
-        csv_reader = csv.reader(f)
-        for row in csv_reader:
-            # テーブルにデータを挿入
-            cursor.execute("INSERT INTO music_master VALUES (?,?,?,?,?,?)", (row[0], row[1],row[2],row[3],row[4],row[5]))
-
-except Exception as e:
-        sg.popup_error("DBを作成できませんでした。\n「楽曲データ.csv」を正しい位置に配置してください",title="エラー")
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
+        sg.popup_error("DBを作成できませんでした。\n システムを終了します",title="エラー")
+        
+        exit()
             

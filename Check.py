@@ -21,24 +21,33 @@ if is_file:
     print(result)
 
     if result == 'Yes':
-        # 最終回の確認
-        # クエリの実行
-        query = "SELECT MAX(Last_Number) FROM music_master;"
-        cursor.execute(query)
-        # 結果の取得
-        max_last_number = cursor.fetchone()[0]
+        try:
+            import CreateDB
+            # 最終回の確認
+            # クエリの実行
+            query = "SELECT MAX(Last_Number) FROM music_master;"
+            cursor.execute(query)
+            # 結果の取得
+            max_last_number = cursor.fetchone()[0]
 
-        max_last_number = int(max_last_number)
+            max_last_number = int(max_last_number)
 
-        cursor.execute("DELETE FROM music_master WHERE Last_Number = ?;",(max_last_number,)) 
+            cursor.execute("DELETE FROM music_master WHERE Last_Number = ?;",(max_last_number,)) 
 
-        import RevisionRank
-        rollbackday = Oriconday - datetime.timedelta(days=7)
-        RevisionRank.RevisionRank('Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx')
+            import RevisionRank
+            rollbackday = Oriconday - datetime.timedelta(days=7)
+            RevisionRank.RevisionRank('Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx')
 
-        os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+            os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
 
-        sg.popup('削除しました')
+            sg.popup('削除しました')
+        
+        except Exception as e:
+            import traceback
+            with open('error.log', 'a') as f:
+                traceback.print_exc( file=f)
+            sg.popup_error('前回のランキングが読み込めませんでした')
+            
 
     else:
         sg.popup('システムを終了します')

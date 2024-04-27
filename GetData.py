@@ -175,6 +175,9 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
 
     except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
         sg.popup_error("「オリコン週間ランキング」が取得できませんでした",title="エラー")
 
 
@@ -216,6 +219,9 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             score = score - 0.3
 
     except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
         sg.popup_error("「オリコンデジタルランキング」が取得できませんでした",title="エラー")
 
 
@@ -238,8 +244,8 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         score = 6.0 #基準点
 
         for i in range(20):#20回繰り替えす
-            song = songs[i].text.strip()
-            artist = artists[i].text.strip()
+            song = str(songs[i].text.strip())
+            artist = str(artists[i].text.strip())
             mojimoji.zen_to_han(song)
             mojimoji.zen_to_han(artist)
             BillboardData.append([song,artist,format(score, '.1f')])
@@ -251,6 +257,9 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
 
 
     except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
         sg.popup_error("「ビルボードランキング」が取得できませんでした",title="エラー")
 
 
@@ -262,14 +271,16 @@ def HaruyaRank(HaruyaPath):
 
         # データを2次元配列に挿入する
         for row in range(4, 24):
-            song_names = mojimoji.zen_to_han(ws[f"D{row}"].value, kana=False).split('/')
-            artist_name = mojimoji.zen_to_han(ws[f"C{row}"].value, kana=False)
-            song_name = str(song_name)
-            artist_name = str(artist_name)
+            song_names = mojimoji.zen_to_han(str(ws[f"D{row}"].value), kana=False).split('/')
+            artist_name = mojimoji.zen_to_han(str(ws[f"C{row}"].value), kana=False)
+            # song_name = str(song_name)
+            # artist_name = str(artist_name)
             point = round(6.0 - ((row - 4) * 0.3), 2)  # 点数を計算する
             for song_name in song_names:
                 if "/" in song_name:
                     song_name_a, song_name_b = song_name.split("/")
+                    str(song_name_a)
+                    str(song_name_b)
                     HaruyaData.append([song_name_a.strip(), artist_name, point])
                     HaruyaData.append([song_name_b.strip(), artist_name, point])
                 else:
@@ -278,6 +289,9 @@ def HaruyaRank(HaruyaPath):
         print('明屋書店データOK')
 
     except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
         sg.popup_error("「明屋書店ランキング」が取得できませんでした",title="エラー")
 
 
