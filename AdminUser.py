@@ -125,8 +125,9 @@ window = sg.Window('管理者画面', layout,resizable=True)
 # イベントループ
 while True:
     event, values = window.read()
-    if event == sg.WINDOW_CLOSED:
-        window.close()
+    if event is None:
+      # print('exit')
+        break
 
     elif event == '削除':
     
