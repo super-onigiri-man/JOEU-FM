@@ -57,7 +57,7 @@ while True:
        WriteCSV.WriteCSV(GetData.GetThisWeekDate())
        import ManuscriptGeneration
 
-       exit()
+       window.close()
        
     if event == '先週データ生成':
        sg.popup_ok('このモードでは明屋書店のデータは取得しません')
@@ -68,10 +68,10 @@ while True:
        GetData.GetLastWeekRank() 
        import ViewDeta
        import OldCreateExcel
-       OldCreateExcel.MajicalExcel(GetData.GetLastWeekDate())
+       OldCreateExcel.OldMajicalExcel(GetData.GetLastWeekDate())
        sg.popup('過去回のためDBには書き込みできません')
 
-       exit()
+       window.close()
 
     if event == '任意週生成':
       sg.popup_ok('このモードでは明屋書店のデータは取得しません\n日付は2020年8月3日以降を入力してください')
@@ -98,13 +98,13 @@ while True:
                GetData.GetSelectWeekRank(SelectDay)
                import ViewDeta
                import OldCreateExcel
-               OldCreateExcel.MajicalExcel(GetData.GetSelectWeekDate())
+               OldCreateExcel.OldMajicalExcel(GetData.GetSelectWeekDate())
                sg.popup('過去回のためDBには書き込みできません')
             break  # 処理が終了したらループを抜ける
 
       window.close()
 
-      exit()
+ 
 
     if event == '管理者':
        

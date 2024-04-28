@@ -126,7 +126,7 @@ window = sg.Window('管理者画面', layout,resizable=True)
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
-        break
+        window.close()
 
     elif event == '削除':
     
@@ -223,8 +223,13 @@ while True:
        result = sg.popup_yes_no("エラーログを削除しますか？\nこの操作エラーログ送信後に行ってください!", title="確認") 
 
        if result == 'Yes':
-          os.remove('error.log')
-          sg.popup('エラーログを削除しました')
+          if os.path.isfile('error.log'):
+            os.remove('error.log')
+            sg.popup('エラーログを削除しました')
+            break
+          else:
+            sg.popup('ログがありませんでした。') 
+            break
       
        else:
           break 

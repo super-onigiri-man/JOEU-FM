@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 import pandas as pd
 import sqlite3
+import sys
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -99,10 +100,12 @@ window = sg.Window('FMベストヒットランキング自動生成システム'
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
-        exit()
+        sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください')
+        sys.exit()
 
     if event is None:
-        exit()
+        sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください')
+        sys.exit()
 
     elif event == '削除':
         
@@ -215,4 +218,4 @@ while True:
         
 
 # ウィンドウを閉じる
-window.close()
+window.close() #ここを実行するとランキング生成に行きます
