@@ -348,34 +348,35 @@ def insertHaruyaData():
 def GetThisWeekRank(HaruyaPath):
     layout = [
         [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止')]
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
 
     window = sg.Window('今週のランキング取得', layout,finalize=True)
 
-    def update_progress_bar(progress_bar, value):
+    def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)
+        progmsg.update(msg)
         window.refresh()
 
     while True:
         
-        update_progress_bar(window['progressbar'], 8)
+        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         OriconTodays()
-        update_progress_bar(window['progressbar'], 16)
+        update_progress_bar(window['progressbar'],window['progmsg'], 16,'オリコン週間ランキング取得中')
         OriconWeekRank(OriconTodays())
-        update_progress_bar(window['progressbar'], 24)
+        update_progress_bar(window['progressbar'],window['progmsg'], 24,'オリコンデジタルランキング取得中')
         OriconDigitalRank(OriconTodays())
-        update_progress_bar(window['progressbar'], 32)
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
         BillboadRank(OriconTodays())
-        update_progress_bar(window['progressbar'], 40)
+        update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
         HaruyaRank(HaruyaPath)
-        update_progress_bar(window['progressbar'], 48)
+        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中(1/4)')
         insertOriconWeekData()
-        update_progress_bar(window['progressbar'], 56)
+        update_progress_bar(window['progressbar'],window['progmsg'], 56,'DB登録中(2/4)')
         insertOriconDegitalData()
-        update_progress_bar(window['progressbar'], 64)
+        update_progress_bar(window['progressbar'],window['progmsg'], 64,'DB登録中(3/4)')
         insertBillboardData()
-        update_progress_bar(window['progressbar'], 72)
+        update_progress_bar(window['progressbar'],window['progmsg'], 72,'DB登録中(4/4)')
         insertHaruyaData()
 
         window.close()
@@ -383,6 +384,8 @@ def GetThisWeekRank(HaruyaPath):
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'キャンセル':
                 break
+        
+    window.close()
             
 
 
@@ -390,76 +393,81 @@ def GetLastWeekRank():
   
     layout = [
         [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止')]
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
 
     window = sg.Window('先週のランキングを取得', layout,finalize=True)
 
-    def update_progress_bar(progress_bar, value):
+    def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)
+        progmsg.update(msg)
         window.refresh()
 
     while True:
         
-        update_progress_bar(window['progressbar'], 9)
+        update_progress_bar(window['progressbar'],window['progmsg'], 9,'日付取得中')
         OriconLastWeek()
-        update_progress_bar(window['progressbar'], 18)
+        update_progress_bar(window['progressbar'],window['progmsg'], 18,'オリコン週間ランキング取得中')
         OriconWeekRank(OriconLastWeek())
-        update_progress_bar(window['progressbar'], 27)
+        update_progress_bar(window['progressbar'],window['progmsg'], 17,'オリコンデジタルランキング取得中')
         OriconDigitalRank(OriconLastWeek())
-        update_progress_bar(window['progressbar'], 36)
+        update_progress_bar(window['progressbar'],window['progmsg'], 36,'ビルボードランキング取得中')
         BillboadRank(OriconLastWeek())
-        update_progress_bar(window['progressbar'], 45)
+        update_progress_bar(window['progressbar'],window['progmsg'], 45,'DB登録中(1/3)')
         insertOriconWeekData()
-        update_progress_bar(window['progressbar'], 54)
+        update_progress_bar(window['progressbar'],window['progmsg'], 54,'DB登録中(2/3)')
         insertOriconDegitalData()
-        update_progress_bar(window['progressbar'], 63)
+        update_progress_bar(window['progressbar'],window['progmsg'], 63,'DB登録中(3/3)')
         insertBillboardData()
-        update_progress_bar(window['progressbar'], 72)
+        update_progress_bar(window['progressbar'],window['progmsg'], 72,'まもなく完了')
 
         window.close()
 
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'キャンセル':
                 break
+        
+    window.close()
   
 
 def GetSelectWeekRank(SelectDay):
   
     layout = [
         [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止')]
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
 
     window = sg.Window('任意週のランキングを取得', layout,finalize=True)
 
-    def update_progress_bar(progress_bar, value):
+    def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)
+        progmsg.update(msg)
         window.refresh()
-
     while True:
         
-        update_progress_bar(window['progressbar'], 9)
+        update_progress_bar(window['progressbar'],window['progmsg'], 9,'日付取得中')
         global OSW
-        update_progress_bar(window['progressbar'], 18)
+        update_progress_bar(window['progressbar'],window['progmsg'], 18,'オリコン週間ランキング取得中')
         OSW=OriconSelectWeek(SelectDay)
-        update_progress_bar(window['progressbar'], 27)
+        update_progress_bar(window['progressbar'],window['progmsg'], 17,'オリコンデジタルランキング取得中')
         OriconDigitalRank(OSW)
-        update_progress_bar(window['progressbar'], 36)
+        update_progress_bar(window['progressbar'],window['progmsg'], 36,'ビルボードランキング取得中')
         BillboadRank(OSW)
-        update_progress_bar(window['progressbar'], 45)
+        update_progress_bar(window['progressbar'],window['progmsg'], 45,'DB登録中(1/3)')
         insertOriconWeekData()
-        update_progress_bar(window['progressbar'], 54)
+        update_progress_bar(window['progressbar'],window['progmsg'], 54,'DB登録中(2/3)')
         insertOriconDegitalData()
-        update_progress_bar(window['progressbar'], 63)
+        update_progress_bar(window['progressbar'],window['progmsg'], 63,'DB登録中(3/3)')
         insertBillboardData()
-        update_progress_bar(window['progressbar'], 72)
+        update_progress_bar(window['progressbar'],window['progmsg'], 72,'まもなく完了')
 
         window.close()
 
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'キャンセル':
                 break
+        
+    window.close()
 
 def GetThisWeekDate():
    return OriconTodays()
