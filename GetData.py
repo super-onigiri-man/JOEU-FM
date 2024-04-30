@@ -6,6 +6,8 @@ import openpyxl
 import sqlite3
 import pandas as pd
 import PySimpleGUI as sg
+import asyncio #非同期処理
+from concurrent.futures import ThreadPoolExecutor #並列処理（マルチスレッド）
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -21,101 +23,70 @@ BillboardData = []
 # 明屋書店ランキング用
 HaruyaData = []
 
-
+# 初めて処理を行うかどうかのフラグ
+popup_done = False
 
 def OriconTodays():
-    # 今日の日付を求める
+    global popup_done
+    
+    # 今日の日付と曜日を求める
     d_today = datetime.date.today()
-    # 今日の曜日を求める
-    todayweek = datetime.date.today().weekday()
-    #print(d_today, todayweek)
+    todayweek = d_today.weekday()
 
-    #オリコンの発表は毎週水曜日のため、火曜日までは先週のランキングを表示
-    #日付は来週の水曜日付となる。
-    if (todayweek == 0):  # 今日が月曜日(先週(今週月曜日)のランキング表示)
-        Oriconday = d_today
-    elif (todayweek == 1):# 今日が火曜日(先週(今週月曜日)のランキング表示)
-        Oriconday = d_today - datetime.timedelta(days=1)
-    elif (todayweek == 2):# 今日が水曜日
-        Oriconday = d_today + datetime.timedelta(days=5)
-    elif (todayweek == 3):# 今日が木曜日
-        Oriconday = d_today + datetime.timedelta(days=4)
-    elif (todayweek == 4):# 今日が金曜日
-        Oriconday = d_today + datetime.timedelta(days=3)
-    elif (todayweek == 5):# 今日が土曜日
-        Oriconday = d_today + datetime.timedelta(days=2)
-    elif (todayweek == 6):# 今日が日曜日
-        Oriconday = d_today + datetime.timedelta(days=1)
+    if todayweek <= 1:  # 月曜日または火曜日（今週月曜日の日付を返す）
+        Oriconday = d_today - datetime.timedelta(days=(todayweek))
+    elif todayweek == 2:  # 水曜日（時間を判定する）
+        current_time = datetime.datetime.now().time()
+        specified_time = datetime.time(14, 10)  
+        if current_time < specified_time and not popup_done:
+            sg.popup('先週のランキングを取得します\n今週のランキングは14:10以降に取得可能です',no_titlebar=True)
+            popup_done = True  # ポップアップが表示されたことをフラグで管理
+            Oriconday = d_today - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
+        elif current_time < specified_time:
+            Oriconday = d_today - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
+        else:
+            Oriconday = d_today + datetime.timedelta(days=5) # 14:10以降は今週のデータを取得
+    else:  # 木曜日から日曜日（来週月曜日の日付を返す）
+        Oriconday = d_today + datetime.timedelta(days=(7 - todayweek))
 
     return Oriconday
 
 def OriconLastWeek():
-    # 今日の日付を求める
+    # 今日の日付と曜日を求める
     d_today = datetime.date.today()
-    # 今日の曜日を求める
-    todayweek = datetime.date.today().weekday()
-    # print(d_today, todayweek)
-
-    # オリコンの発表は毎週水曜日のため、火曜日までは先週のランキングを表示
-    # 日付は来週の月曜日付となる。
+    todayweek = d_today.weekday()
     if (todayweek == 0):  # 今日が月曜日(先週(今週月曜日)のランキング表示)
         Oriconday = d_today - datetime.timedelta(days=7)
     elif (todayweek == 1):  # 今日が火曜日(先週(今週月曜日)のランキング表示)
         Oriconday = d_today - datetime.timedelta(days=8)
-    elif (todayweek == 2):  # 今日が水曜日
-        Oriconday = d_today - datetime.timedelta(days=2)
-    elif (todayweek == 3):  # 今日が木曜日
-        Oriconday = d_today - datetime.timedelta(days=3)
-    elif (todayweek == 4):  # 今日が金曜日
-        Oriconday = d_today - datetime.timedelta(days=4)
-    elif (todayweek == 5):  # 今日が土曜日
-        Oriconday = d_today - datetime.timedelta(days=5)
-    elif (todayweek == 6):  # 今日が日曜日
-        Oriconday = d_today - datetime.timedelta(days=6)
+    elif (todayweek >= 2):  # 今日が水曜日以降
+        Oriconday = d_today - datetime.timedelta(days=(todayweek +7) % 7)
 
     return Oriconday
+
 
 
 def OriconSelectWeek(SelectDay):
-    # 日付の入力を促す
-    # date = input("2020年8月3日以降の日付を入力してください (YYYY-MM-DD): ")
 
     # 入力された日付をdatetimeオブジェクトに変換
-    dt = datetime.datetime.strptime(SelectDay, "%Y-%m-%d")
+    dt = SelectDay
     dt = dt.date()
     # 曜日を取得
     weekday = dt.weekday()
-
-    # オリコンの発表は毎週水曜日のため、火曜日までは先週のランキングを表示
-    # 日付は来週の月曜日付となる。
-    if (weekday == 0):  # 今日が月曜日
-        Oriconday = dt
-    elif (weekday == 1):  # 今日が火曜日
-        Oriconday = dt - datetime.timedelta(days=1)
-    elif (weekday == 2):  # 今日が水曜日
-        Oriconday = dt - datetime.timedelta(days=2)
-    elif (weekday == 3):  # 今日が木曜日
-        Oriconday = dt - datetime.timedelta(days=3)
-    elif (weekday == 4):  # 今日が金曜日
-        Oriconday = dt - datetime.timedelta(days=4)
-    elif (weekday == 5):  # 今日が土曜日
-        Oriconday = dt - datetime.timedelta(days=5)
-    elif (weekday == 6):  # 今日が日曜日
-        Oriconday = dt - datetime.timedelta(days=6)
-
+    Oriconday = dt - datetime.timedelta(days=(weekday + 7) % 7 )
     return Oriconday
+
 
 def OriconWeekRank(Oriconday):#オリコン週間ランキング
     try:
         #1位から10位
         load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
         html = requests.get(load_url)
-        soup = BeautifulSoup(html.text, "html.parser")
+        soup = BeautifulSoup(html.text, 'lxml')
         links = soup.find(class_="content-rank-main").find_all('h2',class_='title') #曲名
         artist = soup.find(class_="content-rank-main").find_all('p',class_='name') #アーティスト名
         score = 6.0 #独自スコア
         rank = 1 #ランキング
-        print(str(Oriconday) + "付けオリコン週間シングルランキング")
 
         index = 0
         for link, artist in zip(links, artist):
@@ -149,7 +120,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
         #11位から20位
         load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/p/2/"
         html = requests.get(load_url)
-        soup = BeautifulSoup(html.text, "html.parser")
+        soup = BeautifulSoup(html.text, 'lxml')
         links = soup.find(class_="content-rank-main").find_all('h2', class_='title')  # 曲名
         artist = soup.find(class_="content-rank-main").find_all('p', class_='name')  # アーティスト名
         for link, artist in zip(links, artist):
@@ -174,12 +145,13 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # 壊れたときの表示用
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
 
+        print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
+
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        sg.popup_error("「オリコン週間ランキング」が取得できませんでした",title="エラー")
-
+        sg.popup_error("「オリコン週間ランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
 def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキング
@@ -188,12 +160,11 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         # 1位から10位
         load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/"
         html = requests.get(load_url)
-        soup = BeautifulSoup(html.text, "html.parser")
+        soup = BeautifulSoup(html.text, 'lxml')
         links = soup.find(class_="content-rank-main").find_all('h2', class_='title')
         artist = soup.find(class_="content-rank-main").find_all('p', class_='name')  # アーティスト名
         rank = 1
         score = float(6.0)
-        print(str(Oriconday) + "付けオリコン週間デジタルシングルランキング")
         for link, artist in zip(links, artist):
         # 壊れたときの表示用
             # if rank != 10:#10位以下（１ケタの場合）なら（点数の位置を揃えるため）
@@ -209,7 +180,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         # 11位から20位
         load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/p/2/"
         html = requests.get(load_url)
-        soup = BeautifulSoup(html.text, "html.parser")
+        soup = BeautifulSoup(html.text, 'lxml')
         links = soup.find(class_="content-rank-main").find_all('h2', class_='title')
         artist = soup.find(class_="content-rank-main").find_all('p', class_='name')  # アーティスト名
         for link, artist in zip(links, artist):
@@ -218,11 +189,13 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             rank = rank + 1
             score = score - 0.3
 
+        print(str(Oriconday) + "付けオリコンデジタルランキングOK")
+
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        sg.popup_error("「オリコンデジタルランキング」が取得できませんでした",title="エラー")
+        sg.popup_error("「オリコンデジタルランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
 def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
@@ -230,8 +203,6 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
     try:
         # オリコンの日付とビルボードの発表日の差を埋めるための計算
         Billday = Oriconday - datetime.timedelta(days=5)
-
-        print(str(Billday) + "付けビルボードJAPAN HOT100ランキング")
 
         #URL(ここを変更すると読み込まなくなります)
         url = 'https://www.billboard-japan.com/charts/detail?a=hot100&year='+str(Oriconday.year)+'&month='+str(Oriconday.month)+'&day='+str(Oriconday.day)
@@ -255,15 +226,16 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
             #   print(f"{i+1}位: {format(score, '.1f')} {song} / {artist}") #10位から20位までのランキング
             score = score - 0.3 #scoreを-0.3する
 
+        print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
 
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        sg.popup_error("「ビルボードランキング」が取得できませんでした",title="エラー")
+        sg.popup_error("「ビルボードランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
-def HaruyaRank(HaruyaPath):
+async def HaruyaRank(HaruyaPath):
     try:
         # Excelファイルを読み込む
         wb = openpyxl.load_workbook(HaruyaPath)
@@ -289,13 +261,12 @@ def HaruyaRank(HaruyaPath):
         print('明屋書店データOK')
 
     except Exception as e:
-        import traceback
-        with open('error.log', 'a') as f:
-            traceback.print_exc( file=f)
-        sg.popup_error("「明屋書店ランキング」が取得できませんでした",title="エラー")
+            import traceback
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+            sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
 
-
-def insertOriconWeekData():
+async def insertOriconWeekData():
    for entry in OriconWeekData:
     title, artist, score = entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
@@ -307,7 +278,7 @@ def insertOriconWeekData():
 
     conn.commit()
 
-def insertOriconDegitalData():
+async def insertOriconDegitalData():
    for entry in OriconDigitalData:
     title, artist, score = entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
@@ -319,7 +290,7 @@ def insertOriconDegitalData():
 
     conn.commit()
 
-def insertBillboardData():
+async def insertBillboardData():
    for entry in BillboardData:
     title, artist, score = entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
@@ -331,7 +302,7 @@ def insertBillboardData():
 
     conn.commit()
 
-def insertHaruyaData():
+async def insertHaruyaData():
    for entry in HaruyaData:
     title, artist, score = entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
@@ -346,134 +317,48 @@ def insertHaruyaData():
 
 
 def GetThisWeekRank(HaruyaPath):
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
 
-    window = sg.Window('今週のランキング取得', layout,finalize=True)
+    Oriconday1 = OriconTodays()
+    # 高速処理のため並列処理を実装中
+    with ThreadPoolExecutor(max_workers=4)  as TPE:
+        TPE.submit(OriconWeekRank,Oriconday1)
+        TPE.submit(OriconDigitalRank,Oriconday1)
+        TPE.submit(BillboadRank,Oriconday1)
+    asyncio.run(HaruyaRank(HaruyaPath))
 
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
-
-    while True:
-        
-        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
-        OriconTodays()
-        update_progress_bar(window['progressbar'],window['progmsg'], 16,'オリコン週間ランキング取得中')
-        OriconWeekRank(OriconTodays())
-        update_progress_bar(window['progressbar'],window['progmsg'], 24,'オリコンデジタルランキング取得中')
-        OriconDigitalRank(OriconTodays())
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
-        BillboadRank(OriconTodays())
-        update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
-        HaruyaRank(HaruyaPath)
-        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中(1/4)')
-        insertOriconWeekData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 56,'DB登録中(2/4)')
-        insertOriconDegitalData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 64,'DB登録中(3/4)')
-        insertBillboardData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 72,'DB登録中(4/4)')
-        insertHaruyaData()
-
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                break
-        
-    window.close()
+    asyncio.run(insertOriconWeekData())    
+    asyncio.run(insertOriconDegitalData())
+    asyncio.run(insertBillboardData())
+    asyncio.run(insertHaruyaData())
             
 
 
 def GetLastWeekRank():
-  
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
-
-    window = sg.Window('先週のランキングを取得', layout,finalize=True)
-
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
-
-    while True:
-        
-        update_progress_bar(window['progressbar'],window['progmsg'], 9,'日付取得中')
-        OriconLastWeek()
-        update_progress_bar(window['progressbar'],window['progmsg'], 18,'オリコン週間ランキング取得中')
-        OriconWeekRank(OriconLastWeek())
-        update_progress_bar(window['progressbar'],window['progmsg'], 17,'オリコンデジタルランキング取得中')
-        OriconDigitalRank(OriconLastWeek())
-        update_progress_bar(window['progressbar'],window['progmsg'], 36,'ビルボードランキング取得中')
-        BillboadRank(OriconLastWeek())
-        update_progress_bar(window['progressbar'],window['progmsg'], 45,'DB登録中(1/3)')
-        insertOriconWeekData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 54,'DB登録中(2/3)')
-        insertOriconDegitalData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 63,'DB登録中(3/3)')
-        insertBillboardData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 72,'まもなく完了')
-
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                break
-        
-    window.close()
+    
+    Oriconday2 = OriconLastWeek()
+    # 高速処理のため並列処理を実装中
+    with ThreadPoolExecutor(max_workers=4)  as TPE:
+        TPE.submit(OriconWeekRank,Oriconday2)
+        TPE.submit(OriconDigitalRank,Oriconday2)
+        TPE.submit(BillboadRank,Oriconday2)
+    
+    asyncio.run(insertOriconWeekData())    
+    asyncio.run(insertOriconDegitalData())
+    asyncio.run(insertBillboardData())
   
 
 def GetSelectWeekRank(SelectDay):
-  
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
+    global OSW
+    OSW = OriconSelectWeek(SelectDay)
+    with ThreadPoolExecutor(max_workers=4)  as TPE:
 
-    window = sg.Window('任意週のランキングを取得', layout,finalize=True)
-
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
-    while True:
-        
-        update_progress_bar(window['progressbar'],window['progmsg'], 9,'日付取得中')
-        global OSW
-        update_progress_bar(window['progressbar'],window['progmsg'], 18,'オリコン週間ランキング取得中')
-        OSW=OriconSelectWeek(SelectDay)
-        update_progress_bar(window['progressbar'],window['progmsg'], 17,'オリコンデジタルランキング取得中')
-        OriconDigitalRank(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 36,'ビルボードランキング取得中')
-        BillboadRank(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 45,'DB登録中(1/3)')
-        insertOriconWeekData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 54,'DB登録中(2/3)')
-        insertOriconDegitalData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 63,'DB登録中(3/3)')
-        insertBillboardData()
-        update_progress_bar(window['progressbar'],window['progmsg'], 72,'まもなく完了')
-
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                break
-        
-    window.close()
-
-def GetThisWeekDate():
-   return OriconTodays()
-
-def GetLastWeekDate():
-   return OriconLastWeek()
+        TPE.submit(OriconWeekRank,OSW)
+        TPE.submit(OriconDigitalRank,OSW)
+        TPE.submit(BillboadRank,OSW)
+    
+    asyncio.run(insertOriconWeekData())    
+    asyncio.run(insertOriconDegitalData())
+    asyncio.run(insertBillboardData())
 
 def GetSelectWeekDate():
    return OSW
