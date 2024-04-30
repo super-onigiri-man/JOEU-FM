@@ -1,29 +1,19 @@
 import csv
 import sqlite3
 import PySimpleGUI as sg
-import requests
+import traceback
+import sys
 
-dbname = ('test.db')#データベース名.db拡張子で設定
-conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
-cursor = conn.cursor() #カーソルオブジェクトを作成
+dbname = 'test.db'  # データベース名
+csv_file = '楽曲データ.csv'  # CSVファイル名
+
+conn = sqlite3.connect(dbname, isolation_level=None)  # データベースに接続（自動コミット機能ON）
+cursor = conn.cursor()  # カーソルオブジェクトを作成
 
 try:
-    layout = [
-        [sg.Text('DB作成中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止')]
-    ]
-
-    window = sg.Window('DB作成中...', layout,finalize=True)
-
-    def update_progress_bar(progress_bar, value):
-        progress_bar.update_bar(value)
-        window.refresh()
-
-    while True:
-
-        update_progress_bar(window['progressbar'], 0)
         
-        sql = """CREATE TABLE music_master (
+        # テーブル作成のSQL文
+        create_table_sql = """CREATE TABLE IF NOT EXISTS music_master (
             Title TEXT,
             Artist TEXT,
             Score DOUBLE,
@@ -32,32 +22,19 @@ try:
             On_Chart INT,
             PRIMARY KEY (Title, Artist)
         );"""
-        #↑DBのフォーマット設定（別のところに書いておきます）
-        cursor.execute(sql)#executeコマンドでSQL文を実行
-        conn.commit()#データベースにコミット(Excelでいう上書き保存。自動コミット設定なので不要だが一応・・)
+        cursor.execute(create_table_sql)  # テーブル作成
 
-        update_progress_bar(window['progressbar'], 36)
-
-        with open('楽曲データ.csv',encoding='utf-8') as f:
-            # CSVリーダーオブジェクトを作成
+        # CSVファイルからデータを読み込んでバルクインサート
+        with open(csv_file, 'r', encoding='utf-8') as f:
             csv_reader = csv.reader(f)
-            for row in csv_reader:
-                # テーブルにデータを挿入
-                cursor.execute("INSERT INTO music_master VALUES (?,?,?,?,?,?)", (row[0], row[1],row[2],row[3],row[4],row[5]))
+            data = [tuple(row) for row in csv_reader]  # CSVデータをタプルのリストに変換
+            insert_sql = "INSERT OR IGNORE INTO music_master VALUES (?, ?, ?, ?, ?, ?);"  # バルクインサート用のSQL文
+            cursor.executemany(insert_sql, data)  # バルクインサート実行
 
-        update_progress_bar(window['progressbar'], 72)
-
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                    break
 
 except Exception as e:
-        import traceback
-        with open('error.log', 'a') as f:
-            traceback.print_exc( file=f)
-        sg.popup_error("DBを作成できませんでした。\n システムを終了します",title="エラー")
-        
-        exit()
-            
+    # エラーログを出力
+    with open('error.log', 'a') as f:
+        traceback.print_exc(file=f)
+    sg.popup_error("DBを作成できませんでした。\n システムを終了します", title="エラー")
+    sys.exit()
