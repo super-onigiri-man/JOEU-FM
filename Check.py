@@ -44,11 +44,11 @@ if is_file:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc( file=f)
-            sg.popup_error('前回のランキングが読み込めませんでした')
+            sg.popup_error('ランキングの削除に失敗しました')
             
 
     else:
         sg.popup('システムを終了します')
-        exit()
+        sys.exit()
 else:
     pass # パスが存在しないかファイルではない
