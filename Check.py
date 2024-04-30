@@ -18,8 +18,6 @@ if is_file:
 
     result = sg.popup_yes_no("今週のランキングデータを消してランキング生成しますか？", title="確認")
 
-    print(result)
-
     if result == 'Yes':
         try:
             import CreateDB
