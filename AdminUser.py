@@ -141,7 +141,7 @@ while True:
             # print(selected_row_Title)
             selected_row_Artist = table_data[selected_row_index][1]
             # print(selected_row_Artist)
-            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認')
+            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
@@ -172,13 +172,13 @@ while True:
         window['-TABLE-'].update(values=table_data)
     
     elif event == '追加':
-        NewTitle = sg.popup_get_text('追加したい曲名を入力してください', '曲名')
+        NewTitle = sg.popup_get_text('追加したい曲名を入力してください', '曲名',no_titlebar=True)
         if NewTitle == None:
             continue
-        NewArtist = sg.popup_get_text(str(NewTitle)+'のアーティスト名を入力してください', 'アーティスト')
+        NewArtist = sg.popup_get_text(str(NewTitle)+'のアーティスト名を入力してください', 'アーティスト',no_titlebar=True)
         if NewArtist == None:
             continue
-        result = sg.popup_ok_cancel(NewTitle+'/'+NewArtist+'を追加しますか？',title='追加確認')
+        result = sg.popup_ok_cancel(NewTitle+'/'+NewArtist+'を追加しますか？',title='追加確認',no_titlebar=True)
         if result == 'OK':
             addmusic(NewTitle,NewArtist)
             # reload()
@@ -217,21 +217,20 @@ while True:
 
         os.chdir(os.path.dirname(sys.argv[0]))
 
-        sg.popup_ok('エラーログをダウンロードフォルダにコピーしました')
+        sg.popup_ok('エラーログをダウンロードフォルダにコピーしました',no_titlebar=True)
 
     elif event == 'エラーログ削除':
 
-       result = sg.popup_yes_no("エラーログを削除しますか？\nこの操作エラーログ送信後に行ってください!", title="確認") 
+       result = sg.popup_yes_no("エラーログを削除しますか？\nこの操作エラーログ送信後に行ってください!", title="確認",no_titlebar=True) 
 
        if result == 'Yes':
           if os.path.isfile('error.log'):
             os.remove('error.log')
-            sg.popup('エラーログを削除しました')
-            break
+            sg.popup('エラーログを削除しました',no_titlebar=True)
+            continue
           else:
-            sg.popup('ログがありませんでした。') 
-            break
-      
+            sg.popup('ログがありませんでした。',no_titlebar=True) 
+            continue
        else:
           break 
 

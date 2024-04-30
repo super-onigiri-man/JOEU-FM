@@ -36,5 +36,5 @@ except Exception as e:
     # エラーログを出力
     with open('error.log', 'a') as f:
         traceback.print_exc(file=f)
-    sg.popup_error("DBを作成できませんでした。\n システムを終了します", title="エラー")
+    sg.popup_error("DBを作成できませんでした。\n システムを終了します", title="エラー",no_titlebar=True)
     sys.exit()

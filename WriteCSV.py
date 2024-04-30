@@ -59,6 +59,6 @@ def WriteCSV(Oriconday):
         for row in rows:
             csv_writer.writerow(row)
 
-    sg.popup_ok('CSVファイルを更新しました')
+    sg.popup_ok('CSVファイルを更新しました',no_titlebar=True)
 
     

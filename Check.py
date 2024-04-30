@@ -9,14 +9,13 @@ dbname = ('test.db')#データベース名.db拡張子で設定
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
-Oriconday = GetData.GetThisWeekDate()
-print(Oriconday)
+Oriconday = GetData.OriconTodays()
 path = 'Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx'
 is_file = os.path.isfile(path)
 if is_file:
-    sg.popup('今週のデータはすでに生成済みです。\n今週のデータを作り直すにはデータベースの変更が必要です')
+    sg.popup('今週のデータはすでに生成済みです。\n今週のデータを作り直すにはデータベースの変更が必要です',no_titlebar=True)
 
-    result = sg.popup_yes_no("今週のランキングデータを消してランキング生成しますか？", title="確認")
+    result = sg.popup_yes_no("今週のランキングデータを消してランキング生成しますか？", title="確認",no_titlebar=True)
 
     if result == 'Yes':
         try:
@@ -42,11 +41,11 @@ if is_file:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc( file=f)
-            sg.popup_error('ランキングの削除に失敗しました')
+            sg.popup_error('ランキングの削除に失敗しました',no_titlebar=True)
             
 
     else:
-        sg.popup('システムを終了します')
+        sg.popup('システムを終了します',no_titlebar=True)
         sys.exit()
 else:
     pass # パスが存在しないかファイルではない

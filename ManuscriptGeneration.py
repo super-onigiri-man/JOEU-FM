@@ -6,7 +6,7 @@ import PySimpleGUI as sg
 
 
 import GetData
-Oriconday = GetData.GetThisWeekDate()
+Oriconday = GetData.OriconTodays()
 # コピー元のExcelファイルを開く
 source_wb = load_workbook('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
 source_ws = source_wb.active
@@ -111,11 +111,11 @@ try:
     os.chdir(os.path.dirname(sys.argv[0]))
 
     # メッセージ表示
-    sg.popup('原稿を作成しました')
+    sg.popup('原稿を作成しました',no_titlebar=True)
 
 except Exception as e: 
     os.chdir(os.path.dirname(sys.argv[0]))
     import traceback
     with open('error.log', 'a') as f:
         traceback.print_exc( file=f)
-    sg.popup_error('原稿Excelに書き込めませんでした。\n原稿Excelが開かれている可能性があります')
+    sg.popup_error('原稿Excelに書き込めませんでした。\n原稿Excelが開かれている可能性があります',no_titlebar=True)

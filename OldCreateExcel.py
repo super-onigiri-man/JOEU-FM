@@ -117,12 +117,12 @@ def OldMajicalExcel(Oriconday):
 
         os.chdir(os.path.dirname(sys.argv[0]))
 
-        result = sg.popup_ok('正常に処理されました')
+        result = sg.popup_ok('正常に処理されました',no_titlebar=True)
 
     except Exception as e:
         import traceback
         os.chdir(os.path.dirname(sys.argv[0]))
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        sg.popup_error('ランキングExcelに書き込みができませんでした。\nランキングExcelが開かれている可能性があります')
+        sg.popup_error('ランキングExcelに書き込みができませんでした。\nランキングExcelが開かれている可能性があります',no_titlebar=True)
 
