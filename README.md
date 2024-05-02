@@ -1,8 +1,8 @@
 # ソフトウェアの導入方法
 
-ここでは、ソフトウェア版「FM Besthit Automatic Create Sysytem」の導入方法を説明します。
+ここでは、ソフトウェア版「FM Besthit Automatic Create System」（FM BACS）の導入方法を説明します。
 
-ただ、このシステムを別PCにお引越しする場合は必ずご連絡ください
+ただ、このシステムを別PCにお引越しする場合はシステムの変更が必要となってくる場合があるので必ずご連絡ください
 
 ## 1.必要ファイルのダウンロード
 [こちら](https://github.com/super-onigiri-man/JOEU-FM/archive/refs/heads/Release.zip)からファイルをダウンロードしてください
