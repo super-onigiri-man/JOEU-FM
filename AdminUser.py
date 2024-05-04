@@ -208,16 +208,21 @@ while True:
 
     elif event == 'エラーログ':
          # Excelファイルを保存
-        import shutil
 
-        user_folder = os.path.expanduser("~")
-        folder = os.path.join(user_folder, "Downloads")
+        if os.path.isfile('error.log'):
+            import shutil
 
-        shutil.copy('error.log', folder)
+            user_folder = os.path.expanduser("~")
+            folder = os.path.join(user_folder, "Downloads")
 
-        os.chdir(os.path.dirname(sys.argv[0]))
+            shutil.copy('error.log', folder)
 
-        sg.popup_ok('エラーログをダウンロードフォルダにコピーしました',no_titlebar=True)
+            os.chdir(os.path.dirname(sys.argv[0]))
+
+            sg.popup_ok('エラーログをダウンロードフォルダにコピーしました',no_titlebar=True)
+
+        else:
+            sg.popup('ログがありませんでした。',no_titlebar=True) 
 
     elif event == 'エラーログ削除':
 
