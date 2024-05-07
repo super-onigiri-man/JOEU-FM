@@ -62,4 +62,4 @@ def RevisionRank(RevisionPath):
         for row in rows:
             csv_writer.writerow(row)
 
-    sg.popup_ok('CSVファイルに書き込みました')
+    sg.popup_ok('CSVファイルに書き込みました',no_titlebar=True)

@@ -6,7 +6,7 @@ import PySimpleGUI as sg
 
 
 import GetData
-Oriconday = GetData.GetThisWeekDate()
+Oriconday = GetData.OriconTodays()
 # コピー元のExcelファイルを開く
 source_wb = load_workbook('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
 source_ws = source_wb.active
@@ -54,27 +54,30 @@ for i in range(5, 44,2):
 
 def glossingover(SellNumber):
 
-    # ここ前回ランキングと差異がある場合はstrじゃなくてintでは？（20240424）
-    # intであれば正確な判断ができるのでは？
+    # Bcelは今週のランキング（数字のみ）
+    # Ccelは先週との比較（文字・数字混合）
+
+    Bcel = target_ws['B'+str(SellNumber)].value
+    Ccel = target_ws['C'+str(SellNumber)].value
     
     # 初登場
-    if str(target_ws['C'+str(SellNumber)].value) == '初':
+    if str(Ccel) == '初':
         Rank = '初登場です'
 
     # 再登場
-    elif str(target_ws['C'+str(SellNumber)].value) == '再':
+    elif str(Ccel) == '再':
         Rank = '再登場です'
 
     # 前回と同じ
-    elif str(target_ws['B'+str(SellNumber)].value) == str(target_ws['C'+str(SellNumber)].value):
+    elif Bcel == Ccel:
         Rank = '前回と同じです'
 
     # 前回からランクアップ
-    elif str(target_ws['B'+str(SellNumber)].value) < str(target_ws['C'+str(SellNumber)].value):
+    elif Bcel < Ccel: 
         Rank = '前回'+ str(target_ws['C'+str(SellNumber)].value) + '位からアップ'
 
     # 前回からランクダウン
-    elif str(target_ws['B'+str(SellNumber)].value) > str(target_ws['C'+str(SellNumber)].value):
+    elif Bcel > Ccel:
         Rank = '前回'+ str(target_ws['C'+str(SellNumber)].value) + '位からダウン'
 
     return  Rank
@@ -94,16 +97,25 @@ target_ws['C26'] = rank3
 target_ws['C36'] = rank2
 target_ws['C46'] = rank1
 
-# ユーザーのダウンロードフォルダに移動
-user_folder = os.path.expanduser("~")
-folder = os.path.join(user_folder, "Downloads")
-os.chdir(folder)
+try:
 
-# コピー先のExcelファイルを保存
-target_wb.save(str(Oriconday)+'ベストヒット原稿.xlsx')
+    # ユーザーのダウンロードフォルダに移動
+    user_folder = os.path.expanduser("~")
+    folder = os.path.join(user_folder, "Downloads")
+    os.chdir(folder)
 
-# 元のディレクトリに戻る
-os.chdir(os.path.dirname(sys.argv[0]))
+    # コピー先のExcelファイルを保存
+    target_wb.save(str(Oriconday)+'ベストヒット原稿.xlsx')
 
-# メッセージ表示
-sg.popup('原稿を作成しました')
+    # 元のディレクトリに戻る
+    os.chdir(os.path.dirname(sys.argv[0]))
+
+    # メッセージ表示
+    sg.popup('原稿を作成しました',no_titlebar=True)
+
+except Exception as e: 
+    os.chdir(os.path.dirname(sys.argv[0]))
+    import traceback
+    with open('error.log', 'a') as f:
+        traceback.print_exc( file=f)
+    sg.popup_error('原稿Excelに書き込めませんでした。\n原稿Excelが開かれている可能性があります',no_titlebar=True)

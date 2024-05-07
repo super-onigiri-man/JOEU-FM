@@ -94,17 +94,17 @@ layout = [
 ]
 
 # ウィンドウを作成
-window = sg.Window('FMベストヒットランキング自動生成システム', layout,resizable=True)
+window = sg.Window('FM Besthit Automatic Create System', layout,resizable=False)
 
 # イベントループ
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
-        sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください')
+        sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください',no_titlebar=True)
         sys.exit()
 
     if event is None:
-        sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください')
+        sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください',no_titlebar=True)
         sys.exit()
 
     elif event == '削除':
@@ -119,7 +119,7 @@ while True:
             # print(selected_row_Title)
             selected_row_Artist = table_data[selected_row_index][1]
             # print(selected_row_Artist)
-            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認')
+            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
@@ -145,7 +145,7 @@ while True:
             # print(selected_row_Title)
             selected_row_Artist = table_data[selected_row_index][1]
             # print(selected_row_Artist)
-            result = sg.popup_ok_cancel('【警告！】'+selected_row_Artist+'の曲をすべて削除しますか？',title='削除確認')
+            result = sg.popup_ok_cancel('【警告！】'+selected_row_Artist+'の曲をすべて削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
@@ -174,7 +174,7 @@ while True:
 
             NewScore = sg.popup_get_text('得点を入力してください', '得点修正')
 
-            result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点を\n'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新しますか？')
+            result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点を\n'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新しますか？',no_titlebar=True)
             if result2 == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
@@ -199,7 +199,7 @@ while True:
             # print(selected_row_Title)
             selected_row_Artist = table_data[selected_row_index][1]
 
-            result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点に＋３点しますか？')
+            result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点に＋３点しますか？',no_titlebar=True)
             if result2 == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除

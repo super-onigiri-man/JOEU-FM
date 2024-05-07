@@ -1,6 +1,8 @@
 import PySimpleGUI as sg
 import pandas as pd
 import sqlite3
+import os
+import sys
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -104,6 +106,8 @@ layout = [
 
     [sg.Button('削除',size=(10,3),key='削除'),
      sg.Button('追加',size=(10,3),key='追加'),
+     sg.Button('エラーログ出力',size=(12,3),key='エラーログ'),
+     sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除')
     #  sg.Button('曲名検索',size=(12,3),key='曲名検索'),
     #  sg.Button('アーティスト名検索',size=(18,3),key='アーティスト名検索')
     ],
@@ -121,7 +125,8 @@ window = sg.Window('管理者画面', layout,resizable=True)
 # イベントループ
 while True:
     event, values = window.read()
-    if event == sg.WINDOW_CLOSED:
+    if event is None:
+      # print('exit')
         break
 
     elif event == '削除':
@@ -136,7 +141,7 @@ while True:
             # print(selected_row_Title)
             selected_row_Artist = table_data[selected_row_index][1]
             # print(selected_row_Artist)
-            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認')
+            result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
@@ -167,13 +172,13 @@ while True:
         window['-TABLE-'].update(values=table_data)
     
     elif event == '追加':
-        NewTitle = sg.popup_get_text('追加したい曲名を入力してください', '曲名')
+        NewTitle = sg.popup_get_text('追加したい曲名を入力してください', '曲名',no_titlebar=True)
         if NewTitle == None:
             continue
-        NewArtist = sg.popup_get_text(str(NewTitle)+'のアーティスト名を入力してください', 'アーティスト')
+        NewArtist = sg.popup_get_text(str(NewTitle)+'のアーティスト名を入力してください', 'アーティスト',no_titlebar=True)
         if NewArtist == None:
             continue
-        result = sg.popup_ok_cancel(NewTitle+'/'+NewArtist+'を追加しますか？',title='追加確認')
+        result = sg.popup_ok_cancel(NewTitle+'/'+NewArtist+'を追加しますか？',title='追加確認',no_titlebar=True)
         if result == 'OK':
             addmusic(NewTitle,NewArtist)
             # reload()
@@ -199,7 +204,40 @@ while True:
         # テーブルのデータを更新
         table_data = df.values.tolist()
         # テーブルを更新
-        window['-TABLE-'].update(values=table_data)   
+        window['-TABLE-'].update(values=table_data)  
+
+    elif event == 'エラーログ':
+         # Excelファイルを保存
+
+        if os.path.isfile('error.log'):
+            import shutil
+
+            user_folder = os.path.expanduser("~")
+            folder = os.path.join(user_folder, "Downloads")
+
+            shutil.copy('error.log', folder)
+
+            os.chdir(os.path.dirname(sys.argv[0]))
+
+            sg.popup_ok('エラーログをダウンロードフォルダにコピーしました',no_titlebar=True)
+
+        else:
+            sg.popup('ログがありませんでした。',no_titlebar=True) 
+
+    elif event == 'エラーログ削除':
+
+       result = sg.popup_yes_no("エラーログを削除しますか？\nこの操作エラーログ送信後に行ってください!", title="確認",no_titlebar=True) 
+
+       if result == 'Yes':
+          if os.path.isfile('error.log'):
+            os.remove('error.log')
+            sg.popup('エラーログを削除しました',no_titlebar=True)
+            continue
+          else:
+            sg.popup('ログがありませんでした。',no_titlebar=True) 
+            continue
+       else:
+          break 
 
     # elif event == '曲名検索':
     #     SerchTitle = sg.popup_get_text('検索したい曲名を入力してください\n あいまい検索は最後に%をつけてください', '曲名')
