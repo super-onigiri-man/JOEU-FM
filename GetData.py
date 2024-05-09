@@ -278,7 +278,7 @@ async def insertOriconWeekData():
 
     conn.commit()
 
-async def insertOriconDegitalData():
+async def insertOriconDigitalData():
    for entry in OriconDigitalData:
     title, artist, score = entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
@@ -327,7 +327,7 @@ def GetThisWeekRank(HaruyaPath):
     asyncio.run(HaruyaRank(HaruyaPath))
 
     asyncio.run(insertOriconWeekData())    
-    asyncio.run(insertOriconDegitalData())
+    asyncio.run(insertOriconDigitalData())
     asyncio.run(insertBillboardData())
     asyncio.run(insertHaruyaData())
             
@@ -343,7 +343,7 @@ def GetLastWeekRank():
         TPE.submit(BillboadRank,Oriconday2)
     
     asyncio.run(insertOriconWeekData())    
-    asyncio.run(insertOriconDegitalData())
+    asyncio.run(insertOriconDigitalData())
     asyncio.run(insertBillboardData())
   
 
@@ -357,7 +357,7 @@ def GetSelectWeekRank(SelectDay):
         TPE.submit(BillboadRank,OSW)
     
     asyncio.run(insertOriconWeekData())    
-    asyncio.run(insertOriconDegitalData())
+    asyncio.run(insertOriconDigitalData())
     asyncio.run(insertBillboardData())
 
 def GetSelectWeekDate():
