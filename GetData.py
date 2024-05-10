@@ -318,47 +318,120 @@ async def insertHaruyaData():
 
 def GetThisWeekRank(HaruyaPath):
 
-    Oriconday1 = OriconTodays()
-    # 高速処理のため並列処理を実装中
-    with ThreadPoolExecutor(max_workers=4)  as TPE:
-        TPE.submit(OriconWeekRank,Oriconday1)
-        TPE.submit(OriconDigitalRank,Oriconday1)
-        TPE.submit(BillboadRank,Oriconday1)
-    asyncio.run(HaruyaRank(HaruyaPath))
+    layout = [
+        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
+    ]
 
-    asyncio.run(insertOriconWeekData())    
-    asyncio.run(insertOriconDigitalData())
-    asyncio.run(insertBillboardData())
-    asyncio.run(insertHaruyaData())
-            
+    window = sg.Window('今週のランキング取得', layout,finalize=True)
+
+    def update_progress_bar(progress_bar,progmsg, value,msg):
+        progress_bar.update_bar(value)
+        progmsg.update(msg)
+        window.refresh()
+
+    while True:
+
+        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
+        Oriconday=OriconTodays()
+        update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
+        OriconWeekRank(Oriconday)
+        update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
+        OriconDigitalRank(Oriconday)
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
+        BillboadRank(Oriconday)
+        update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
+        asyncio.run(HaruyaRank(HaruyaPath))
+        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
+        asyncio.run(insertOriconWeekData())    
+        asyncio.run(insertOriconDigitalData())
+        asyncio.run(insertBillboardData())
+        asyncio.run(insertHaruyaData())
+        
+        window.close()
+
+        event, values = window.read()
+        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
+                break
+
+    window.close()
 
 
 def GetLastWeekRank():
     
-    Oriconday2 = OriconLastWeek()
-    # 高速処理のため並列処理を実装中
-    with ThreadPoolExecutor(max_workers=4)  as TPE:
-        TPE.submit(OriconWeekRank,Oriconday2)
-        TPE.submit(OriconDigitalRank,Oriconday2)
-        TPE.submit(BillboadRank,Oriconday2)
-    
-    asyncio.run(insertOriconWeekData())    
-    asyncio.run(insertOriconDigitalData())
-    asyncio.run(insertBillboardData())
+    layout = [
+        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
+    ]
+
+    window = sg.Window('今週のランキング取得', layout,finalize=True)
+
+    def update_progress_bar(progress_bar,progmsg, value,msg):
+        progress_bar.update_bar(value)
+        progmsg.update(msg)
+        window.refresh()
+
+    while True:
+
+        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
+        Oriconday=OriconLastWeek()
+        update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
+        OriconWeekRank(Oriconday)
+        update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
+        OriconDigitalRank(Oriconday)
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
+        BillboadRank(Oriconday)
+        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
+        asyncio.run(insertOriconWeekData())    
+        asyncio.run(insertOriconDigitalData())
+        asyncio.run(insertBillboardData())
+        
+        window.close()
+
+        event, values = window.read()
+        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
+                break
+
+    window.close()
+
   
 
 def GetSelectWeekRank(SelectDay):
-    global OSW
-    OSW = OriconSelectWeek(SelectDay)
-    with ThreadPoolExecutor(max_workers=4)  as TPE:
+    layout = [
+        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
+    ]
 
-        TPE.submit(OriconWeekRank,OSW)
-        TPE.submit(OriconDigitalRank,OSW)
-        TPE.submit(BillboadRank,OSW)
-    
-    asyncio.run(insertOriconWeekData())    
-    asyncio.run(insertOriconDigitalData())
-    asyncio.run(insertBillboardData())
+    window = sg.Window('今週のランキング取得', layout,finalize=True)
+
+    def update_progress_bar(progress_bar,progmsg, value,msg):
+        progress_bar.update_bar(value)
+        progmsg.update(msg)
+        window.refresh()
+
+    while True:
+
+        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
+        global OSW 
+        OSW = OriconSelectWeek(SelectDay)
+        update_progress_bar(window['progressbar'],window['progmsg'], 16,str(OSW)+'付けオリコン週間ランキング取得中')
+        OriconWeekRank(OSW)
+        update_progress_bar(window['progressbar'],window['progmsg'], 24,str(OSW)+'付けオリコンデジタルランキング取得中')
+        OriconDigitalRank(OSW)
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
+        BillboadRank(OSW)
+        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
+        asyncio.run(insertOriconWeekData())    
+        asyncio.run(insertOriconDigitalData())
+        asyncio.run(insertBillboardData())
+        
+        window.close()
+
+        event, values = window.read()
+        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
+                break
+
+    window.close()
 
 def GetSelectWeekDate():
    return OSW
