@@ -13,23 +13,25 @@ cursor = conn.cursor()  # カーソルオブジェクトを作成
 try:
         
         # テーブル作成のSQL文
-        create_table_sql = """CREATE TABLE IF NOT EXISTS music_master (
-            Title TEXT,
-            Artist TEXT,
-            Score DOUBLE,
-            Last_Rank INT,
-            Last_Number INT,
-            On_Chart INT,
-            PRIMARY KEY (Title, Artist)
+    sql = """CREATE TABLE music_master (
+        Title TEXT,
+        Artist TEXT,
+        Score DOUBLE,
+        Last_Rank INT,
+        Last_Number INT,
+        On_Chart INT,
+        Unique_id TEXT,
+        PRIMARY KEY (Unique_id)
         );"""
-        cursor.execute(create_table_sql)  # テーブル作成
-
-        # CSVファイルからデータを読み込んでバルクインサート
-        with open(csv_file, 'r', encoding='utf-8') as f:
-            csv_reader = csv.reader(f)
-            data = [tuple(row) for row in csv_reader]  # CSVデータをタプルのリストに変換
-            insert_sql = "INSERT OR IGNORE INTO music_master VALUES (?, ?, ?, ?, ?, ?);"  # バルクインサート用のSQL文
-            cursor.executemany(insert_sql, data)  # バルクインサート実行
+    #↑DBのフォーマット設定（別のところに書いておきます）
+    cursor.execute(sql)#executeコマンドでSQL文を実行
+    conn.commit()#データベースにコミット(Excelでいう上書き保存。自動コミット設定なので不要だが一応・・)
+    with open('result.csv',encoding='utf-8') as f:
+        # CSVリーダーオブジェクトを作成
+        csv_reader = csv.reader(f)
+        for row in csv_reader:
+            # テーブルにデータを挿入
+            cursor.execute("INSERT INTO music_master VALUES (?,?,?,?,?,?,?)", (row[0],row[1],row[2],row[3],row[4],row[5],row[6]))
 
 
 except Exception as e:

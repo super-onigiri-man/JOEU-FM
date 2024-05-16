@@ -35,9 +35,12 @@ layout = [
 
 window = sg.Window('FM Besthit Automatic Create System', layout, resizable=False)
 
-
+# DBがあったら消す（過去のデータの重複防止）
 if os.path.exists('test.db') == True:
    os.remove('test.db')
+
+# DBを生成する（CreateDB.py）
+import CreateDB
 
 #GUI表示実行部分
 while True:
@@ -55,7 +58,7 @@ while True:
           
       else:
          import Check #ファイルが重複してないか確認
-         import CreateDB #DB構成
+          #DB構成
          import GetData #データ取得
          GetData.GetThisWeekRank(HaruyaPath) 
          import ViewData #データ閲覧・編集
@@ -69,7 +72,7 @@ while True:
        
     if event == '先週データ生成':
        sg.popup_ok('このモードでは明屋書店のデータは取得しません',no_titlebar=True)
-       import CreateDB 
+        
        import GetData
        GetData.GetLastWeekRank() 
        import ViewData
@@ -102,7 +105,7 @@ while True:
                continue
 
             else:
-               import CreateDB
+               
                import GetData
                GetData.GetSelectWeekRank(SelectDay)
                import ViewData
@@ -117,7 +120,7 @@ while True:
 
     if event == '管理者':
        
-       import CreateDB
+       
        import AdminUser #管理者画面の設置
 
    
@@ -137,7 +140,7 @@ while True:
          elif event == 'OK':
             FilePath = values['-RankExcel-']
             if FilePath:
-               import CreateDB
+               
                
                import RevisionRank
                RevisionRank.RevisionRank(FilePath)
