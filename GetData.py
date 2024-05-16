@@ -76,6 +76,26 @@ def OriconSelectWeek(SelectDay):
     Oriconday = dt - datetime.timedelta(days=(weekday + 7) % 7 )
     return Oriconday
 
+# 独自ID自動生成
+def generate_unique_id(song_title, artist_name):
+    # 曲名とアーティスト名の頭3文字を取得
+    song_prefix = song_title[:3]
+    artist_prefix = artist_name[:3]
+
+    # 頭3文字をUnicodeコードポイントに変換
+    song_code_points = [ord(char) for char in song_prefix]
+    artist_code_points = [ord(char) for char in artist_prefix]
+
+    # コードポイントを文字列に変換して結合
+    song_code_str = ''.join(f'{cp:04x}' for cp in song_code_points)
+    artist_code_str = ''.join(f'{cp:04x}' for cp in artist_code_points)
+
+    # 独自IDを生成
+    unique_id = song_code_str + artist_code_str
+
+    return unique_id
+
+
 
 def OriconWeekRank(Oriconday):#オリコン週間ランキング
     try:
@@ -96,7 +116,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 for title in titles:
                     mojimoji.zen_to_han(title.strip())  # Strip to remove leading/trailing whitespaces
                     mojimoji.zen_to_han(artist.text)
-                    OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score)])
+                    OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
 
                     if title == titles[-1]:
                         rank = rank + 1
@@ -105,7 +125,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # If no slash, just add the entry to the array
                 mojimoji.zen_to_han(link.text)
                 mojimoji.zen_to_han(artist.text)
-                OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score)])
+                OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
                 rank = rank + 1
                 score = score - 0.3
 
@@ -130,7 +150,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 for title in titles:
                     mojimoji.zen_to_han(title.strip())  # Strip to remove leading/trailing whitespaces
                     mojimoji.zen_to_han(artist.text)
-                    OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score)])
+                    OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
 
                     if title == titles[-1]:
                         rank = rank + 1
@@ -139,7 +159,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # If no slash, just add the entry to the array
                 mojimoji.zen_to_han(link.text)
                 mojimoji.zen_to_han(artist.text)
-                OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score)])
+                OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
                 rank = rank + 1
                 score = score - 0.3
                 # 壊れたときの表示用
@@ -173,7 +193,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             #     print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             mojimoji.zen_to_han(link.text)
             mojimoji.zen_to_han(artist.text)
-            OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score)])
+            OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
             rank = rank + 1
             score = score - 0.3
 
@@ -184,7 +204,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         links = soup.find(class_="content-rank-main").find_all('h2', class_='title')
         artist = soup.find(class_="content-rank-main").find_all('p', class_='name')  # アーティスト名
         for link, artist in zip(links, artist):
-            OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score)])
+            OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             rank = rank + 1
             score = score - 0.3
@@ -219,7 +239,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
             artist = str(artists[i].text.strip())
             mojimoji.zen_to_han(song)
             mojimoji.zen_to_han(artist)
-            BillboardData.append([song,artist,format(score, '.1f')])
+            BillboardData.append([song,artist,format(score, '.1f'),generate_unique_id(song,artist)])
             # if i < 9:
             #   print(f" {i+1}位: {format(score, '.1f')} {song} / {artist}") #1位から9位までのランキング
             # else:
@@ -227,6 +247,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
             score = score - 0.3 #scoreを-0.3する
 
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
+        print(BillboardData)
 
     except Exception as e:
         import traceback
@@ -253,10 +274,10 @@ async def HaruyaRank(HaruyaPath):
                     song_name_a, song_name_b = song_name.split("/")
                     str(song_name_a)
                     str(song_name_b)
-                    HaruyaData.append([song_name_a.strip(), artist_name, point])
-                    HaruyaData.append([song_name_b.strip(), artist_name, point])
+                    HaruyaData.append([song_name_a.strip(), artist_name, point,generate_unique_id(song_name_a.strip(),artist_name)])
+                    HaruyaData.append([song_name_b.strip(), artist_name, point,generate_unique_id(song_name_b.strip(),artist_name)])
                 else:
-                    HaruyaData.append([song_name.strip(), artist_name, point])
+                    HaruyaData.append([song_name.strip(), artist_name, point,generate_unique_id(song_name.strip(),artist_name)])
 
         print('明屋書店データOK')
 
@@ -268,49 +289,49 @@ async def HaruyaRank(HaruyaPath):
 
 async def insertOriconWeekData():
    for entry in OriconWeekData:
-    title, artist, score = entry
+    title, artist, score, unique_id= entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
     cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart)
-        VALUES (?, ?, ?, 0, 0, 0)
-        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
-    ''', (title,artist, score, score))
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+        VALUES (?, ?, ?, 0, 0, 0, ?)
+        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+    ''',(title,artist, score, unique_id,score))
 
     conn.commit()
 
 async def insertOriconDigitalData():
    for entry in OriconDigitalData:
-    title, artist, score = entry
+    title, artist, score, unique_id= entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
     cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart)
-        VALUES (?, ?, ?, 0, 0, 0)
-        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
-    ''', (title, artist, score, score))
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+        VALUES (?, ?, ?, 0, 0, 0, ?)
+        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+    ''', (title,artist, score, unique_id,score))
 
     conn.commit()
 
 async def insertBillboardData():
    for entry in BillboardData:
-    title, artist, score = entry
+    title, artist, score, unique_id= entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
     cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score,Last_Rank, Last_Number, On_Chart)
-        VALUES (?, ?, ?, 0, 0, 0)
-        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
-    ''', (title, artist, score, score))
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+        VALUES (?, ?, ?, 0, 0, 0, ?)
+        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+    ''', (title,artist, score, unique_id,score))
 
     conn.commit()
 
 async def insertHaruyaData():
    for entry in HaruyaData:
-    title, artist, score = entry
+    title, artist, score, unique_id= entry
     # 既存のデータがあればScoreを足して更新、なければ新規追加
     cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart)
-        VALUES (?, ?, ?, 0, 0, 0)
-        ON CONFLICT(Title, Artist) DO UPDATE SET Score = Score + ?
-    ''', (title, artist, score, score))
+        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+        VALUES (?, ?, ?, 0, 0, 0, ?)
+        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+    ''', (title,artist, score, unique_id,score))
 
     conn.commit()
 
