@@ -30,37 +30,37 @@ def OriconTodays():
     global popup_done
     
     # 今日の日付と曜日を求める
-    d_today = datetime.date.today()
-    todayweek = d_today.weekday()
+    dt = datetime.date.today()
+    weekday = dt.weekday()
 
-    if todayweek <= 1:  # 月曜日または火曜日（今週月曜日の日付を返す）
-        Oriconday = d_today - datetime.timedelta(days=(todayweek))
-    elif todayweek == 2:  # 水曜日（時間を判定する）
+    if weekday <= 1:  # 月曜日または火曜日（今週月曜日の日付を返す）
+        Oriconday = dt - datetime.timedelta(days=(weekday))
+    elif weekday == 2:  # 水曜日（時間を判定する）
         current_time = datetime.datetime.now().time()
         specified_time = datetime.time(14, 10)  
         if current_time < specified_time and not popup_done:
             sg.popup('先週のランキングを取得します\n今週のランキングは14:10以降に取得可能です',no_titlebar=True)
             popup_done = True  # ポップアップが表示されたことをフラグで管理
-            Oriconday = d_today - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
+            Oriconday = dt - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
         elif current_time < specified_time:
-            Oriconday = d_today - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
+            Oriconday = dt - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
         else:
-            Oriconday = d_today + datetime.timedelta(days=5) # 14:10以降は今週のデータを取得
+            Oriconday = dt + datetime.timedelta(days=5) # 14:10以降は今週のデータを取得
     else:  # 木曜日から日曜日（来週月曜日の日付を返す）
-        Oriconday = d_today + datetime.timedelta(days=(7 - todayweek))
+        Oriconday = dt + datetime.timedelta(days=(7 - weekday))
 
     return Oriconday
 
 def OriconLastWeek():
     # 今日の日付と曜日を求める
-    d_today = datetime.date.today()
-    todayweek = d_today.weekday()
-    if (todayweek == 0):  # 今日が月曜日(先週(今週月曜日)のランキング表示)
-        Oriconday = d_today - datetime.timedelta(days=7)
-    elif (todayweek == 1):  # 今日が火曜日(先週(今週月曜日)のランキング表示)
-        Oriconday = d_today - datetime.timedelta(days=8)
-    elif (todayweek >= 2):  # 今日が水曜日以降
-        Oriconday = d_today - datetime.timedelta(days=(todayweek +7) % 7)
+    dt = datetime.date.today()
+    weekday = dt.weekday()
+    if (weekday == 0):  # 今日が月曜日(先週(今週月曜日)のランキング表示)
+        Oriconday = dt - datetime.timedelta(days=7)
+    elif (weekday == 1):  # 今日が火曜日(先週(今週月曜日)のランキング表示)
+        Oriconday = dt - datetime.timedelta(days=8)
+    elif (weekday >= 2):  # 今日が水曜日以降
+        Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
     return Oriconday
 
@@ -73,8 +73,12 @@ def OriconSelectWeek(SelectDay):
     dt = dt.date()
     # 曜日を取得
     weekday = dt.weekday()
-    Oriconday = dt - datetime.timedelta(days=(weekday + 7) % 7 )
-    return Oriconday
+    if (weekday == 0):  # 今日が月曜日(先週(今週月曜日)のランキング表示)
+        Oriconday = dt - datetime.timedelta(days=7)
+    elif (weekday == 1):  # 今日が火曜日(先週(今週月曜日)のランキング表示)
+        Oriconday = dt - datetime.timedelta(days=8)
+    elif (weekday >= 2):  # 今日が水曜日以降
+        Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
 # 独自ID自動生成
 def generate_unique_id(song_title, artist_name):
@@ -359,7 +363,7 @@ def GetThisWeekRank(HaruyaPath):
         OriconWeekRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
         asyncio.run(HaruyaRank(HaruyaPath))
@@ -400,7 +404,7 @@ def GetLastWeekRank():
         OriconWeekRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday)- datetime.timedelta(days=5)+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
         asyncio.run(insertOriconWeekData())    
