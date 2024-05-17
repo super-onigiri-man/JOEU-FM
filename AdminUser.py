@@ -98,7 +98,7 @@ def serchtitle(title):
 
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
-header_list = ['楽曲名','アーティスト','得点','前回の順位','前回ランクイン','ランクイン回数']
+header_list = ['楽曲名','アーティスト','得点','前回の順位','前回ランクイン','ランクイン回数','独自ID']
 # PySimpleGUIのレイアウト
 layout = [
     [sg.Table(values=table_data, headings=header_list, auto_size_columns=False,enable_events=True,key='-TABLE-',

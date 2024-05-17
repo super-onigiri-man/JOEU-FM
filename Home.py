@@ -83,7 +83,8 @@ while True:
        break
 
     if event == '任意週生成':
-      sg.popup_ok('このモードでは明屋書店のデータは取得しません\n日付は2020年8月3日以降を入力してください',no_titlebar=True)
+      year2 = datetime.datetime.today() - datetime.timedelta(days=365 * 2)
+      sg.popup_ok('このモードでは明屋書店のデータは取得しません\n日付は'+str(year2.year)+'年'+str(year2.month)+'月'+str(year2.day)+'日以降を入力してください',no_titlebar=True)
       
       layout = [
       [sg.InputText(key='-input1-'), 
@@ -97,15 +98,16 @@ while True:
          event, values = window.read()  # イベントの入力を待つ
        
          if event == sg.WINDOW_CLOSED:
-            continue
+            break
          elif event == 'OK':
             SelectDay = datetime.datetime.strptime(values['-input1-'], '%Y-%m-%d')
-            if SelectDay > datetime.datetime.today() or SelectDay < datetime.datetime(2020, 8, 3): 
+
+            if SelectDay > datetime.datetime.today() or SelectDay < year2:
                sg.popup('指定した日付ではランキング生成できません',no_titlebar=True)
                continue
 
             else:
-               
+               print(SelectDay)
                import GetData
                GetData.GetSelectWeekRank(SelectDay)
                import ViewData
