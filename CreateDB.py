@@ -18,7 +18,7 @@ try:
         [sg.Text(key = 'progmsg')]
     ]
 
-    window = sg.Window('今週のランキング取得', layout,finalize=True)
+    window = sg.Window('システム起動中', layout,finalize=True)
 
     def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)
