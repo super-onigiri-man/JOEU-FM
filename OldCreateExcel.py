@@ -50,7 +50,7 @@ def OldMajicalExcel(Oriconday):
     # ランキングセルにデータを書き込み
     for idx in range(1, len(top_20_results)*2, 2):
         result = top_20_results[idx // 2]  # idxを2で割った商を使って結果を取得
-        title, artist, score, last_rank, last_number, on_chart= result
+        title, artist, score, last_rank, last_number, on_chart,unique_id= result
 
         # ランキング初登場曲
         # Last_Rankが空文字もしくはnullの場合、文字色を赤に変更
@@ -67,6 +67,8 @@ def OldMajicalExcel(Oriconday):
             sheet.merge_cells(start_row = idx +5 ,start_column=4 ,end_row = idx +6 , end_column = 4)
             sheet.cell(row=idx+5, column=5).value = title
             sheet.cell(row=idx+5, column=6).value = artist
+            sheet.cell(row=idx+6, column=6).value = unique_id
+            sheet.cell(row=idx+6, column=6).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="FFFFFF")
 
             rank += 1
 
@@ -84,6 +86,8 @@ def OldMajicalExcel(Oriconday):
             sheet.merge_cells(start_row = idx +5 ,start_column=4 ,end_row = idx +6 , end_column = 4)
             sheet.cell(row=idx+5, column=5).value = title
             sheet.cell(row=idx+5, column=6).value = artist
+            sheet.cell(row=idx+6, column=6).value = unique_id
+            sheet.cell(row=idx+6, column=6).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="FFFFFF")
 
             rank+=1
 
@@ -92,6 +96,8 @@ def OldMajicalExcel(Oriconday):
         # セルにデータを書き込み
             sheet.cell(row=idx+5, column=5).value = title
             sheet.cell(row=idx+5, column=6).value = artist
+            sheet.cell(row=idx+6, column=6).value = unique_id
+            sheet.cell(row=idx+6, column=6).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="FFFFFF")
             sheet.cell(row=idx+5, column=2).value = rank
             sheet.merge_cells(start_row = idx +5 ,start_column=2 ,end_row = idx +6 , end_column = 2)
             sheet.cell(row=idx+5, column=2).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="000000")

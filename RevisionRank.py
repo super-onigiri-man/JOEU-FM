@@ -1,8 +1,12 @@
+from openpyxl.styles import Font, PatternFill
+from openpyxl import load_workbook
+from openpyxl.styles.alignment import Alignment
 import openpyxl
 import mojimoji
 import sqlite3
 import csv
 import PySimpleGUI as sg
+import GetData
 
 
 dbname = ('test.db')
@@ -16,6 +20,12 @@ def RevisionRank(RevisionPath):
     workbook = openpyxl.load_workbook(excel_file)
     sheet = workbook.active
 
+    if sheet['F7'].value is None:
+        for row in range(6, 45, 2):
+            title = mojimoji.zen_to_han(sheet['E' + str(row)].value, kana=False)
+            artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
+            sheet.cell(row=row+6, column=6).value = GetData.generate_unique_id(title,artist)
+            sheet.cell(row=row+6, column=6).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="FFFFFF")
 
     # データの処理と挿入
     for row in range(6, 45, 2):
@@ -25,6 +35,7 @@ def RevisionRank(RevisionPath):
         on_chart = sheet['D'+str(row)].value
         this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
         this_number = this_number.replace('No.','')
+        unique_id = unique_id = sheet['F' + str(row+1)].value
 
         if "再" in str(sheet['C' + str(row)].value) or "圏外" in str(sheet['C' + str(row)].value) :
             last_number = int(this_number) - 1
@@ -36,10 +47,10 @@ def RevisionRank(RevisionPath):
 
         # データベースに挿入
         cursor.execute('''INSERT INTO music_master
-        (Title, Artist, Score, Last_Rank, Last_Number, On_chart)
-        VALUES (?, ?, 0.0, ?, ?, ?)
-        ON CONFLICT(Title, Artist) DO UPDATE SET Last_Number = ?,Last_Rank = ?,On_Chart = ?''',
-                (title, artist, rank, last_number, on_chart,last_number,rank,on_chart))
+        (Title, Artist, Score, Last_Rank, Last_Number, On_chart,Unique_id)
+        VALUES (?, ?, 0.0, ?, ?, ?, ?)
+        ON CONFLICT(Unique_id) DO UPDATE SET Last_Number = ?,Last_Rank = ?,On_Chart = ?''',
+                (title, artist, rank, last_number, on_chart,unique_id,last_number,rank,on_chart))
 
     # コミットとクローズ
     conn.commit()

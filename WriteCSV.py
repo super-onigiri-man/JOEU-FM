@@ -24,6 +24,7 @@ def WriteCSV(Oriconday):
         on_chart = sheet['D'+str(row)].value
         this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
         this_number = this_number.replace('No.','')
+        unique_id = sheet['F' + str(row+1)].value
 
         if "再" in str(sheet['C' + str(row)].value) or "圏外" in str(sheet['C' + str(row)].value) :
             last_number = int(this_number)
@@ -35,10 +36,10 @@ def WriteCSV(Oriconday):
 
         # データベースに挿入
         cursor.execute('''INSERT INTO music_master
-            (Title, Artist, Score, Last_Rank, Last_Number, On_chart)
-            VALUES (?, ?, 0.0, ?, ?, ?)
-            ON CONFLICT(Title, Artist) DO UPDATE SET Last_Number = ?,Last_Rank = ?,On_Chart = ?''',
-                (title, artist, rank, last_number, on_chart,last_number,rank,on_chart))
+            (Title, Artist, Score, Last_Rank, Last_Number, On_chart,Unique_id)
+            VALUES (?, ?, 0.0, ?, ?, ? ,?)
+            ON CONFLICT(Unique_id) DO UPDATE SET Last_Number = ?,Last_Rank = ?,On_Chart = ?''',
+                (title, artist, rank, last_number, on_chart,unique_id,last_number,rank,on_chart))
 
     cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
 

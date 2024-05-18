@@ -68,7 +68,7 @@ while True:
          WriteCSV.WriteCSV(GetData.OriconTodays())
          import ManuscriptGeneration #原稿を自動生成
 
-      continue
+      break
        
     if event == '先週データ生成':
        sg.popup_ok('このモードでは明屋書店のデータは取得しません',no_titlebar=True)
@@ -99,15 +99,14 @@ while True:
        
          if event == sg.WINDOW_CLOSED:
             break
-         elif event == 'OK':
+         elif event == 'OK' or event == '\r':
             SelectDay = datetime.datetime.strptime(values['-input1-'], '%Y-%m-%d')
-
+            print(SelectDay)
             if SelectDay > datetime.datetime.today() or SelectDay < year2:
                sg.popup('指定した日付ではランキング生成できません',no_titlebar=True)
                continue
 
             else:
-               print(SelectDay)
                import GetData
                GetData.GetSelectWeekRank(SelectDay)
                import ViewData
@@ -146,8 +145,7 @@ while True:
                
                import RevisionRank
                RevisionRank.RevisionRank(FilePath)
-               sg.popup('処理が完了しました')
-            continue  # 処理が終了したらループを抜ける
+            break  # 処理が終了したらループを抜ける
 
     #クローズボタンの処理
     if event is None:

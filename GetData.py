@@ -80,6 +80,8 @@ def OriconSelectWeek(SelectDay):
     elif (weekday >= 2):  # 今日が水曜日以降
         Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
+    return Oriconday
+
 # 独自ID自動生成
 def generate_unique_id(song_title, artist_name):
     # 曲名とアーティスト名の頭3文字を取得
@@ -251,7 +253,6 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
             score = score - 0.3 #scoreを-0.3する
 
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
-        print(BillboardData)
 
     except Exception as e:
         import traceback
@@ -404,7 +405,7 @@ def GetLastWeekRank():
         OriconWeekRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday)- datetime.timedelta(days=5)+'付けビルボードランキング取得中')
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
         asyncio.run(insertOriconWeekData())    
@@ -435,7 +436,6 @@ def GetSelectWeekRank(SelectDay):
         window.refresh()
 
     while True:
-
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         global OSW 
         OSW = OriconSelectWeek(SelectDay)
@@ -443,7 +443,7 @@ def GetSelectWeekRank(SelectDay):
         OriconWeekRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(OSW)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,'ビルボードランキング取得中')
+        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(OSW - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
         asyncio.run(insertOriconWeekData())    
