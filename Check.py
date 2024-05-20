@@ -19,7 +19,7 @@ if is_file:
 
     if result == 'Yes':
         try:
-            import CreateDB
+            # import CreateDB
             # 最終回の確認
             # クエリの実行
             query = "SELECT MAX(Last_Number) FROM music_master;"

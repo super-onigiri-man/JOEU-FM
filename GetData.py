@@ -460,3 +460,19 @@ def GetSelectWeekRank(SelectDay):
 
 def GetSelectWeekDate():
    return OSW
+
+
+def OriconWeekUrl():
+    Oriconday = OriconTodays()
+    load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
+    return load_url
+
+def OriconDigitalUrl():
+    Oriconday = OriconTodays()
+    load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/"
+    return load_url
+
+def BillboardUrl():
+    Oriconday = OriconTodays()
+    load_url = 'https://www.billboard-japan.com/charts/detail?a=hot100&year='+str(Oriconday.year)+'&month='+str(Oriconday.month)+'&day='+str(Oriconday.day)
+    return load_url

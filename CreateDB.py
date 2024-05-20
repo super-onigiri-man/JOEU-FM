@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 import traceback
 import sys
 import pandas as pd
+import os
 
 dbname = 'test.db'  # データベース名
 csv_file = '楽曲データ.csv'  # CSVファイル名
@@ -12,7 +13,7 @@ conn = sqlite3.connect(dbname, isolation_level=None)  # データベースに接
 cursor = conn.cursor()  # カーソルオブジェクトを作成
 
 try:
-        
+
     layout = [
         [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(3, orientation='h', size=(20, 20), key='progressbar')],
         [sg.Text(key = 'progmsg')]
