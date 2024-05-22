@@ -4,13 +4,19 @@ import PySimpleGUI as sg
 import traceback
 import sys
 import pandas as pd
-import os
 
 dbname = 'test.db'  # データベース名
 csv_file = '楽曲データ.csv'  # CSVファイル名
 
+sg.theme('SystemDefault')
+
 conn = sqlite3.connect(dbname, isolation_level=None)  # データベースに接続（自動コミット機能ON）
 cursor = conn.cursor()  # カーソルオブジェクトを作成
+
+def update_progress_bar(progress_bar,progmsg, value,msg):
+        progress_bar.update_bar(value)
+        progmsg.update(msg)
+        window.refresh()
 
 try:
 
@@ -20,11 +26,6 @@ try:
     ]
 
     window = sg.Window('システム起動中', layout,finalize=True)
-
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
 
         # テーブル作成のSQL文
     sql = """CREATE TABLE music_master (
@@ -59,7 +60,7 @@ try:
         return max_row
 
     # '独自ID'（row[6]）を基準にグループ化して重複を解決
-    df_resolved = df.groupby('独自ID').apply(resolve_duplicates).reset_index(drop=True)
+    df_resolved = df.groupby('独自ID', as_index=True).apply(resolve_duplicates).reset_index(drop=True)
 
     # 結果を新しいCSVファイルに保存
     df_resolved.to_csv('楽曲データ.csv',index=False)
