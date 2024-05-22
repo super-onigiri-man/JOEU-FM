@@ -4,6 +4,7 @@ import sys
 import datetime
 import webbrowser
 import sqlite3
+import GetData
 
 # カレントディレクトリをスクリプトのディレクトリに変更
 os.chdir(os.path.dirname(sys.argv[0]))
@@ -104,10 +105,9 @@ while True:
         date_window.close()
 
     if event == '管理者':
-        try:
-            import AdminUser  # 管理者画面の設置
-        except Exception as e:
-            sg.popup_error(f"エラーが発生しました: {e}", no_titlebar=True)
+       
+        import AdminUser  # 管理者画面の設置
+        
 
     if event == 'ランキング修正':
         sg.popup_ok('このモードでは明屋書店のデータは取得しません\n最新回以外のランキングは修正できません', no_titlebar=True)

@@ -7,7 +7,7 @@ import sqlite3
 import pandas as pd
 import PySimpleGUI as sg
 import asyncio #非同期処理
-from concurrent.futures import ThreadPoolExecutor #並列処理（マルチスレッド）
+import unicodedata #全角文字を半角文字に変換
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -120,8 +120,8 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # If yes, split the title and create two separate entries in the array
                 titles = link.text.split('/')
                 for title in titles:
-                    mojimoji.zen_to_han(title.strip())  # Strip to remove leading/trailing whitespaces
-                    mojimoji.zen_to_han(artist.text)
+                    unicodedata.normalize("NFKC", title.strip()) 
+                    unicodedata.normalize("NFKC", artist.text)  
                     OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
 
                     if title == titles[-1]:
@@ -129,8 +129,8 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                         score = score - 0.3
             else:
                 # If no slash, just add the entry to the array
-                mojimoji.zen_to_han(link.text)
-                mojimoji.zen_to_han(artist.text)
+                unicodedata.normalize("NFKC", link.text)  # Strip to remove leading/trailing whitespaces
+                unicodedata.normalize("NFKC", artist.text)
                 OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
                 rank = rank + 1
                 score = score - 0.3
@@ -154,8 +154,8 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
             # 「楽曲A/楽曲B」のような表現方法の場合
                 titles = link.text.split('/') #"/"で２曲に分ける
                 for title in titles:
-                    mojimoji.zen_to_han(title.strip())  # Strip to remove leading/trailing whitespaces
-                    mojimoji.zen_to_han(artist.text)
+                    unicodedata.normalize("NFKC", title.strip()) 
+                    unicodedata.normalize("NFKC", artist.text)
                     OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
 
                     if title == titles[-1]:
@@ -163,8 +163,8 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                         score = score - 0.3
             else:
                 # If no slash, just add the entry to the array
-                mojimoji.zen_to_han(link.text)
-                mojimoji.zen_to_han(artist.text)
+                unicodedata.normalize("NFKC", str(title))  # Strip to remove leading/trailing whitespaces
+                unicodedata.normalize("NFKC", str(artist))
                 OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
                 rank = rank + 1
                 score = score - 0.3
@@ -197,8 +197,8 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             #     print(" " + str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             # else: #10位（２ケタの場合）なら
             #     print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
-            mojimoji.zen_to_han(link.text)
-            mojimoji.zen_to_han(artist.text)
+            unicodedata.normalize("NFKC", link.text)  # Strip to remove leading/trailing whitespaces
+            unicodedata.normalize("NFKC", artist.text)
             OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
             rank = rank + 1
             score = score - 0.3
@@ -210,6 +210,8 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         links = soup.find(class_="content-rank-main").find_all('h2', class_='title')
         artist = soup.find(class_="content-rank-main").find_all('p', class_='name')  # アーティスト名
         for link, artist in zip(links, artist):
+            unicodedata.normalize("NFKC", str(links))  # Strip to remove leading/trailing whitespaces
+            unicodedata.normalize("NFKC", str(artist))
             OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             rank = rank + 1
@@ -243,8 +245,8 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         for i in range(20):#20回繰り替えす
             song = str(songs[i].text.strip())
             artist = str(artists[i].text.strip())
-            mojimoji.zen_to_han(song)
-            mojimoji.zen_to_han(artist)
+            unicodedata.normalize("NFKC", song)  # Strip to remove leading/trailing whitespaces
+            unicodedata.normalize("NFKC", artist)
             BillboardData.append([song,artist,format(score, '.1f'),generate_unique_id(song,artist)])
             # if i < 9:
             #   print(f" {i+1}位: {format(score, '.1f')} {song} / {artist}") #1位から9位までのランキング
