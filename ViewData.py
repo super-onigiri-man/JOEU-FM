@@ -100,10 +100,14 @@ window = sg.Window('FM Besthit Automatic Create System', layout,resizable=False)
 while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED:
+        cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
+        cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
         sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください',no_titlebar=True)
         sys.exit()
 
     if event is None:
+        cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
+        cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
         sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください',no_titlebar=True)
         sys.exit()
 

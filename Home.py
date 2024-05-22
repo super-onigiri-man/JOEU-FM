@@ -11,7 +11,6 @@ os.chdir(os.path.dirname(sys.argv[0]))
 
 # # DBがあったら消す（過去のデータの重複防止）
 if not os.path.exists('test.db'):
-    print('a')
     import CreateDB
 
 #先程確認して決めたテーマカラーをsg.themeで設定
