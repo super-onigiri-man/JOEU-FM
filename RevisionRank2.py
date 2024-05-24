@@ -13,23 +13,21 @@ dbname = ('test2.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
-excel_file = 'Rank_BackUp/2ランキング.xlsx'
-workbook = openpyxl.load_workbook(excel_file)
-sheet = workbook.active
 
-for low in range(2263, 4469,45):
-    
-    print(low)
-    this_number = mojimoji.zen_to_han(sheet['B'+str(low+1)].value)
-    this_number = this_number.replace('No.','')
-    print(this_number)
+def RevisionRank(RevisionPath):
+    # Excelファイルの読み込み
+    excel_file = RevisionPath
+    workbook = openpyxl.load_workbook(excel_file)
+    sheet = workbook.active
+
         # データの処理と挿入
-    for row in range(low+4, low+42, 2):
-        print(row)
+    for row in range(6, 45, 2):
         title = mojimoji.zen_to_han(str(sheet['E' + str(row)].value), kana=False)
         artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
         rank = sheet['B' + str(row)].value
         on_chart = sheet['D'+str(row)].value
+        this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
+        this_number = this_number.replace('No.','')
         unique_id = GetData.generate_unique_id(title,artist)
 
         if "再" in str(sheet['C' + str(row)].value) or "圏外" in str(sheet['C' + str(row)].value) :
@@ -69,44 +67,3 @@ for low in range(2263, 4469,45):
             csv_writer.writerow(row)
 
     # sg.popup_ok('CSVファイルに書き込みました',no_titlebar=True)
-
-import os
-import pandas as pd
-from datetime import datetime
-
-def extract_date_from_filename(filename):
-    try:
-        # ファイル名から日付部分（YYYY-MM-DD）を抽出
-        date_str = filename.split('ベストヒットランキング')[0]
-        # 日付文字列をdatetimeオブジェクトに変換
-        return datetime.strptime(date_str, '%Y-%m-%d')
-    except ValueError:
-        return None
-
-def process_excel_files(directory):
-    # 指定されたディレクトリ内のすべてのファイルを取得
-    files = os.listdir(directory)
-    
-    # 指定された形式のExcelファイルのみをフィルタリング
-    excel_files = [f for f in files if f.endswith('ベストヒットランキング.xlsx')]
-    
-    # ファイル名から日付を抽出し、タプル（ファイル名, 日付）のリストを作成
-    dated_files = [(f, extract_date_from_filename(f)) for f in excel_files]
-    
-    # 有効な日付を持つファイルのみを保持
-    valid_dated_files = [f for f in dated_files if f[1] is not None]
-    
-    # 日付順にソート
-    sorted_files = sorted(valid_dated_files, key=lambda x: x[1])
-    
-    # 各ファイルを処理
-    for filename, file_date in sorted_files:
-        filepath = os.path.join(directory, filename)
-        print(f"Processing file: {filename} with date: {file_date}")
-        
-        import RevisionRank2
-        RevisionRank2.RevisionRank('Rank_BackUp/'+str(filename))
-
-# 使用例
-directory_path = 'Rank_BackUp'  # ここにExcelファイルが保存されているディレクトリのパスを指定
-process_excel_files(directory_path)

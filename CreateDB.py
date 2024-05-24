@@ -61,11 +61,11 @@ try:
     df_resolved = df.groupby('独自ID', as_index=True).apply(resolve_duplicates).reset_index(drop=True)
 
     # 結果を新しいCSVファイルに保存
-    df_resolved.to_csv('resolved_楽曲データ.csv', index=False)
+    df_resolved.to_csv('楽曲データ.csv', index=False)
 
     update_progress_bar(window['progressbar'], window['progmsg'], 2, 'DB作成中')
 
-    with open('result.csv', encoding='utf-8') as f:
+    with open('楽曲データ.csv', encoding='utf-8') as f:
         # CSVリーダーオブジェクトを作成
         next(f)
         csv_reader = csv.reader(f)

@@ -107,8 +107,8 @@ layout = [
     [sg.Button('削除',size=(10,3),key='削除'),
      sg.Button('追加',size=(10,3),key='追加'),
      sg.Button('エラーログ出力',size=(12,3),key='エラーログ'),
-     sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除')
-    #  sg.Button('曲名検索',size=(12,3),key='曲名検索'),
+     sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除'),
+     sg.Button('csv復元',size=(12,3),key='csv'),
     #  sg.Button('アーティスト名検索',size=(18,3),key='アーティスト名検索')
     ],
 
@@ -239,12 +239,14 @@ while True:
        else:
           break 
 
-    # elif event == '曲名検索':
-    #     SerchTitle = sg.popup_get_text('検索したい曲名を入力してください\n あいまい検索は最後に%をつけてください', '曲名')
-    #     if SerchTitle == None:
-    #         continue
-
-    #     print(serchtitle(SerchTitle))
+    elif event == 'csv':
+        result = sg.popup_ok_cancel('csvを2120回から復元しますか？\n復元するともとには戻せません',title='csv復元確認',no_titlebar=True)
+        if result == 'OK':
+            import CreateDB2
+            import LearningRank
+            sg.popup('処理が終了しました')
+        else:
+            break
 
 
 # ウィンドウを閉じる
