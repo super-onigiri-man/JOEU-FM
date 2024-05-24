@@ -10,7 +10,7 @@ import GetData
 os.chdir(os.path.dirname(sys.argv[0]))
 
 # DBがなかったらCreateDBをインポートしてDBを作成
-if not os.path.exists('test.db'):
+if os.path.exists('test.db'):
     import CreateDB
 
 # テーマカラーを設定

@@ -5,6 +5,7 @@ import datetime
 import csv
 import shutil
 import PySimpleGUI as sg
+import GetData
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -24,7 +25,7 @@ def WriteCSV(Oriconday):
         on_chart = sheet['D'+str(row)].value
         this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
         this_number = this_number.replace('No.','')
-        unique_id = sheet['F' + str(row+1)].value
+        unique_id = GetData.generate_unique_id(title,artist)
 
         if "再" in str(sheet['C' + str(row)].value) or "圏外" in str(sheet['C' + str(row)].value) :
             last_number = int(this_number)
