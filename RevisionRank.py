@@ -20,14 +20,7 @@ def RevisionRank(RevisionPath):
     workbook = openpyxl.load_workbook(excel_file)
     sheet = workbook.active
 
-    if sheet['F7'].value is None:
-        for row in range(6, 45, 2):
-            title = mojimoji.zen_to_han(sheet['E' + str(row)].value, kana=False)
-            artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
-            sheet.cell(row=row+6, column=6).value = GetData.generate_unique_id(title,artist)
-            sheet.cell(row=row+6, column=6).font = Font(name ="BIZ UDPゴシック",size = 16,bold=True,color="FFFFFF")
-
-    # データの処理と挿入
+        # データの処理と挿入
     for row in range(6, 45, 2):
         title = mojimoji.zen_to_han(sheet['E' + str(row)].value, kana=False)
         artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
@@ -35,7 +28,7 @@ def RevisionRank(RevisionPath):
         on_chart = sheet['D'+str(row)].value
         this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
         this_number = this_number.replace('No.','')
-        unique_id = unique_id = sheet['F' + str(row+1)].value
+        unique_id = GetData.generate_unique_id(title,artist)
 
         if "再" in str(sheet['C' + str(row)].value) or "圏外" in str(sheet['C' + str(row)].value) :
             last_number = int(this_number) - 1
