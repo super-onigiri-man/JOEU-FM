@@ -34,5 +34,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['..\\JOEU.ico'],
+    icon=['..\\music_record_disc.png'],
 )
