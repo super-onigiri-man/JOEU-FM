@@ -24,7 +24,7 @@ try:
         [sg.Text(key='progmsg')]
     ]
 
-    window = sg.Window('システム起動中', layout, finalize=True)
+    window = sg.Window('システム起動中', layout, finalize=True,icon='FM-BACS.ico')
 
     # テーブル作成のSQL文
     sql = """CREATE TABLE IF NOT EXISTS music_master (

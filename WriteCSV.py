@@ -1,4 +1,4 @@
-import mojimoji
+import unicodedata
 import openpyxl
 import sqlite3
 import datetime
@@ -19,11 +19,11 @@ def WriteCSV(Oriconday):
 
     # データの処理と挿入
     for row in range(6, 45, 2):
-        title = mojimoji.zen_to_han(sheet['E' + str(row)].value, kana=False)
-        artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
+        title = unicodedata.normalize("NFKC",str(sheet['E' + str(row)].value))
+        artist = unicodedata.normalize("NFKC",str(sheet['F' + str(row)].value))
         rank = sheet['B' + str(row)].value
         on_chart = sheet['D'+str(row)].value
-        this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
+        this_number = unicodedata.normalize("NFKC",sheet['B3'].value)
         this_number = this_number.replace('No.','')
         unique_id = GetData.generate_unique_id(title,artist)
 
