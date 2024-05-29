@@ -2,7 +2,7 @@ from openpyxl.styles import Font, PatternFill
 from openpyxl import load_workbook
 from openpyxl.styles.alignment import Alignment
 import openpyxl
-import mojimoji
+import unicodedata
 import sqlite3
 import csv
 import PySimpleGUI as sg
@@ -22,11 +22,11 @@ def RevisionRank(RevisionPath):
 
         # データの処理と挿入
     for row in range(6, 45, 2):
-        title = mojimoji.zen_to_han(str(sheet['E' + str(row)].value), kana=False)
-        artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
+        title = unicodedata.normalize("NFKC",str(sheet['E' + str(row)].value))
+        artist = unicodedata.normalize("NFKC",str(sheet['F' + str(row)].value))
         rank = sheet['B' + str(row)].value
         on_chart = sheet['D'+str(row)].value
-        this_number = mojimoji.zen_to_han(sheet['B3'].value,kana=False)
+        this_number = unicodedata.normalize("NFKC",sheet['B3'].value)
         this_number = this_number.replace('No.','')
         unique_id = GetData.generate_unique_id(title,artist)
 

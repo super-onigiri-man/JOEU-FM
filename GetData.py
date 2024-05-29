@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup #スクレイピング（取得）用
 import datetime #日付計算用
-import mojimoji
 import openpyxl
 import sqlite3
 import pandas as pd
@@ -271,8 +270,8 @@ async def HaruyaRank(HaruyaPath):
 
         # データを2次元配列に挿入する
         for row in range(4, 24):
-            song_names = mojimoji.zen_to_han(str(ws[f"D{row}"].value), kana=False).split('/')
-            artist_name = mojimoji.zen_to_han(str(ws[f"C{row}"].value), kana=False)
+            song_names = unicodedata.normalize("NFKC", str(ws[f"D{row}"].value)).split('/')
+            artist_name = unicodedata.normalize("NFKC", str(ws[f"C{row}"].value))
             # song_name = str(song_name)
             # artist_name = str(artist_name)
             point = round(6.0 - ((row - 4) * 0.3), 2)  # 点数を計算する
@@ -351,7 +350,7 @@ def GetThisWeekRank(HaruyaPath):
         [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
 
-    window = sg.Window('今週のランキング取得', layout,finalize=True)
+    window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
 
     def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)
@@ -392,7 +391,7 @@ def GetLastWeekRank():
         [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
 
-    window = sg.Window('今週のランキング取得', layout,finalize=True)
+    window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
 
     def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)
@@ -430,7 +429,7 @@ def GetSelectWeekRank(SelectDay):
         [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
 
-    window = sg.Window('今週のランキング取得', layout,finalize=True)
+    window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
 
     def update_progress_bar(progress_bar,progmsg, value,msg):
         progress_bar.update_bar(value)

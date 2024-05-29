@@ -7,6 +7,7 @@ import sqlite3
 import csv
 import PySimpleGUI as sg
 import GetData
+import unicodedata
 
 
 dbname = ('test2.db')
@@ -19,15 +20,12 @@ sheet = workbook.active
 
 for low in range(2263, 4469,45):
     
-    print(low)
     this_number = mojimoji.zen_to_han(sheet['B'+str(low+1)].value)
     this_number = this_number.replace('No.','')
-    print(this_number)
         # データの処理と挿入
     for row in range(low+4, low+42, 2):
-        print(row)
-        title = mojimoji.zen_to_han(str(sheet['E' + str(row)].value), kana=False)
-        artist = mojimoji.zen_to_han(sheet['F' + str(row)].value, kana=False)
+        title = unicodedata.normalize("NFKC", str(sheet['E' + str(row)].value))
+        artist = unicodedata.normalize("NFKC", str(sheet['F' + str(row)].value))
         rank = sheet['B' + str(row)].value
         on_chart = sheet['D'+str(row)].value
         unique_id = GetData.generate_unique_id(title,artist)
