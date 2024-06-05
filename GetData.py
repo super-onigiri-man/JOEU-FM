@@ -294,53 +294,78 @@ async def HaruyaRank(HaruyaPath):
             sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
 
 async def insertOriconWeekData():
-   for entry in OriconWeekData:
-    title, artist, score, unique_id= entry
-    # 既存のデータがあればScoreを足して更新、なければ新規追加
-    cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
-        VALUES (?, ?, ?, 0, 0, 0, ?)
-        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
-    ''',(title,artist, score, unique_id,score))
+    try:
+        for entry in OriconWeekData:
+            title, artist, score, unique_id= entry
+            # 既存のデータがあればScoreを足して更新、なければ新規追加
+            cursor.execute('''
+                INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+                VALUES (?, ?, ?, 0, 0, 0, ?)
+                ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+            ''',(title,artist, score, unique_id,score))
 
-    conn.commit()
+            conn.commit()
+    except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
+        sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertOriconDigitalData():
-   for entry in OriconDigitalData:
-    title, artist, score, unique_id= entry
-    # 既存のデータがあればScoreを足して更新、なければ新規追加
-    cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
-        VALUES (?, ?, ?, 0, 0, 0, ?)
-        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
-    ''', (title,artist, score, unique_id,score))
+    try:
+        for entry in OriconDigitalData:
+            title, artist, score, unique_id= entry
+            # 既存のデータがあればScoreを足して更新、なければ新規追加
+            cursor.execute('''
+                INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+                VALUES (?, ?, ?, 0, 0, 0, ?)
+                ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+            ''', (title,artist, score, unique_id,score))
 
-    conn.commit()
+            conn.commit()
+
+    except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
+        sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertBillboardData():
-   for entry in BillboardData:
-    title, artist, score, unique_id= entry
-    # 既存のデータがあればScoreを足して更新、なければ新規追加
-    cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
-        VALUES (?, ?, ?, 0, 0, 0, ?)
-        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
-    ''', (title,artist, score, unique_id,score))
+    try:
+        for entry in BillboardData:
+            title, artist, score, unique_id= entry
+            # 既存のデータがあればScoreを足して更新、なければ新規追加
+            cursor.execute('''
+                INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+                VALUES (?, ?, ?, 0, 0, 0, ?)
+                ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+            ''', (title,artist, score, unique_id,score))
 
-    conn.commit()
+            conn.commit()
+    except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
+        sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertHaruyaData():
-   for entry in HaruyaData:
-    title, artist, score, unique_id= entry
-    # 既存のデータがあればScoreを足して更新、なければ新規追加
-    cursor.execute('''
-        INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
-        VALUES (?, ?, ?, 0, 0, 0, ?)
-        ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
-    ''', (title,artist, score, unique_id,score))
+    try:
+        for entry in HaruyaData:
+            title, artist, score, unique_id= entry
+            # 既存のデータがあればScoreを足して更新、なければ新規追加
+            cursor.execute('''
+                INSERT INTO music_master (Title, Artist, Score, Last_Rank, Last_Number, On_Chart ,Unique_id)
+                VALUES (?, ?, ?, 0, 0, 0, ?)
+                ON CONFLICT(Unique_id) DO UPDATE SET Score = Score + ?
+            ''', (title,artist, score, unique_id,score))
 
-    conn.commit()
+            conn.commit()
 
+    except Exception as e:
+        import traceback
+        with open('error.log', 'a') as f:
+            traceback.print_exc( file=f)
+        sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 
 def GetThisWeekRank(HaruyaPath):
