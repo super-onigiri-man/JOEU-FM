@@ -14,13 +14,14 @@ dbname = ('test2.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
+# 2022年1月16日分からのデータ取得
 excel_file = 'Rank_BackUp/2ランキング.xlsx'
 workbook = openpyxl.load_workbook(excel_file)
 sheet = workbook.active
 
 for low in range(2263, 4469,45):
     
-    this_number = mojimoji.zen_to_han(sheet['B'+str(low+1)].value)
+    this_number = unicodedata.normalize("NFKC",sheet['B'+str(low+1)].value)
     this_number = this_number.replace('No.','')
         # データの処理と挿入
     for row in range(low+4, low+42, 2):

@@ -66,8 +66,8 @@ try:
     update_progress_bar(window['progressbar'], window['progmsg'], 2, 'DB作成中')
 
     with open('楽曲データ.csv', encoding='utf-8') as f:
-        # CSVリーダーオブジェクトを作成
         next(f)
+        # CSVリーダーオブジェクトを作成
         csv_reader = csv.reader(f)
         for row in csv_reader:
             # テーブルにデータを挿入

@@ -93,8 +93,7 @@ layout = [
      ]
 ]
 
-# ウィンドウを作成
-window = sg.Window('FM Besthit Automatic Create System', layout,resizable=False,icon='FM-BACS.ico')
+window = sg.Window('FM Besthit Automatic Create System', layout,resizable=False,icon='FM-BACS.ico',finalize=True,modal=True)
 
 # イベントループ
 while True:
