@@ -1,0 +1,2 @@
+pyinstaller --onefile --icon=../JOEU.ico --noconsole ../Home.py
+nuitka --mingw64 --follow-imports --windows-disable-console --standalone --onefile --enable-plugin=tk-inter,numpy --windows-icon-from-ico=“../JOEU.ico” ../Home.py
