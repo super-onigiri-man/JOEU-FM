@@ -1,9 +1,7 @@
 import unicodedata
 import openpyxl
 import sqlite3
-import datetime
 import csv
-import shutil
 import PySimpleGUI as sg
 import GetData
 

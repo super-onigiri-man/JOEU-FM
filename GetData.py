@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup #スクレイピング（取得）用
 import datetime #日付計算用
 import openpyxl
 import sqlite3
-import pandas as pd
 import PySimpleGUI as sg
 import asyncio #非同期処理
 import unicodedata #全角文字を半角文字に変換
