@@ -10,6 +10,9 @@ import unicodedata #全角文字を半角文字に変換
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
+
+# テーマカラーを設定
+sg.theme('SystemDefault')
 #scoreを元にしたオリコンシングル・オリコンデジタル・ビルボード総合ランキング
 
 # オリコン週間ランキング用
@@ -366,13 +369,13 @@ async def insertHaruyaData():
             traceback.print_exc( file=f)
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
-
-def GetThisWeekRank(HaruyaPath):
-
-    layout = [
+# レイアウト（共通設定）
+layout = [
         [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
         [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
     ]
+
+def GetThisWeekRank(HaruyaPath):
 
     window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
 
@@ -409,11 +412,6 @@ def GetThisWeekRank(HaruyaPath):
 
 
 def GetLastWeekRank():
-    
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
 
     window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
 
@@ -448,10 +446,6 @@ def GetLastWeekRank():
   
 
 def GetSelectWeekRank(SelectDay):
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
 
     window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
 
