@@ -120,6 +120,8 @@ def MajicalExcel(Oriconday):
 
         result = sg.popup_ok(str(Oriconday)+'付け、第'+str(this_rank_number)+'回ベストヒットランキング \n正常に処理されました',no_titlebar=True)
 
+        os.startfile(folder)
+
     except Exception as e:
         os.chdir(os.path.dirname(sys.argv[0]))
         import traceback

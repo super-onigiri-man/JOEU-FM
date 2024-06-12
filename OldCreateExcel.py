@@ -125,6 +125,8 @@ def OldMajicalExcel(Oriconday):
 
         result = sg.popup_ok('正常に処理されました',no_titlebar=True)
 
+        os.startfile(folder)
+
     except Exception as e:
         import traceback
         os.chdir(os.path.dirname(sys.argv[0]))
