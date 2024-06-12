@@ -41,7 +41,7 @@ if is_file:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc( file=f)
-            sg.popup_error('ランキングの削除に失敗しました',no_titlebar=True)
+            sg.popup_error('ロールバック処理に失敗しました',no_titlebar=True)
             
 
     else:
