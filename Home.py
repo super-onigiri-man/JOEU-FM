@@ -140,7 +140,7 @@ while True:
 
         display_window = sg.Window('ランキングデータ取得', display_layout)
 
-        while True:
+        while True: #選択するとブラウザ表示（すでにブラウザが出てる場合は新しいタブで表示）
             display_event, display_values = display_window.read()
             if display_event in (sg.WINDOW_CLOSED, None):
                 break

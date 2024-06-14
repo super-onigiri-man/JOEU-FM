@@ -177,7 +177,7 @@ while True:
             # print(selected_row_Artist)
             selected_row_Score = table_data[selected_row_index][2]
 
-            NewScore = sg.popup_get_text('得点を入力してください', '得点修正')
+            NewScore = sg.popup_get_text('新しい得点を入力してください', '得点修正')
 
             result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点を\n'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新しますか？',no_titlebar=True)
             if result2 == 'OK':

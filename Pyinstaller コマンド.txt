@@ -1,2 +1,3 @@
 pyinstaller --onefile --icon=../JOEU.ico --noconsole ../Home.py
-nuitka --mingw64 --follow-imports --windows-disable-console --standalone --onefile --enable-plugin=tk-inter,numpy --windows-icon-from-ico=“../JOEU.ico” ../Home.py
+nuitka --mingw64 --follow-imports --windows-disable-console --standalone --onefile --enable-plugin=tk-inter,numpy --windows-icon-from-ico=“../FM-BACS.ico” ../Home.py
+nuitka --follow-imports --windows-disable-console --standalone --onefile --enable-plugin=tk-inter|PySide6|PySide2|PyQt6|PyQt5 --windows-icon-from-ico=“../FM-BACS.ico” ../Home.py
