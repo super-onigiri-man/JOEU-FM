@@ -113,6 +113,9 @@ try:
     # メッセージ表示
     sg.popup('原稿を作成しました',no_titlebar=True)
 
+    # ダウンロードフォルダーを開く
+    os.startfile(folder)
+
 except Exception as e: 
     os.chdir(os.path.dirname(sys.argv[0]))
     import traceback
