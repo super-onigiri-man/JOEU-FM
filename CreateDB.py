@@ -49,13 +49,18 @@ try:
     cursor.execute(sql)
     conn.commit()
 
-    update_progress_bar(progress_bar, progmsg, 2, 'DB作成中')
+    update_progress_bar(progress_bar, progmsg, 1, 'DB作成中')
 
     with open('楽曲データ.csv', encoding='utf-8') as f:
         next(f)
         csv_reader = csv.reader(f)
         for row in csv_reader:
             cursor.execute("INSERT OR REPLACE INTO music_master VALUES (?, ?, ?, ?, ?, ?, ?)", (row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
+
+    update_progress_bar(progress_bar, progmsg, 2, 'データ整合性確認中')
+
+    cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
+    cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
 
     update_progress_bar(progress_bar, progmsg, 3, '完了')
 
