@@ -15,9 +15,6 @@ cursor = conn.cursor() #カーソルオブジェクトを作成
 
 top_20_query = '''
     SELECT * FROM music_master
-    WHERE Score IS NOT NULL AND Score != ''
-    ORDER BY Score DESC
-    LIMIT 20
 '''
 
 top_20_results = cursor.execute(top_20_query).fetchall()
@@ -27,21 +24,13 @@ conn.commit()
 
 # 整形後のデータ出力用
 df = pd.read_sql('''
-SELECT * FROM music_master
-WHERE Score IS NOT NULL AND Score != ''
-ORDER BY Score DESC
-LIMIT 60''', conn)
+SELECT * FROM music_master''', conn)
 
 def reload():
     global df
     global top_20_results
 
-    top_20_query ='''
-        SELECT * FROM music_master
-        WHERE Score IS NOT NULL AND Score != ''
-        ORDER BY Score DESC
-        LIMIT 20
-    '''
+    top_20_query ='''SELECT * FROM music_master'''
 
     top_20_results = cursor.execute(top_20_query).fetchall()
 
@@ -49,12 +38,7 @@ def reload():
     conn.commit()
 
     # 整形後のデータ出力用
-    df = pd.read_sql('''
-        SELECT * FROM music_master
-        WHERE Score IS NOT NULL AND Score != ''
-        ORDER BY Score DESC
-        LIMIT 200
-    ''', conn)
+    df = pd.read_sql('''SELECT * FROM music_master''', conn)
     # df = df.head(20)
 
 def deleterow(Title,Artist):
@@ -96,6 +80,15 @@ def serchtitle(title):
     return result
     # df = df.head(20)
 
+def updatetitle(Title,Artist,oldUnique):
+    params = (Title,Artist,oldUnique)
+    cursor.execute("UPDATE music_master SET Title = ? WHERE Artist= ? AND Unique_id = ?;",params)
+
+def updateartist(Title,Artist,oldUnique):
+    params = (Artist,Title,oldUnique)
+    cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
+
+
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
 header_list = ['楽曲名','アーティスト','得点','前回の順位','前回ランクイン','ランクイン回数','独自ID']
@@ -104,8 +97,9 @@ layout = [
     [sg.Table(values=table_data, headings=header_list, auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(200))))],
 
-    [sg.Button('削除',size=(10,3),key='削除'),
-     sg.Button('追加',size=(10,3),key='追加'),
+    [sg.Button('曲名修正',size=(10,3),key='曲名修正'),
+     sg.Button('アーティスト名修正',size=(18,3),key='アーティスト名修正'),
+     sg.Button('削除',size=(10,3),key='削除'),
      sg.Button('エラーログ出力',size=(12,3),key='エラーログ'),
      sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除'),
      sg.Button('csv復元',size=(12,3),key='csv'),
@@ -120,7 +114,7 @@ layout = [
 ]
 
 # ウィンドウを作成
-window = sg.Window('管理者画面', layout,resizable=True)
+window = sg.Window('管理者画面', layout,resizable=True,icon='FM-BACS.ico')
 
 # イベントループ
 while True:
@@ -128,6 +122,70 @@ while True:
     if event is None:
       # print('exit')
         break
+
+    elif event == '曲名修正':
+        selected_rows = values['-TABLE-']
+        if selected_rows:
+            # 選択された行を取得
+            selected_row_index = values['-TABLE-'][0]
+
+            # 選択された行の楽曲名を取得
+            selected_row_Title = table_data[selected_row_index][0]
+            # 選択された行のアーティスト名を取得
+            selected_row_Artist = table_data[selected_row_index][1]
+
+            selected_row_oldUnique = table_data[selected_row_index][6]
+
+            NewTitle = sg.popup_get_text('新しい楽曲名を入力してください','曲名修正',default_text=str(selected_row_Title),no_titlebar=True)
+
+            if str(NewTitle) == 'None':
+                continue
+
+            result2 = sg.popup_ok_cancel(selected_row_Title+'の曲名を\n'+str(NewTitle)+'に更新しますか？',no_titlebar=True)
+            if result2 == 'OK':
+                # sg.popup('削除しました')
+                # 選択された行を削除
+                updatetitle(NewTitle,selected_row_Artist,selected_row_oldUnique)
+                reload()
+                # テーブルのデータを更新
+                table_data = df.values.tolist()
+                # テーブルを更新
+                window['-TABLE-'].update(values=table_data)
+            elif result2 == 'Cancel':
+                # sg.popup('キャンセルが選択されました')
+                continue
+
+    elif event == 'アーティスト名修正':
+        selected_rows = values['-TABLE-']
+        if selected_rows:
+            # 選択された行を取得
+            selected_row_index = values['-TABLE-'][0]
+
+            # 選択された行の楽曲名を取得
+            selected_row_Title = table_data[selected_row_index][0]
+            # 選択された行のアーティスト名を取得
+            selected_row_Artist = table_data[selected_row_index][1]
+
+            selected_row_oldUnique = table_data[selected_row_index][6]
+
+            NewArtist = sg.popup_get_text('新しいアーティスト名を入力してください','曲名修正',default_text=str(selected_row_Artist),no_titlebar=True)
+            
+            if str(NewArtist) == 'None':
+                continue
+
+            result2 = sg.popup_ok_cancel(selected_row_Title+'のアーティスト名を\n'+str(selected_row_Artist)+'から'+str(NewArtist)+'に更新しますか？',no_titlebar=True)
+            if result2 == 'OK':
+                # sg.popup('削除しました')
+                # 選択された行を削除
+                updateartist(selected_row_Title,NewArtist,selected_row_oldUnique)
+                reload()
+                # テーブルのデータを更新
+                table_data = df.values.tolist()
+                # テーブルを更新
+                window['-TABLE-'].update(values=table_data)
+            elif result2 == 'Cancel':
+                # sg.popup('キャンセルが選択されました')
+                continue
 
     elif event == '削除':
     
@@ -170,25 +228,6 @@ while True:
         table_data = df.values.tolist()
         # テーブルを更新
         window['-TABLE-'].update(values=table_data)
-    
-    elif event == '追加':
-        NewTitle = sg.popup_get_text('追加したい曲名を入力してください', '曲名',no_titlebar=True)
-        if NewTitle == None:
-            continue
-        NewArtist = sg.popup_get_text(str(NewTitle)+'のアーティスト名を入力してください', 'アーティスト',no_titlebar=True)
-        if NewArtist == None:
-            continue
-        result = sg.popup_ok_cancel(NewTitle+'/'+NewArtist+'を追加しますか？',title='追加確認',no_titlebar=True)
-        if result == 'OK':
-            addmusic(NewTitle,NewArtist)
-            # reload()
-            # テーブルのデータを更新
-            table_data = df.values.tolist()
-            # テーブルを更新
-            window['-TABLE-'].update(values=table_data)
-        elif result == 'Cancel':
-            # sg.popup('キャンセルが選択されました')
-            continue
         
     elif event == '曲名':
         sorttitle()
