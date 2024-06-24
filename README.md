@@ -2,10 +2,10 @@
 
 ここでは、ソフトウェア版「FM Besthit Automatic Create Sysytem」の導入方法を説明します。
 
-ただ、このシステムを別PCにお引越しする場合は必ずご連絡ください
+ただ、システムの更新を継続的に実施していますのでお引越しの際には必ずご連絡ください。
 
 ## 1.必要ファイルのダウンロード
-[こちら](https://github.com/super-onigiri-man/JOEU-FM/archive/refs/heads/Release.zip)からファイルをダウンロードしてください
+現在準備中です。
 
 ## 2.システムファイルを配置する
 ダウンロードしたzipファイルを解凍すると「FM Besthit Automatic Create System」という名前のフォルダがあるので、これを任意の場所に配置します。
