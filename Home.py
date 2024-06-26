@@ -154,5 +154,6 @@ while True:
                 break
         display_window.close()
 
-os.remove('Reload.txt')
+if os.path.exists('Reload.txt'):
+    os.remove('Reload.txt')
 window.close()
