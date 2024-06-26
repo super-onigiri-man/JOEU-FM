@@ -25,6 +25,12 @@ BillboardData = []
 # 明屋書店ランキング用
 HaruyaData = []
 
+def clear():
+    OriconWeekData.clear()
+    OriconDigitalData.clear()
+    BillboardData.clear()
+    HaruyaData.clear()
+
 # 初めて処理を行うかどうかのフラグ
 popup_done = False
 
@@ -268,8 +274,6 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
 async def HaruyaRank(HaruyaPath):
     try:
 
-        with open('HaruyaPath.txt', 'w',encoding='UTF-8') as f:
-            f.write(HaruyaPath)
         # Excelファイルを読み込む
         wb = openpyxl.load_workbook(HaruyaPath)
         ws = wb.active
@@ -390,7 +394,11 @@ def GetThisWeekRank(HaruyaPath):
         window.refresh()
 
     while True:
-
+        update_progress_bar(window['progressbar'],window['progmsg'],0,'データリセット中')
+        clear()
+        update_progress_bar(window['progressbar'],window['progmsg'], 0,'リロード用情報更新中')
+        with open('Reload.txt', 'w',encoding='UTF-8') as f:
+            f.write('1,'+HaruyaPath+',')
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconTodays()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
@@ -433,7 +441,11 @@ def GetLastWeekRank():
         window.refresh()
 
     while True:
-
+        update_progress_bar(window['progressbar'],window['progmsg'],0,'データリセット中')
+        clear()
+        update_progress_bar(window['progressbar'],window['progmsg'], 0,'リロード用情報更新中')
+        with open('Reload.txt', 'w',encoding='UTF-8') as f:
+            f.write('2,,')
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconLastWeek()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
@@ -457,7 +469,7 @@ def GetLastWeekRank():
 
   
 
-def GetSelectWeekRank(SelectDay):
+def GetSelectWeekRank(SelectDay,Flag):
 
     # レイアウト（共通設定）
     layout = [
@@ -474,11 +486,15 @@ def GetSelectWeekRank(SelectDay):
         window.refresh()
 
     while True:
+        update_progress_bar(window['progressbar'],window['progmsg'],0,'データリセット中')
+        clear()
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         global OSW 
         OSW = OriconSelectWeek(SelectDay)
-        with open('SelectDate.txt', 'w',encoding='UTF-8') as f:
-            f.write(str(OSW))
+        if Flag == False:
+            with open('Reload.txt', 'w',encoding='UTF-8') as f:
+                SelectDay,Selecttime = str(SelectDay).split()
+                f.write('3,,'+str(SelectDay))
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(OSW)+'付けオリコン週間ランキング取得中')
         OriconWeekRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(OSW)+'付けオリコンデジタルランキング取得中')
@@ -522,137 +538,3 @@ def ResetData():
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
     print('DB関連処理終了')
     conn.commit()
-
-def ReloadThisWeekRank():
-
-    # レイアウト（共通設定）
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
-
-
-    window = sg.Window('今週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
-
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
-
-    while True:
-        update_progress_bar(window['progressbar'],window['progmsg'],0,'データリセット中')
-        OriconWeekData.clear()
-        OriconDigitalData.clear()
-        BillboardData.clear()
-        HaruyaData.clear()
-        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
-        Oriconday=OriconTodays()
-        update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
-        OriconWeekRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
-        OriconDigitalRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
-        BillboadRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
-        with open('HaruyaPath.txt','r',encoding='UTF-8') as f:
-            HaruyaPath = f.read()
-        asyncio.run(HaruyaRank(HaruyaPath))
-        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
-        asyncio.run(insertOriconWeekData())    
-        asyncio.run(insertOriconDigitalData())
-        asyncio.run(insertBillboardData())
-        asyncio.run(insertHaruyaData())
-        
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                break
-
-    window.close()
-
-def ReloadLastWeekRank():
-
-    # レイアウト（共通設定）
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
-
-
-    window = sg.Window('先週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
-
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
-
-    while True:
-        update_progress_bar(window['progressbar'],window['progmsg'],0,'データリセット中')
-        OriconWeekData.clear()
-        OriconDigitalData.clear()
-        BillboardData.clear()
-        HaruyaData.clear()
-        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
-        Oriconday=OriconLastWeek()
-        update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
-        OriconWeekRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
-        OriconDigitalRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
-        BillboadRank(Oriconday)
-        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
-        asyncio.run(insertOriconWeekData())    
-        asyncio.run(insertOriconDigitalData())
-        asyncio.run(insertBillboardData())
-        asyncio.run(insertHaruyaData())
-        
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                break
-
-    window.close()
-
-def ReloadSelectWeekRank():
-
-    # レイアウト（共通設定）
-    layout = [
-        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
-        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
-    ]
-
-
-    window = sg.Window('任意週のランキング取得', layout,finalize=True,icon='FM-BACS.ico')
-
-    def update_progress_bar(progress_bar,progmsg, value,msg):
-        progress_bar.update_bar(value)
-        progmsg.update(msg)
-        window.refresh()
-
-    while True:
-        update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
-        global OSW 
-        with open('SelectDate.txt','r',encoding='UTF-8') as f:
-            OSW = datetime.datetime.strptime(f.read(), '%Y-%m-%d')
-        with open('SelectDate.txt', 'w',encoding='UTF-8') as f:
-            f.write(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 16,str(OSW)+'付けオリコン週間ランキング取得中')
-        OriconWeekRank(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 24,str(OSW)+'付けオリコンデジタルランキング取得中')
-        OriconDigitalRank(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 32,str(OSW - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
-        BillboadRank(OSW)
-        update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
-        asyncio.run(insertOriconWeekData())    
-        asyncio.run(insertOriconDigitalData())
-        asyncio.run(insertBillboardData())
-        
-        window.close()
-
-        event, values = window.read()
-        if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                break
-
-    window.close()
