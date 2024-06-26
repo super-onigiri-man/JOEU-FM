@@ -6,7 +6,6 @@ import sqlite3
 import PySimpleGUI as sg
 import asyncio #非同期処理
 import unicodedata #全角文字を半角文字に変換
-import os
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON

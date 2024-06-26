@@ -3,7 +3,6 @@ import os
 import sys
 import datetime
 import webbrowser
-import sqlite3
 import GetData
 
 # カレントディレクトリをスクリプトのディレクトリに変更

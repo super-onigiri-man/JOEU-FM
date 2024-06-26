@@ -2,7 +2,6 @@ from openpyxl.styles import Font, PatternFill
 from openpyxl import load_workbook
 from openpyxl.styles.alignment import Alignment
 import sqlite3
-import datetime
 import PySimpleGUI as sg
 import sys,os
 def MajicalExcel(Oriconday):
