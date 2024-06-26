@@ -93,8 +93,9 @@ while True:
                     sg.popup('指定した日付ではランキング生成できません', no_titlebar=True)
                     continue
                 try:
+                    date_window.close()
                     import GetData
-                    GetData.GetSelectWeekRank(SelectDay)
+                    GetData.GetSelectWeekRank(SelectDay,False)
                     import ViewData
                     import OldCreateExcel
                     OldCreateExcel.OldMajicalExcel(GetData.GetSelectWeekDate())
@@ -102,8 +103,7 @@ while True:
                 except Exception as e:
                     sg.popup_error(f"エラーが発生しました: {e}", no_titlebar=True)
                 break
-        date_window.close()
-
+        
     if event == '管理者':
        
         import AdminUser  # 管理者画面の設置
@@ -155,4 +155,5 @@ while True:
                 break
         display_window.close()
 
+os.remove('Reload.txt')
 window.close()
