@@ -3,6 +3,7 @@ import pandas as pd
 import sqlite3
 import sys
 import GetData
+import datetime
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -36,33 +37,26 @@ LIMIT 60''', conn)
 
 def RankingUpdate():
 
-    display_layout = [
-        [sg.Button('今週のランキング', size=(15, 3), key='今週のランキング'),
-         sg.Button('先週のランキング', size=(15, 3), key='先週のランキング'),
-         sg.Button('任意週ランキング', size=(15, 3), key='任意週ランキング')]
-    ]
+    with open('Reload.txt','r',encoding='UTF-8') as f:
+        info = str(f.read())
+    print(info)
+    info=info.split(',') 
+    ID = info[0]
+    HaruyaPath = info[1]
+    SelectDay = info[2]
 
-    display_window = sg.Window('ランキングデータ取得', display_layout,finalize=True,icon='FM-BACS.ico')
+    if int(ID) == 1: #識別番号が今週（1）だった場合
+        GetData.ResetData()
+        GetData.GetThisWeekRank(HaruyaPath)
 
-    while True: #選択するとブラウザ表示（すでにブラウザが出てる場合は新しいタブで表示）
-        display_event, display_values = display_window.read()
-        if display_event in (sg.WINDOW_CLOSED, None):
-            break
-        elif display_event == '今週のランキング':
-            GetData.ResetData()
-            GetData.ReloadThisWeekRank()
-            break
+    elif int(ID) == 2: #識別番号が2（先週）だった場合
+        GetData.ResetData()
+        GetData.GetLastWeekRank()
 
-        elif display_event == '先週のランキング':
-            GetData.ResetData()
-            GetData.ReloadLastWeekRank()
-            break
-
-        elif display_event == '任意週ランキング':
-            GetData.ResetData()
-            GetData.ReloadSelectWeekRank()
-            break
-    display_window.close()
+    elif int(ID) == 3: #識別番号が3（任意週）の場合
+        GetData.ResetData()
+        SelectDay = datetime.datetime.strptime(SelectDay, '%Y-%m-%d')
+        GetData.GetSelectWeekRank(SelectDay,True)
 
 def reload():
     global df
@@ -113,6 +107,10 @@ def updatetitle(Title,Artist,oldUnique):
 def updateartist(Title,Artist,oldUnique):
     params = (Artist,Title,oldUnique)
     cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
+
+def updateunique(Title,Artist,newUnique):
+    params = (newUnique,Title,Artist)
+    cursor.execute("UPDATE music_master SET Unique_id = ? WHERE Title= ? AND  Artist = ?;",params)
 # df = df.head(20)
 
 # データフレームをPySimpleGUIの表に変換
@@ -287,7 +285,9 @@ while True:
             if result2 == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
+                NewID = GetData.generate_unique_id(NewTitle,selected_row_Artist)
                 updatetitle(NewTitle,selected_row_Artist,selected_row_oldUnique)
+                updateunique(NewTitle,selected_row_Artist,NewID)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
@@ -319,8 +319,11 @@ while True:
             if result2 == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
+                NewID = GetData.generate_unique_id(selected_row_Title,NewArtist)
                 updateartist(selected_row_Title,NewArtist,selected_row_oldUnique)
+                updateunique(selected_row_Title,NewArtist,NewID)
                 reload()
+                
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
                 # テーブルを更新
