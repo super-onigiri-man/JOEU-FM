@@ -87,7 +87,11 @@ while True:
             if date_event in (sg.WINDOW_CLOSED, None):
                 break
             elif date_event == 'OK' or date_event == '\r':
-                SelectDay = datetime.datetime.strptime(date_values['-input1-'], '%Y-%m-%d')
+                try:
+                    SelectDay = datetime.datetime.strptime(date_values['-input1-'], '%Y-%m-%d')
+                except Exception as e:
+                    sg.popup_error('入力された値が不正です。正しい日付を入力してください。',no_titlebar=True)
+                    continue
                 if SelectDay > datetime.datetime.today() or SelectDay < year2:
                     sg.popup('指定した日付ではランキング生成できません', no_titlebar=True)
                     continue
