@@ -46,7 +46,7 @@ def OriconTodays():
         current_time = datetime.datetime.now().time()
         specified_time = datetime.time(14, 10)  
         if current_time < specified_time and not popup_done:
-            sg.popup('先週のランキングを取得します\n今週のランキングは14:10以降に取得可能です',no_titlebar=True)
+            sg.popup('先週のランキングを取得します\n今週のランキングは本日14:10以降に取得可能です',no_titlebar=True)
             popup_done = True  # ポップアップが表示されたことをフラグで管理
             Oriconday = dt - datetime.timedelta(days=2) # 14:10までは先週のデータを取得
         elif current_time < specified_time:
