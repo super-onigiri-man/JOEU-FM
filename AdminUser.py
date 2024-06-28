@@ -3,6 +3,7 @@ import pandas as pd
 import sqlite3
 import os
 import sys
+import GetData
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -88,6 +89,9 @@ def updateartist(Title,Artist,oldUnique):
     params = (Artist,Title,oldUnique)
     cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
 
+def updateunique(Title,Artist,newUnique):
+    params = (newUnique,Title,Artist)
+    cursor.execute("UPDATE music_master SET Unique_id = ? WHERE Title= ? AND  Artist = ?;",params)
 
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
@@ -128,16 +132,12 @@ while True:
         if selected_rows:
             # 選択された行を取得
             selected_row_index = values['-TABLE-'][0]
-
             # 選択された行の楽曲名を取得
             selected_row_Title = table_data[selected_row_index][0]
             # 選択された行のアーティスト名を取得
             selected_row_Artist = table_data[selected_row_index][1]
-
             selected_row_oldUnique = table_data[selected_row_index][6]
-
             NewTitle = sg.popup_get_text('新しい楽曲名を入力してください','曲名修正',default_text=str(selected_row_Title),no_titlebar=True)
-
             if str(NewTitle) == 'None':
                 continue
 
@@ -145,7 +145,9 @@ while True:
             if result2 == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
+                NewID = GetData.generate_unique_id(NewTitle,selected_row_Artist)
                 updatetitle(NewTitle,selected_row_Artist,selected_row_oldUnique)
+                updateunique(NewTitle,selected_row_Artist,NewID)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
@@ -160,16 +162,12 @@ while True:
         if selected_rows:
             # 選択された行を取得
             selected_row_index = values['-TABLE-'][0]
-
             # 選択された行の楽曲名を取得
             selected_row_Title = table_data[selected_row_index][0]
             # 選択された行のアーティスト名を取得
             selected_row_Artist = table_data[selected_row_index][1]
-
             selected_row_oldUnique = table_data[selected_row_index][6]
-
             NewArtist = sg.popup_get_text('新しいアーティスト名を入力してください','曲名修正',default_text=str(selected_row_Artist),no_titlebar=True)
-            
             if str(NewArtist) == 'None':
                 continue
 
@@ -177,7 +175,9 @@ while True:
             if result2 == 'OK':
                 # sg.popup('削除しました')
                 # 選択された行を削除
+                NewID = GetData.generate_unique_id(selected_row_Title,NewArtist)
                 updateartist(selected_row_Title,NewArtist,selected_row_oldUnique)
+                updateunique(selected_row_Title,NewTitle,NewID)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
@@ -246,18 +246,14 @@ while True:
         window['-TABLE-'].update(values=table_data)  
 
     elif event == 'エラーログ':
-         # Excelファイルを保存
+         # logファイルをダウンロードフォルダーに保存します
 
         if os.path.isfile('error.log'):
             import shutil
-
             user_folder = os.path.expanduser("~")
             folder = os.path.join(user_folder, "Downloads")
-
             shutil.copy('error.log', folder)
-
             os.chdir(os.path.dirname(sys.argv[0]))
-
             sg.popup_ok('エラーログをダウンロードフォルダにコピーしました',no_titlebar=True)
 
         else:

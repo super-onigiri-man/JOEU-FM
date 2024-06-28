@@ -4,6 +4,7 @@ import sys
 import datetime
 import webbrowser
 import GetData
+import subprocess
 
 # カレントディレクトリをスクリプトのディレクトリに変更
 os.chdir(os.path.dirname(sys.argv[0]))
@@ -110,6 +111,8 @@ while True:
     if event == '管理者':
        
         import AdminUser  # 管理者画面の設置
+        import WriteCSV2 #DBからcsvに直接書き込む
+        sys.exit()
         
 
     if event == 'ランキング修正':
