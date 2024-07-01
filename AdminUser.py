@@ -177,7 +177,7 @@ while True:
                 # 選択された行を削除
                 NewID = GetData.generate_unique_id(selected_row_Title,NewArtist)
                 updateartist(selected_row_Title,NewArtist,selected_row_oldUnique)
-                updateunique(selected_row_Title,NewTitle,NewID)
+                updateunique(selected_row_Title,NewArtist,NewID)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
