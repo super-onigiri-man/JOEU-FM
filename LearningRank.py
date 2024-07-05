@@ -22,6 +22,8 @@ for low in range(2263, 4469,45):
     
     this_number = unicodedata.normalize("NFKC",sheet['B'+str(low+1)].value)
     this_number = this_number.replace('No.','')
+    # print(low)
+    # print(this_number)
         # データの処理と挿入
     for row in range(low+4, low+42, 2):
         title = unicodedata.normalize("NFKC", str(sheet['E' + str(row)].value))
@@ -104,7 +106,3 @@ def process_excel_files(directory):
         
         import RevisionRank2
         RevisionRank2.RevisionRank('Rank_BackUp/'+str(filename))
-
-# 使用例
-directory_path = 'Rank_BackUp'  # ここにExcelファイルが保存されているディレクトリのパスを指定
-process_excel_files(directory_path)
