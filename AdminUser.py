@@ -89,9 +89,15 @@ def updateartist(Title,Artist,oldUnique):
     params = (Artist,Title,oldUnique)
     cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
 
-def updateunique(Title,Artist,newUnique):
-    params = (newUnique,Title,Artist)
-    cursor.execute("UPDATE music_master SET Unique_id = ? WHERE Title= ? AND  Artist = ?;",params)
+def updateunique(Title,Artist,Unique): #Unique_id更新用（使用していません）
+    params = (Unique,Artist,Title)
+    query ="SELECT * FROM music_master WHERE Unique_id = ?;",params
+    results = cursor.execute(query).fetchall()
+    print(results)
+    if results != None: #重複があった場合
+        params = (Artist,Title,Unique)
+        cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
+
 
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
@@ -147,7 +153,6 @@ while True:
                 # 選択された行を削除
                 NewID = GetData.generate_unique_id(NewTitle,selected_row_Artist)
                 updatetitle(NewTitle,selected_row_Artist,selected_row_oldUnique)
-                updateunique(NewTitle,selected_row_Artist,NewID)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
@@ -177,7 +182,6 @@ while True:
                 # 選択された行を削除
                 NewID = GetData.generate_unique_id(selected_row_Title,NewArtist)
                 updateartist(selected_row_Title,NewArtist,selected_row_oldUnique)
-                updateunique(selected_row_Title,NewArtist,NewID)
                 reload()
                 # テーブルのデータを更新
                 table_data = df.values.tolist()
