@@ -6,6 +6,8 @@ import sqlite3
 import PySimpleGUI as sg
 import asyncio #非同期処理
 import unicodedata #全角文字を半角文字に変換
+import re
+import xlrd #NewHaruyaPath用
 
 dbname = ('test.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -129,7 +131,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 for title in titles:
                     unicodedata.normalize("NFKC", title.strip()) 
                     unicodedata.normalize("NFKC", artist.text)  
-                    OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
+                    OriconWeekData.append([title.strip(), artist.text, format(score, '.1f'),generate_unique_id(title.strip(),artist.text)])
 
                     if title == titles[-1]:
                         rank = rank + 1
@@ -138,7 +140,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # If no slash, just add the entry to the array
                 unicodedata.normalize("NFKC", link.text)  # Strip to remove leading/trailing whitespaces
                 unicodedata.normalize("NFKC", artist.text)
-                OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
+                OriconWeekData.append([link.text, artist.text, format(score, '.1f'),generate_unique_id(link.text,artist.text)])
                 rank = rank + 1
                 score = score - 0.3
 
@@ -163,7 +165,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 for title in titles:
                     unicodedata.normalize("NFKC", title.strip()) 
                     unicodedata.normalize("NFKC", artist.text)
-                    OriconWeekData.append([title.strip(), artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
+                    OriconWeekData.append([title.strip(), artist.text, format(score, '.1f'),generate_unique_id(title.strip(),artist.text)])
 
                     if title == titles[-1]:
                         rank = rank + 1
@@ -172,7 +174,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # If no slash, just add the entry to the array
                 unicodedata.normalize("NFKC", str(title))  # Strip to remove leading/trailing whitespaces
                 unicodedata.normalize("NFKC", str(artist))
-                OriconWeekData.append([link.text, artist.text, "{:.1f}".format(score),generate_unique_id(title.strip(),artist.text)])
+                OriconWeekData.append([link.text, artist.text, format(score, '.1f'),generate_unique_id(title.strip(),artist.text)])
                 rank = rank + 1
                 score = score - 0.3
                 # 壊れたときの表示用
@@ -206,7 +208,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             #     print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             unicodedata.normalize("NFKC", link.text)  # Strip to remove leading/trailing whitespaces
             unicodedata.normalize("NFKC", artist.text)
-            OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
+            OriconDigitalData.append([link.text,artist.text,format(score, '.1f'),generate_unique_id(link.text,artist.text)])
             rank = rank + 1
             score = score - 0.3
 
@@ -219,7 +221,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         for link, artist in zip(links, artist):
             unicodedata.normalize("NFKC", str(links))  # Strip to remove leading/trailing whitespaces
             unicodedata.normalize("NFKC", str(artist))
-            OriconDigitalData.append([link.text,artist.text,"{:.1f}".format(score),generate_unique_id(link.text,artist.text)])
+            OriconDigitalData.append([link.text,artist.text,format(score, '.1f'),generate_unique_id(link.text,artist.text)])
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             rank = rank + 1
             score = score - 0.3
@@ -270,7 +272,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         sg.popup_error("「ビルボードランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
-async def HaruyaRank(HaruyaPath):
+async def OldHaruyaRank(HaruyaPath): # 2024年6月末までの明屋書店フォーマット
     try:
 
         # Excelファイルを読み込む
@@ -295,6 +297,75 @@ async def HaruyaRank(HaruyaPath):
                     HaruyaData.append([song_name.strip(), artist_name, point,generate_unique_id(song_name.strip(),artist_name)])
 
         print('明屋書店データOK')
+
+    except Exception as e:
+            import traceback
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+            sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
+
+async def NewHaruyaRank(HaruyaPath): # 2024年7月からの明屋書店フォーマット
+    
+    try:
+        # Excelファイルの読み込み
+        workbook = xlrd.open_workbook(HaruyaPath)
+        sheet = workbook['SG1～20']
+
+        # 既に登録された曲名を格納するセット
+        registered_songs = set()
+        point = 6.0
+
+        # データの取得と整形
+        for row_index in range(sheet.nrows):
+
+            if point <= 0.3:
+                break
+
+            title = sheet.cell_value(row_index+5, 4)  # 曲名
+            artist = sheet.cell_value(row_index+5, 5)  # アーティスト名
+
+            # 全角・半角変換
+            title = unicodedata.normalize("NFKC", title)
+            artist = unicodedata.normalize("NFKC", artist)
+
+            # print(title)
+            # 正規表現で不要な文字列を削除
+            title = re.sub(r'\(.*?\)', '', title)  # カッコとその中身を削除 
+            title = re.sub(r'【.*?】', '',title) #デカカッコとその中身を削除
+            title = re.sub(r'<.*>','',title)# <>を消す
+            title = re.sub(r'[★▲]', '', title)  # 先頭の★と▲を削除
+
+            # print(title)
+
+            if "/" in title:
+                title_a,title_b = title.split("/")
+                str(title_a)
+                str(title_b)
+                if title_a not in registered_songs and title_b not in registered_songs:
+                    # なかったらAを追加
+                    # 独自ID設定
+                    Unique_id_a = generate_unique_id(title_a,artist)
+                    HaruyaData.append([title_a,artist,format(point, '.1f'),Unique_id_a])
+                    registered_songs.add(title_a)
+
+                    Unique_id_b = generate_unique_id(title_b,artist)
+                    HaruyaData.append([title_b,artist,format(point, '.1f'),Unique_id_b])
+                    registered_songs.add(title_b)
+                    point = point - 0.3
+
+            else:      
+                # 同じ曲が登録済みかどうかを確認
+                if title not in registered_songs:
+                    # 新しい曲の場合、配列に追加
+                    # 独自ID設定
+                    Unique_id = generate_unique_id(title,artist)
+                    HaruyaData.append([title,artist,format(point, '.1f'),Unique_id])
+                    registered_songs.add(title)
+                    point = point - 0.3
+
+        # print(HaruyaData)
+        print('明屋書店データOK')
+
 
     except Exception as e:
             import traceback
@@ -407,7 +478,7 @@ def GetThisWeekRank(HaruyaPath):
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
-        asyncio.run(HaruyaRank(HaruyaPath))
+        asyncio.run(NewHaruyaRank(HaruyaPath))
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
         asyncio.run(insertOriconWeekData())    
         asyncio.run(insertOriconDigitalData())
