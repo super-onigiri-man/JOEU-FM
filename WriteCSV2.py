@@ -1,6 +1,7 @@
 import sqlite3
 import csv
 import PySimpleGUI as sg
+import GetData
 
 # データベースへの接続
 conn = sqlite3.connect('test.db')
@@ -13,12 +14,13 @@ data = cursor.fetchall()
 # 重複チェックとデータ加工
 unique_ids = {}
 for row in data:
-    unique_id = row[6]  # Unique_idのインデックス
+    unique_id = GetData.generate_unique_id(row[0],row[1])  # Unique_idのインデックス
     if unique_id in unique_ids:
         # 重複があった場合
+        existing_data = list(unique_ids[unique_id])
         if row[4] > unique_ids[unique_id][4]:  # Last_Numberが大きい方を選択
-            unique_ids[unique_id] = row  # Last_Numberが大きい方を採用
-            unique_ids[unique_id][5] += row[5] #Onchartを足す
+            unique_ids[unique_id] = list(row)  # Last_Numberが大きい方を採用
+            unique_ids[unique_id][5] = existing_data[5] + row[5] #Onchartを足す
     else:
         # 重複なし
         unique_ids[unique_id] = row
