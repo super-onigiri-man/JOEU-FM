@@ -53,11 +53,15 @@ while True:
             import GetData  # データ取得
             GetData.GetThisWeekRank(HaruyaPath)
             import ViewData  # データ閲覧・編集
-            import CreateExcel  # ランキングをExcelに書き込み
-            CreateExcel.MajicalExcel(GetData.OriconTodays())
-            import WriteCSV  # DBを元にCSVに書き込む
-            WriteCSV.WriteCSV(GetData.OriconTodays())
-            import ManuscriptGeneration  # 原稿を自動生成
+            if GetData.Flags() == True: # 先週のランキングを作ったか確認
+                import CreateExcel  # ランキングをExcelに書き込み
+                CreateExcel.MajicalExcel(GetData.OriconTodays())
+                import WriteCSV  # DBを元にCSVに書き込む
+                WriteCSV.WriteCSV(GetData.OriconTodays())
+                import ManuscriptGeneration  # 原稿を自動生成
+            else:
+                import OldCreateExcel
+                OldCreateExcel.OldMajicalExcel(GetData.OriconTodays())
         
         break
 

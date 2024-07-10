@@ -60,6 +60,29 @@ def OriconTodays():
 
     return Oriconday
 
+
+def Flags():
+
+    # 今日の日付と曜日を求める
+    dt = datetime.date.today()
+    weekday = dt.weekday()
+
+    if weekday <= 1:  # 月曜日または火曜日（今週月曜日の日付を返す）
+        Flag = True
+    elif weekday == 2:  # 水曜日（時間を判定する）
+        current_time = datetime.datetime.now().time()
+        specified_time = datetime.time(14, 10)  
+        if current_time < specified_time and not popup_done:
+            Flag = False
+        elif current_time < specified_time:
+            Flag = False
+        else:
+            Flag = True # 14:10以降は今週のデータを取得
+    else:  # 木曜日から日曜日（来週月曜日の日付を返す）
+        Flag = True
+
+    return Flag
+
 def OriconLastWeek():
     # 今日の日付と曜日を求める
     dt = datetime.date.today()
