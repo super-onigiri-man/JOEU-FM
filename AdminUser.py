@@ -102,24 +102,25 @@ def updateunique(Title,Artist,Unique): #Unique_id更新用（使用していま�
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
 header_list = ['楽曲名','アーティスト','得点','前回の順位','前回ランクイン','ランクイン回数','独自ID']
+window_size = [20,20,8,8,8,8,8]
 # PySimpleGUIのレイアウト
 layout = [
-    [sg.Table(values=table_data, headings=header_list, auto_size_columns=False,enable_events=True,key='-TABLE-',
+    [sg.Table(values=table_data, headings=header_list, col_widths=window_size,auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(200))))],
 
     [sg.Button('曲名修正',size=(10,3),key='曲名修正'),
      sg.Button('アーティスト名修正',size=(18,3),key='アーティスト名修正'),
      sg.Button('削除',size=(10,3),key='削除'),
-     sg.Button('エラーログ出力',size=(12,3),key='エラーログ'),
-     sg.Button('エラーログ削除',size=(12,3),key='エラーログ削除'),
+     sg.Button('エラーログ出力',size=(15,3),key='エラーログ'),
+     sg.Button('エラーログ削除',size=(15,3),key='エラーログ削除'),
      sg.Button('csv復元',size=(12,3),key='csv'),
     #  sg.Button('アーティスト名検索',size=(18,3),key='アーティスト名検索')
     ],
 
-    [sg.Button('曲名で\n並び替え',size = (15,3),key='曲名'),
-    sg.Button('アーティスト名で\n並び替え',size = (15,3),key='アーティスト'),
-    sg.Button('ランクイン回数順で\n並び替え',size=(15,3),key='ランクイン'),
-    sg.Button('最新回順で\n並び替え',size=(15,3),key='最終回')
+    [sg.Button('曲名で\n並び替え',size = (20,3),key='曲名'),
+    sg.Button('アーティスト名で\n並び替え',size = (20,3),key='アーティスト'),
+    sg.Button('ランクイン回数順で\n並び替え',size=(20,3),key='ランクイン'),
+    sg.Button('最新回順で\n並び替え',size=(20,3),key='最終回')
     ]
 ]
 
