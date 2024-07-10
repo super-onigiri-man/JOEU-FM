@@ -223,7 +223,7 @@ while True:
             # テーブルを更新
             window['-TABLE-'].update(values=table_data)
 
-        elif value == '最終回順に並び替え':
+        elif value == '最新回順に並び替え':
             sortlastepisode()
             # reload()
             # テーブルのデータを更新
