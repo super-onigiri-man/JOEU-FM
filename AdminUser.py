@@ -105,22 +105,17 @@ header_list = ['楽曲名','アーティスト','得点','前回の順位','前�
 window_size = [20,20,8,8,8,8,8]
 # PySimpleGUIのレイアウト
 layout = [
+    [sg.Text('並び替え'),sg.Combo(['曲名で並び替え', 'アーティスト名で並び替え', 'ランクイン回数順で並び替え','最新回順に並び替え'], default_value="選択して下さい", size=(60,1),key='Combo'),sg.Button('実行',key='Select')],
     [sg.Table(values=table_data, headings=header_list, col_widths=window_size,auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(200))))],
 
-    [sg.Button('曲名修正',size=(10,3),key='曲名修正'),
-     sg.Button('アーティスト名修正',size=(18,3),key='アーティスト名修正'),
-     sg.Button('削除',size=(10,3),key='削除'),
-     sg.Button('エラーログ出力',size=(15,3),key='エラーログ'),
-     sg.Button('エラーログ削除',size=(15,3),key='エラーログ削除'),
-     sg.Button('csv復元',size=(12,3),key='csv'),
+    [sg.Button('曲名修正',size=(10,3),key='曲名修正',button_color=('black','orange')),
+     sg.Button('アーティスト名修正',size=(18,3),key='アーティスト名修正',button_color=('black','orange')),
+     sg.Button('削除',size=(10,3),key='削除',button_color=('white','red')),
+     sg.Button('エラーログ出力',size=(15,3),key='エラーログ',button_color=('black','#ff6347')),
+     sg.Button('エラーログ削除',size=(15,3),key='エラーログ削除',button_color=('white','red')),
+     sg.Button('csv復元',size=(12,3),key='csv',button_color=('white','#8b008b')),
     #  sg.Button('アーティスト名検索',size=(18,3),key='アーティスト名検索')
-    ],
-
-    [sg.Button('曲名で\n並び替え',size = (20,3),key='曲名'),
-    sg.Button('アーティスト名で\n並び替え',size = (20,3),key='アーティスト'),
-    sg.Button('ランクイン回数順で\n並び替え',size=(20,3),key='ランクイン'),
-    sg.Button('最新回順で\n並び替え',size=(20,3),key='最終回')
     ]
 ]
 
@@ -217,38 +212,40 @@ while True:
             elif result == 'Cancel':
                 # sg.popup('キャンセルが選択されました')
                 continue
-
-    elif event == 'ランクイン':
-        sortrankin()
-        # reload()
-        # テーブルのデータを更新
-        table_data = df.values.tolist()
-        # テーブルを更新
-        window['-TABLE-'].update(values=table_data)
-
-    elif event == '最終回':
-        sortlastepisode()
-        # reload()
-        # テーブルのデータを更新
-        table_data = df.values.tolist()
-        # テーブルを更新
-        window['-TABLE-'].update(values=table_data)
+    elif event == 'Select':
+        value = values['Combo']
         
-    elif event == '曲名':
-        sorttitle()
-        # reload()
-        # テーブルのデータを更新
-        table_data = df.values.tolist()
-        # テーブルを更新
-        window['-TABLE-'].update(values=table_data)
+        if value == 'ランクイン回数順で並び替え':
+            sortrankin()
+            # reload()
+            # テーブルのデータを更新
+            table_data = df.values.tolist()
+            # テーブルを更新
+            window['-TABLE-'].update(values=table_data)
 
-    elif event == 'アーティスト':
-        sortartist()
-        # reload()
-        # テーブルのデータを更新
-        table_data = df.values.tolist()
-        # テーブルを更新
-        window['-TABLE-'].update(values=table_data)  
+        elif value == '最終回順に並び替え':
+            sortlastepisode()
+            # reload()
+            # テーブルのデータを更新
+            table_data = df.values.tolist()
+            # テーブルを更新
+            window['-TABLE-'].update(values=table_data)
+            
+        elif value == '曲名で並び替え':
+            sorttitle()
+            # reload()
+            # テーブルのデータを更新
+            table_data = df.values.tolist()
+            # テーブルを更新
+            window['-TABLE-'].update(values=table_data)
+
+        elif value == 'アーティスト名で並び替え':
+            sortartist()
+            # reload()
+            # テーブルのデータを更新
+            table_data = df.values.tolist()
+            # テーブルを更新
+            window['-TABLE-'].update(values=table_data)  
 
     elif event == 'エラーログ':
          # logファイルをダウンロードフォルダーに保存します
