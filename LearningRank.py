@@ -59,7 +59,7 @@ for low in range(2263, 4469,45):
     with open('楽曲データ.csv', 'w', newline='',encoding='UTF-8') as f:
         # CSVライターオブジェクトを作成
         csv_writer = csv.writer(f)
-
+        csv_writer.writerow(['Title', 'Artist', 'Score', 'Last_Rank', 'Last_Number', 'On_Chart', 'Unique_id'])
         # データを取得
         cursor.execute("SELECT * FROM music_master")
         rows = cursor.fetchall()
@@ -106,3 +106,6 @@ def process_excel_files(directory):
         
         import RevisionRank2
         RevisionRank2.RevisionRank('Rank_BackUp/'+str(filename))
+
+directory_path = 'Rank_BackUp'  # ここにExcelファイルが保存されているディレクトリのパスを指定
+process_excel_files(directory_path)

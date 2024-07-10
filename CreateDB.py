@@ -31,7 +31,7 @@ try:
     progmsg = window['progmsg']
 
     if progress_bar is None or progmsg is None:
-        raise ValueError("Progress bar or progmsg is not found")
+        raise ValueError("エラーです")
 
     # テーブル作成のSQL文
     sql = """CREATE TABLE IF NOT EXISTS music_master (
@@ -61,6 +61,7 @@ try:
 
     cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
+    cursor.execute('''DELETE FROM music_master WHERE Last_Number = "ベストヒットえひめ";''')
 
     update_progress_bar(progress_bar, progmsg, 3, '完了')
 
