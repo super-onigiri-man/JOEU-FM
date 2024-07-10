@@ -115,21 +115,22 @@ def updateunique(Title,Artist,newUnique):
 
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
-header_list = ['楽曲名','アーティスト','得点','前回の順位','前回ランクイン','ランクイン回数']
-# PySimpleGUIのレイアウト
+header_list = ['楽曲名','アーティスト','得点','前回の順位','LastNumber','Onchart']
+window_size = [20,20,8,8,8,8]
+# PySimpleGUIの,レイアウト
 layout = [
-    [sg.Table(values=table_data, headings=header_list, auto_size_columns=False,enable_events=True,key='-TABLE-',
+    [sg.Table(values=table_data, headings=header_list, col_widths=window_size,auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(20))))],
 
-    [sg.Button('曲名修正',size=(10,1),key='曲名修正'),
-     sg.Button('アーティスト名修正',size=(18,1),key='アーティスト名修正'),
-     sg.Button('ランキング再取得',size=(18,1),key='ランキング再取得')],
+    [sg.Button('曲名修正',size=(10,1),key='曲名修正',button_color=('black', 'orange')),
+     sg.Button('アーティスト名修正',size=(21,1),key='アーティスト名修正',button_color=('black', 'orange')),
+     sg.Button('ランキング再取得',size=(18,1),key='ランキング再取得',button_color=('white', '#4b0082'))],
 
-    [sg.Button('削除',size=(10,1),key='削除'),
-     sg.Button('アーティスト名で削除',size=(18,1),key='アーティスト名で削除'),
-     sg.Button('得点修正',size=(10,1),key='得点修正'),
-     sg.Button('3点追加',size=(10,1),key = '3点追加'),
-     sg.Button('Excel書き込み',size=(12,1),key='書き込み',button_color=('white', 'red'))
+    [sg.Button('削除',size=(10,1),key='削除',button_color=('white', 'red')),
+     sg.Button('アーティスト名で削除',size=(21,1),key='アーティスト名で削除',button_color=('white', 'red')),
+     sg.Button('得点修正',size=(12,1),key='得点修正'),
+     sg.Button('3点追加',size=(12,1),key = '3点追加'),
+     sg.Button('Excel書き込み',size=(12,1),key='書き込み',button_color=('white', '#006400'))
      ]
      
 ]
