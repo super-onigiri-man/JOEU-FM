@@ -44,10 +44,11 @@ def RankingUpdate():
     ID = info[0]
     HaruyaPath = info[1]
     SelectDay = info[2]
+    NewHaruya = info[3]
 
     if int(ID) == 1: #識別番号が今週（1）だった場合
         GetData.ResetData()
-        GetData.GetThisWeekRank(HaruyaPath)
+        GetData.GetThisWeekRank(HaruyaPath,NewHaruya)
 
     elif int(ID) == 2: #識別番号が2（先週）だった場合
         GetData.ResetData()
