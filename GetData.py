@@ -319,7 +319,7 @@ async def OldHaruyaRank(HaruyaPath): # 2024年6月末までの明屋書店フォ
                 else:
                     HaruyaData.append([song_name.strip(), artist_name, point,generate_unique_id(song_name.strip(),artist_name)])
 
-        print('明屋書店データOK')
+        print('旧・明屋書店データOK')
 
     except Exception as e:
             import traceback
@@ -387,7 +387,7 @@ async def NewHaruyaRank(HaruyaPath): # 2024年7月からの明屋書店フォー
                     point = point - 0.3
 
         # print(HaruyaData)
-        print('明屋書店データOK')
+        print('新・明屋書店データOK')
 
 
     except Exception as e:
@@ -470,7 +470,7 @@ async def insertHaruyaData():
             traceback.print_exc( file=f)
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
-def GetThisWeekRank(HaruyaPath):
+def GetThisWeekRank(HaruyaPath,Flag):
 
     # レイアウト（共通設定）
     layout = [
@@ -491,7 +491,7 @@ def GetThisWeekRank(HaruyaPath):
         clear()
         update_progress_bar(window['progressbar'],window['progmsg'], 0,'リロード用情報更新中')
         with open('Reload.txt', 'w',encoding='UTF-8') as f:
-            f.write('1,'+HaruyaPath+',')
+            f.write('1,'+HaruyaPath+',,'+str(Flag))
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconTodays()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
@@ -501,7 +501,10 @@ def GetThisWeekRank(HaruyaPath):
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
-        asyncio.run(NewHaruyaRank(HaruyaPath))
+        if Flag == True:
+            asyncio.run(NewHaruyaRank(HaruyaPath))
+        else:
+            asyncio.run(OldHaruyaRank(HaruyaPath))
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
         asyncio.run(insertOriconWeekData())    
         asyncio.run(insertOriconDigitalData())
@@ -538,7 +541,7 @@ def GetLastWeekRank():
         clear()
         update_progress_bar(window['progressbar'],window['progmsg'], 0,'リロード用情報更新中')
         with open('Reload.txt', 'w',encoding='UTF-8') as f:
-            f.write('2,,')
+            f.write('2,,,')
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconLastWeek()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
@@ -587,7 +590,7 @@ def GetSelectWeekRank(SelectDay,Flag):
         if Flag == False:
             with open('Reload.txt', 'w',encoding='UTF-8') as f:
                 SelectDay,Selecttime = str(SelectDay).split()
-                f.write('3,,'+str(SelectDay))
+                f.write('3,,'+str(SelectDay)+',')
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(OSW)+'付けオリコン週間ランキング取得中')
         OriconWeekRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(OSW)+'付けオリコンデジタルランキング取得中')
