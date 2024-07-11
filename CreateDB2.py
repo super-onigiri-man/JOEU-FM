@@ -40,7 +40,7 @@ try:
     window['progmsg'].update('データベース作成完了')
 
     # 進捗バーを表示するためにウィンドウを少し待つ
-    sg.popup("データベースの作成が完了しました。", title="完了", no_titlebar=True)
+    # sg.popup("データベースの作成が完了しました。", title="完了", no_titlebar=True)
 
     window.close()
 
