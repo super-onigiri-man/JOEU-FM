@@ -70,5 +70,12 @@ try:
 except Exception as e:
     with open('error.log', 'a') as f:
         traceback.print_exc(file=f)
-    sg.popup_error("DBを作成できませんでした。\n システムを終了します", title="エラー", no_titlebar=True)
-    sys.exit()
+    window.close()
+    result = sg.popup_yes_no("DBを作成できませんでした。\n過去のデータを用いて復元しますか？", title="エラー", no_titlebar=True)
+    if result == 'Yes':
+        import CreateDB2
+        import LearningRank
+        sg.popup('処理が終了しました。システムを終了します')
+        sys.exit()
+    else:
+        sg.popup('システムを終了します')
