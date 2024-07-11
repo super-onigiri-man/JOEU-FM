@@ -54,7 +54,7 @@ def WriteCSV(Oriconday):
         # データを取得
         cursor.execute("SELECT * FROM music_master")
         rows = cursor.fetchall()
-
+        csv_writer.writerow(['Title', 'Artist', 'Score', 'Last_Rank', 'Last_Number', 'On_Chart', 'Unique_id'])
         # データをCSVに書き込む
         for row in rows:
             csv_writer.writerow(row)
