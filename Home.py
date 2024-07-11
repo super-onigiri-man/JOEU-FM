@@ -4,7 +4,6 @@ import sys
 import datetime
 import webbrowser
 import GetData
-import subprocess
 
 # カレントディレクトリをスクリプトのディレクトリに変更
 os.chdir(os.path.dirname(sys.argv[0]))
@@ -23,6 +22,7 @@ layout = [
         sg.InputText('ファイルを選択', key='-HaruyaExcel-', enable_events=True, size=(48, 1)),
         sg.FileBrowse(button_text='選択', font=('メイリオ', 8), size=(5, 1), key="-HaruyaExcel-")
     ],
+    [   sg.Checkbox('明屋書店Excelデータの新フォーマットを読み込む',key='format')],
     [sg.Button('今週のデータを生成する', size=(25, 3), key='今週データ生成')],
     [sg.Button('先週のデータを生成する', size=(25, 3), key='先週データ生成')],
     [
@@ -51,7 +51,10 @@ while True:
         else:
             import Check  # ファイルが重複してないか確認
             import GetData  # データ取得
-            GetData.GetThisWeekRank(HaruyaPath)
+            if values['format'] == True:
+                GetData.GetThisWeekRank(HaruyaPath,True) #新しいフォーマットを読みます
+            else:
+                GetData.GetThisWeekRank(HaruyaPath,False) #古いフォーマットを読みます
             import ViewData  # データ閲覧・編集
             if GetData.Flags() == True: # 先週のランキングを作ったか確認
                 import CreateExcel  # ランキングをExcelに書き込み
