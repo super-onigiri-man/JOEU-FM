@@ -501,7 +501,7 @@ def GetThisWeekRank(HaruyaPath,Flag):
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
-        if Flag == True:
+        if Flag:
             asyncio.run(NewHaruyaRank(HaruyaPath))
         else:
             asyncio.run(OldHaruyaRank(HaruyaPath))
