@@ -21,6 +21,9 @@ for row in data:
         if row[4] > unique_ids[unique_id][4]:  # Last_Numberが大きい方を選択
             unique_ids[unique_id] = list(row)  # Last_Numberが大きい方を採用
             unique_ids[unique_id][5] = existing_data[5] + row[5] #Onchartを足す
+        
+        else:
+            existing_data[5] = unique_ids[unique_id][5] + row[5]
     else:
         # 重複なし
         unique_ids[unique_id] = row
