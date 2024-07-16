@@ -268,7 +268,7 @@ while True:
         if result == 'OK':
             import CreateDB2
             import LearningRank
-            sg.popup('処理が終了しました。システムを終了します')
+            sg.popup('処理が終了しました。システムを終了します',no_titlebar=True)
             sys.exit()
         else:
             break
