@@ -3,7 +3,7 @@ import sqlite3
 import PySimpleGUI as sg
 import traceback
 import sys
-import pandas as pd
+import os
 
 dbname = 'test.db'  # データベース名
 csv_file = '楽曲データ.csv'  # CSVファイル名
@@ -32,6 +32,7 @@ try:
 
     if progress_bar is None or progmsg is None:
         raise ValueError("エラーです")
+    
 
     # テーブル作成のSQL文
     sql = """CREATE TABLE IF NOT EXISTS music_master (
@@ -75,7 +76,9 @@ except Exception as e:
     if result == 'Yes':
         import CreateDB2
         import LearningRank
-        sg.popup('処理が終了しました。システムを終了します')
+        sg.popup('処理が終了しました。\nシステムを再起動します。',no_titlebar=True)
+        import Home
         sys.exit()
     else:
-        sg.popup('システムを終了します')
+        sg.popup('システムを終了します',no_titlebar=True)
+        sys.exit()
