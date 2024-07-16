@@ -42,4 +42,4 @@ with open('楽曲データ.csv', 'w', newline='',encoding='UTF-8') as csvfile:
 # 接続を閉じる
 conn.close()
 
-sg.popup("データがCSVファイルに書き込まれました。\nデータの整合性を確実にするため、ソフトを終了します",no_titlebar=True)
+sg.popup("データがCSVファイルに書き込まれました。\nデータの整合性を確実にするため、ソフトを再起動してください",no_titlebar=True)
