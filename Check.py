@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 import GetData
 import sqlite3
 import datetime
+import RevisionRank
 
 dbname = ('test.db')#データベース名.db拡張子で設定
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -11,6 +12,7 @@ cursor = conn.cursor() #カーソルオブジェクトを作成
 
 Oriconday = GetData.OriconTodays()
 path = 'Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx'
+count = 0
 is_file = os.path.isfile(path)
 if is_file:
     sg.popup('今週のデータはすでに生成済みです。\n今週のデータを作り直すにはデータベースの変更が必要です',no_titlebar=True)
@@ -31,11 +33,18 @@ if is_file:
 
             cursor.execute("DELETE FROM music_master WHERE Last_Number = ?;",(max_last_number,)) 
 
-            import RevisionRank
-            rollbackday = Oriconday - datetime.timedelta(days=7)
-            RevisionRank.RevisionRank('Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx')
+            while True:
 
-            os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+                if count == 0:
+                    rollbackday = Oriconday - datetime.timedelta(days=7)
+                
+                else:
+                    rollbackday = rollbackday - datetime.timedelta(days=7)
+                filepath = 'Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx' 
+                if os.path.isfile(filepath): #ファイルがあったら
+                    RevisionRank.RevisionRank(filepath)
+                    os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+                    break
         
         except Exception as e:
             import traceback
