@@ -33,13 +33,10 @@ try:
     if progress_bar is None or progmsg is None:
         raise ValueError("エラーです")
     
-<<<<<<< HEAD
-=======
     # 既存テーブルがあれば削除
     cursor.execute("DROP TABLE IF EXISTS music_master;")
     conn.commit()
 
->>>>>>> 3814a825f1b1cb9fce8f1c6a0b226ba6db42f470
 
     # テーブル作成のSQL文
     sql = """CREATE TABLE IF NOT EXISTS music_master (
