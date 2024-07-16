@@ -492,6 +492,7 @@ def GetThisWeekRank(HaruyaPath,Flag):
         update_progress_bar(window['progressbar'],window['progmsg'], 0,'リロード用情報更新中')
         with open('Reload.txt', 'w',encoding='UTF-8') as f:
             f.write('1,'+HaruyaPath+',,'+str(Flag))
+            # print(Flag)
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconTodays()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
@@ -501,7 +502,7 @@ def GetThisWeekRank(HaruyaPath,Flag):
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 40,'明屋書店ランキング取得中')
-        if Flag:
+        if str(Flag) == 'True':
             asyncio.run(NewHaruyaRank(HaruyaPath))
         else:
             asyncio.run(OldHaruyaRank(HaruyaPath))
