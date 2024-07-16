@@ -119,6 +119,7 @@ while True:
        
         import AdminUser  # 管理者画面の設置
         import WriteCSV2 #DBからcsvに直接書き込む
+        import Home
         sys.exit()
         
 
