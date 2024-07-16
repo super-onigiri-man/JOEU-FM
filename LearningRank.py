@@ -8,10 +8,22 @@ import PySimpleGUI as sg
 import GetData
 import unicodedata
 
+def update_progress_bar(progress_bar,progmsg, value,msg):
+    progress_bar.update_bar(value)
+    progmsg.update(msg)
+    window.refresh()
 
 dbname = ('test2.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
 cursor = conn.cursor() #カーソルオブジェクトを作成
+
+layout = [
+        [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
+        [sg.Button('読み込み中止'),sg.Text(key = 'progmsg')]
+    ]
+
+window = sg.Window('システム起動中', layout, finalize=True, icon='FM-BACS.ico')
+loading = 0
 
 # 2022年1月16日分からのデータ取得
 excel_file = 'Rank_BackUp/2ランキング.xlsx'
@@ -68,7 +80,9 @@ for low in range(2263, 4469,45):
         for row in rows:
             csv_writer.writerow(row)
 
-    # sg.popup_ok('CSVファイルに書き込みました',no_titlebar=True)
+    update_progress_bar(window['progressbar'],window['progmsg'],loading,str(this_number)+'回ランキング処理中')
+    loading + 1
+    print(loading)
 
 import os
 import pandas as pd
@@ -98,6 +112,8 @@ def process_excel_files(directory):
     
     # 日付順にソート
     sorted_files = sorted(valid_dated_files, key=lambda x: x[1])
+
+    print(len(sorted_files))
     
     # 各ファイルを処理
     for filename, file_date in sorted_files:
