@@ -80,8 +80,7 @@ except Exception as e:
     if result == 'Yes':
         import CreateDB2
         import LearningRank
-        sg.popup('処理が終了しました。\nシステムを再起動します。',no_titlebar=True)
-        import Home
+        sg.popup('処理が終了しました。\nシステムを終了します。',no_titlebar=True)
         sys.exit()
     else:
         sg.popup('システムを終了します',no_titlebar=True)
