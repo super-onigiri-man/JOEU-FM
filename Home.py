@@ -130,7 +130,7 @@ while True:
              sg.FileBrowse(button_text='選択', font=('メイリオ', 8), size=(5, 1), key="-RankExcel-"),
              sg.Button('OK')]
         ]
-        rank_window = sg.Window('ランキングデータ取得', rank_layout)
+        rank_window = sg.Window('ランキングデータ取得', rank_layout,icon='FM=BACS.ico')
 
         while True:
             rank_event, rank_values = rank_window.read()
@@ -151,7 +151,7 @@ while True:
              sg.Button('ビルボードJAPAN\nHOT100', size=(15, 3), key='ビルボード')]
         ]
 
-        display_window = sg.Window('ランキングデータ取得', display_layout)
+        display_window = sg.Window('ランキングデータ取得', display_layout,icon='FM-BACS.ico')
 
         while True: #選択するとブラウザ表示（すでにブラウザが出てる場合は新しいタブで表示）
             display_event, display_values = display_window.read()
