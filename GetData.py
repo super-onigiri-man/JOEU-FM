@@ -195,14 +195,15 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                         score = score - 0.3
             else:
                 # If no slash, just add the entry to the array
-                unicodedata.normalize("NFKC", str(title))  # Strip to remove leading/trailing whitespaces
-                unicodedata.normalize("NFKC", str(artist))
-                OriconWeekData.append([link.text, artist.text, format(score, '.1f'),generate_unique_id(title.strip(),artist.text)])
+                unicodedata.normalize("NFKC", link.text)  # Strip to remove leading/trailing whitespaces
+                unicodedata.normalize("NFKC", artist.text)
+                OriconWeekData.append([link.text, artist.text, format(score, '.1f'),generate_unique_id(link.text,artist.text)])
                 rank = rank + 1
                 score = score - 0.3
                 # 壊れたときの表示用
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
 
+        # print(OriconWeekData)
         print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
 
     except Exception as e:
