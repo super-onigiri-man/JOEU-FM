@@ -37,7 +37,6 @@ if is_file:
 
                 if count == 0:
                     rollbackday = Oriconday - datetime.timedelta(days=7)
-                
                 else:
                     rollbackday = rollbackday - datetime.timedelta(days=7)
                 filepath = 'Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx' 
@@ -45,6 +44,8 @@ if is_file:
                     RevisionRank.RevisionRank(filepath)
                     os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
                     break
+
+                count = count + 1
         
         except Exception as e:
             import traceback
