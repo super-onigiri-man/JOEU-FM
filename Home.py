@@ -46,8 +46,23 @@ while True:
     if event == '今週データ生成':
         HaruyaPath = values['-HaruyaExcel-']
         if HaruyaPath == 'ファイルを選択':
-            sg.popup_error('明屋書店のデータを追加してください', no_titlebar=True)
-            continue
+            sg.popup_ok('明屋書店が選択されていません\n明屋書店以外のデータでランキングを生成します', no_titlebar=True)
+            import Check
+            import GetData
+            GetData.NGetThisWeekRank()
+            import ViewData
+            if GetData.Flags()==True:
+                import CreateExcel  # ランキングをExcelに書き込み
+                CreateExcel.MajicalExcel(GetData.OriconTodays())
+                import WriteCSV  # DBを元にCSVに書き込む
+                WriteCSV.WriteCSV(GetData.OriconTodays())
+                import ManuscriptGeneration  # 原稿を自動生成
+            else:
+                import OldCreateExcel
+                OldCreateExcel.OldMajicalExcel(GetData.OriconTodays())
+
+            break
+        
         else:
             import Check  # ファイルが重複してないか確認
             import GetData  # データ取得
@@ -65,8 +80,8 @@ while True:
             else:
                 import OldCreateExcel
                 OldCreateExcel.OldMajicalExcel(GetData.OriconTodays())
-        
-        break
+            
+            break
 
     if event == '先週データ生成':
       sg.popup_ok('このモードでは明屋書店のデータは取得しません', no_titlebar=True)

@@ -41,14 +41,17 @@ def RankingUpdate():
         info = str(f.read())
     print(info)
     info=info.split(',') 
-    ID = info[0]
-    HaruyaPath = info[1]
-    SelectDay = info[2]
-    NewHaruya = info[3]
+    ID = info[0] #取得種別（１：今週、２：先週、３：任意週）
+    HaruyaPath = info[1] #明屋書店Excelデータのパス(ID＝１のみ)
+    SelectDay = info[2] #任意週の日付（ID=3のみ）
+    NewHaruya = info[3] #明屋書店Excelフォーマットについて（1のみTrueであれば新フォーマット）
 
     if int(ID) == 1: #識別番号が今週（1）だった場合
         GetData.ResetData()
-        GetData.GetThisWeekRank(HaruyaPath,NewHaruya)
+        if HaruyaPath == 'No':
+            GetData.NGetThisWeekRank()
+        else:
+            GetData.GetThisWeekRank(HaruyaPath,NewHaruya)
 
     elif int(ID) == 2: #識別番号が2（先週）だった場合
         GetData.ResetData()
@@ -110,8 +113,8 @@ def updateartist(Title,Artist,oldUnique):
     cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
 
 def updateunique(Title,Artist,newUnique):
-    params = (newUnique,Title,Artist)
-    cursor.execute("UPDATE music_master SET Unique_id = ? WHERE Title= ? AND  Artist = ?;",params)
+    params = (newUnique,Artist,Title)
+    cursor.execute("UPDATE music_master SET Unique_id = ? WHERE Artist = ? AND Title= ?;",params)
 # df = df.head(20)
 
 # データフレームをPySimpleGUIの表に変換
