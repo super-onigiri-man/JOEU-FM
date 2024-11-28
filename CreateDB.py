@@ -38,7 +38,7 @@ try:
     conn.commit()
 
 
-    # テーブル作成のSQL文
+    # テーブル作成のSQL文(基盤)
     sql = """CREATE TABLE IF NOT EXISTS music_master (
         Title TEXT,
         Artist TEXT,
