@@ -136,11 +136,25 @@ def generate_unique_id(song_title, artist_name):
 
 
 def OriconWeekRank(Oriconday):#オリコン週間ランキング
+
     try:
+      
+        while True:
+            # print(count)
+            # print(Oriconday)
+            load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
+            html = requests.get(load_url)
+            soup = BeautifulSoup(html.text, 'lxml')
+            main_content = soup.find(class_="content-rank-main")
+            if main_content:
+                break
+
+            # 日付を一日減らす
+            Oriconday = Oriconday - datetime.timedelta(days=1)
+
+            # count = count + 1
+
         #1位から10位
-        load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
-        html = requests.get(load_url)
-        soup = BeautifulSoup(html.text, 'lxml')
         links = soup.find(class_="content-rank-main").find_all('h2',class_='title') #曲名
         artist = soup.find(class_="content-rank-main").find_all('p',class_='name') #アーティスト名
         score = 6.0 #独自スコア
@@ -206,6 +220,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
         # print(OriconWeekData)
         print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
 
+
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
@@ -216,10 +231,23 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
 def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキング
 
     try:
+
+        while True:
+            # print(count)
+            # print(Oriconday)
+            load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
+            html = requests.get(load_url)
+            soup = BeautifulSoup(html.text, 'lxml')
+            main_content = soup.find(class_="content-rank-main")
+            if main_content:
+                break
+
+            # 日付を一日減らす
+            Oriconday = Oriconday - datetime.timedelta(days=1)
+
+            # count = count + 1
+
         # 1位から10位
-        load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/"
-        html = requests.get(load_url)
-        soup = BeautifulSoup(html.text, 'lxml')
         links = soup.find(class_="content-rank-main").find_all('h2', class_='title')
         artist = soup.find(class_="content-rank-main").find_all('p', class_='name')  # アーティスト名
         rank = 1
@@ -262,14 +290,24 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
 def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
 
     try:
-        # オリコンの日付とビルボードの発表日の差を埋めるための計算
-        Billday = Oriconday - datetime.timedelta(days=5)
 
-        #URL(ここを変更すると読み込まなくなります)
-        url = 'https://www.billboard-japan.com/charts/detail?a=hot100&year='+str(Oriconday.year)+'&month='+str(Oriconday.month)+'&day='+str(Oriconday.day)
-        #URLを取得してくる
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # URLの日付はOricondayと同じ
+
+        while True:
+            
+            #URL(ここを変更すると読み込まなくなります)
+            url = 'https://www.billboard-japan.com/charts/detail?a=hot100&year='+str(Oriconday.year)+'&month='+str(Oriconday.month)+'&day='+str(Oriconday.day)
+            #URLを取得してくる
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            songs = soup.find_all('p', class_='musuc_title') #曲名
+            if songs:
+                break
+                # count = count + 1
+
+            Oriconday = Oriconday - datetime.timedelta(days=1)
+            Emergency = True
 
         songs = soup.find_all('p', class_='musuc_title') #曲名
         artists = soup.find_all('p', class_='artist_name') #アーティスト名
@@ -287,6 +325,11 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
             #   print(f"{i+1}位: {format(score, '.1f')} {song} / {artist}") #10位から20位までのランキング
             score = score - 0.3 #scoreを-0.3する
 
+        if Emergency:
+            sg.popup('今週のランキングがなかったため最新日のランキングを取得しました',no_titlebar=True)
+
+        # オリコンの日付とビルボードの発表日の差を埋めるための計算(表示用)
+        Billday = Oriconday - datetime.timedelta(days=5)
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
 
     except Exception as e:
