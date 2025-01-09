@@ -294,6 +294,8 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         
         # URLの日付はOricondayと同じ
 
+        Emergency = False
+
         while True:
             
             #URL(ここを変更すると読み込まなくなります)
