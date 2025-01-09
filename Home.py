@@ -138,7 +138,7 @@ while True:
         
 
     if event == 'ランキング修正':
-        sg.popup_ok('このモードでは明屋書店のデータは取得しません\n最新回以外のランキングは修正できません', no_titlebar=True)
+        sg.popup_ok('最新回以外のランキングは修正できません\n次の画面で「原稿ではない方のベストヒットランキング」を選択してください', no_titlebar=True)
         rank_layout = [
             [sg.Text("ランキングデータ"),
              sg.InputText('ファイルを選択', key='-HaruyaExcel-', enable_events=True, size=(41, 1)),
