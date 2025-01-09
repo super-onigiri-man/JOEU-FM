@@ -217,7 +217,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # 壊れたときの表示用
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
 
-        # print(OriconWeekData)
+        print(OriconWeekData)
         print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
 
 
@@ -235,7 +235,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         while True:
             # print(count)
             # print(Oriconday)
-            load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
+            load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/"
             html = requests.get(load_url)
             soup = BeautifulSoup(html.text, 'lxml')
             main_content = soup.find(class_="content-rank-main")
@@ -277,6 +277,8 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
             rank = rank + 1
             score = score - 0.3
+
+        print(OriconDigitalData)
 
         print(str(Oriconday) + "付けオリコンデジタルランキングOK")
 
@@ -333,6 +335,8 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         # オリコンの日付とビルボードの発表日の差を埋めるための計算(表示用)
         Billday = Oriconday - datetime.timedelta(days=5)
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
+
+        print(BillboardData)
 
     except Exception as e:
         import traceback
