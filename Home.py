@@ -28,7 +28,7 @@ layout = [
     [
         sg.Button('任意の週のデータを生成する', size=(25, 3), key='任意週生成'),
         sg.Button('管理者用', size=(10, 3), key='管理者'),
-        sg.Button('ランキング修正', size=(12, 3), key='ランキング修正'),
+        sg.Button('ランキング登録\nランキング修正', size=(12, 3), key='ランキング修正'),
         sg.Button('Webサイト\nランキング表示', size=(12, 3), key='ランキング表示')
     ]
 ]
@@ -145,7 +145,7 @@ while True:
              sg.FileBrowse(button_text='選択', font=('メイリオ', 8), size=(5, 1), key="-RankExcel-"),
              sg.Button('OK')]
         ]
-        rank_window = sg.Window('ランキングデータ取得', rank_layout,icon='FM=BACS.ico')
+        rank_window = sg.Window('ランキング登録・修正', rank_layout,icon='FM-BACS.ico')
 
         while True:
             rank_event, rank_values = rank_window.read()
@@ -155,8 +155,12 @@ while True:
                 FilePath = rank_values['-RankExcel-']
                 if FilePath:
                   import RevisionRank
-                  RevisionRank.RevisionRank(FilePath)
-                  break
+                  if RevisionRank.ExcelCheck(FilePath): # Excelに日付などが入っているかのチェック（返り値bool）
+                     RevisionRank.RevisionRank(FilePath) 
+                     break
+                  else:
+                      break
+                  
         rank_window.close()
 
     if event == 'ランキング表示':
@@ -166,7 +170,7 @@ while True:
              sg.Button('ビルボードJAPAN\nHOT100', size=(15, 3), key='ビルボード')]
         ]
 
-        display_window = sg.Window('ランキングデータ取得', display_layout,icon='FM-BACS.ico')
+        display_window = sg.Window('ランキングサイト一覧', display_layout,icon='FM-BACS.ico')
 
         while True: #選択するとブラウザ表示（すでにブラウザが出てる場合は新しいタブで表示）
             display_event, display_values = display_window.read()

@@ -44,7 +44,7 @@ def RankingUpdate():
     ID = info[0] #取得種別（１：今週、２：先週、３：任意週）
     HaruyaPath = info[1] #明屋書店Excelデータのパス(ID＝１のみ)
     SelectDay = info[2] #任意週の日付（ID=3のみ）
-    NewHaruya = info[3] #明屋書店Excelフォーマットについて（1のみTrueであれば新フォーマット）
+    NewHaruya = info[3] #明屋書店ExcelフォーマットCheについて（1のみTrueであれば新フォーマット）
 
     if int(ID) == 1: #識別番号が今週（1）だった場合
         GetData.ResetData()
