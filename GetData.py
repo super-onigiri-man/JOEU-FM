@@ -217,7 +217,7 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
                 # 壊れたときの表示用
             # print(str(rank) + "位 " + "{:.1f}　 ".format(score) + link.text + "/" + artist.text)
 
-        print(OriconWeekData)
+        # print(OriconWeekData)
         print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
 
 
@@ -278,7 +278,7 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
             rank = rank + 1
             score = score - 0.3
 
-        print(OriconDigitalData)
+        # print(OriconDigitalData)
 
         print(str(Oriconday) + "付けオリコンデジタルランキングOK")
 
@@ -336,7 +336,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         Billday = Oriconday - datetime.timedelta(days=5)
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
 
-        print(BillboardData)
+        # print(BillboardData)
 
     except Exception as e:
         import traceback

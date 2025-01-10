@@ -54,8 +54,6 @@ def RevisionRank(RevisionPath):
     this_number = unicodedata.normalize("NFKC",sheet['B3'].value)
     this_number = this_number.replace('No.','')
 
-    this_date = unicodedata.normalize("NFKC",sheet['F3'].value)
-
         # データの処理と挿入
     for row in range(6, 45, 2):
         title = unicodedata.normalize("NFKC",str(sheet['E' + str(row)].value))
@@ -100,6 +98,17 @@ def RevisionRank(RevisionPath):
         for row in rows:
             csv_writer.writerow(row)
 
+    sg.popup_ok('CSVファイルに書き込みました',no_titlebar=True)
+
+def CopyFile(RevisionPath):
+
+    # Excelファイルの読み込み
+    excel_file = RevisionPath
+    workbook = openpyxl.load_workbook(excel_file)
+    sheet = workbook.active
+
+    this_date = unicodedata.normalize("NFKC",sheet['F3'].value)
+
     # 日付文字列をdatetimeオブジェクトに変換
     date_object = datetime.datetime.strptime(this_date, '%Y年%m月%d日')
 
@@ -107,5 +116,3 @@ def RevisionRank(RevisionPath):
     formatted_date = date_object.strftime('%Y-%m-%d')
 
     shutil.copy(RevisionPath, 'Rank_BackUp/'+str(formatted_date)+'ベストヒットランキング.xlsx')
-
-    sg.popup_ok('CSVファイルに書き込みました',no_titlebar=True)

@@ -157,6 +157,7 @@ while True:
                   import RevisionRank
                   if RevisionRank.ExcelCheck(FilePath): # Excelに日付などが入っているかのチェック（返り値bool）
                      RevisionRank.RevisionRank(FilePath) 
+                     RevisionRank.CopyFile(FilePath)
                      break
                   else:
                       break
