@@ -16,32 +16,40 @@ conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
 def ExcelCheck(RevisionPath):
-    # Excelファイルの読み込み
-    excel_file = RevisionPath
-    workbook = openpyxl.load_workbook(excel_file)
-    sheet = workbook.active
 
-    # クエリの実行
-    query = "SELECT MAX(Last_Number) FROM music_master;"
-    cursor.execute(query)
-    # 結果の取得
-    max_last_number = cursor.fetchone()[0]
+    try:
+        # Excelファイルの読み込み
+        excel_file = RevisionPath
+        workbook = openpyxl.load_workbook(excel_file)
+        sheet = workbook.active
 
-    if sheet['B3'].value is None or sheet['F3'].value is None:
-        sg.popup_error('回数もしくは日付が入力されていません',no_titlebar=True)
+        # クエリの実行
+        query = "SELECT MAX(Last_Number) FROM music_master;"
+        cursor.execute(query)
+        # 結果の取得
+        max_last_number = cursor.fetchone()[0]
 
-        return False
+        if sheet['B3'].value is None or sheet['F3'].value is None:
+            sg.popup_error('回数もしくは日付が入力されていません',no_titlebar=True)
 
-    else:
-        this_number = unicodedata.normalize("NFKC",sheet['B3'].value)
-        this_number = this_number.replace('No.','')
-
-        if int(max_last_number) > int(this_number):
-            sg.popup_error('ランキングは最新回のみ登録できます',no_titlebar=True)
             return False
-        
+
         else:
-            return True
+            this_number = unicodedata.normalize("NFKC",sheet['B3'].value)
+            this_number = this_number.replace('No.','')
+
+            if int(max_last_number) > int(this_number):
+                sg.popup_error('ランキングは最新回のみ登録できます',no_titlebar=True)
+                return False
+            
+            else:
+                return True
+            
+    except Exception as e:
+            import traceback
+            with open('error.log', 'a') as f:
+                traceback.print_exc(file=f)
+            sg.popup_error("ランキングが取得できませんでした\nベストヒットランキングを登録してください", title="エラー",no_titlebar=True)
 
 
 
