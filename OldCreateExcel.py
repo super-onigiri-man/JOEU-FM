@@ -43,7 +43,7 @@ def OldMajicalExcel(Oriconday):
 
     while True:
         global this_rank_number
-        this_rank_number = sg.popup_get_text('ベストヒットランキングのNoを入力してください\n現在、DBに登録されている最新Noは' + str(max_last_number) + 'です', '回数確認')
+        this_rank_number = sg.popup_get_text('ベストヒットランキングのNoを入力してください\n現在、DBに登録されている最新Noは' + str(max_last_number) + 'です', '回数確認',icon='FM-BACS.ico')
         print(this_rank_number)
 
         if this_rank_number is None or this_rank_number.lower() == 'cancel':
