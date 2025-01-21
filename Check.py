@@ -41,8 +41,8 @@ if is_file:
                     rollbackday = rollbackday - datetime.timedelta(days=7)
                 filepath = 'Rank_BackUp/'+str(rollbackday)+'ベストヒットランキング.xlsx' 
                 if os.path.isfile(filepath): #ファイルがあったら
-                    RevisionRank.RevisionRank(filepath)
-                    os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+                    RevisionRank.RevisionRank(filepath) #先に消したあとの最新回を登録
+                    os.remove('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx') #その後、古いものを削除
                     break
 
                 count = count + 1

@@ -134,16 +134,18 @@ while True:
        
         import AdminUser  # 管理者画面の設置
         import WriteCSV2 #DBからcsvに直接書き込む 
-        sys.exit()
+        break
         
 
     if event == 'ランキング修正':
-        sg.popup_ok('最新回以外のランキングは修正できません\n次の画面で「原稿ではない方のベストヒットランキング」を選択してください', no_titlebar=True)
+        last_number = GetData.GetLastNumber()
         rank_layout = [
+            [sg.Text('No.'+str(last_number)+'より前のランキングデータは登録・修正できません')],
             [sg.Text("ランキングデータ"),
              sg.InputText('ファイルを選択', key='-HaruyaExcel-', enable_events=True, size=(41, 1)),
              sg.FileBrowse(button_text='選択', font=('メイリオ', 8), size=(5, 1), key="-RankExcel-"),
-             sg.Button('OK')]
+             sg.Button('OK')],
+            [sg.Button('ロールバックする')]
         ]
         rank_window = sg.Window('ランキング登録・修正', rank_layout,icon='FM-BACS.ico')
 
@@ -162,6 +164,14 @@ while True:
                   else:
                       break
                   
+            elif rank_event == 'ロールバックする':
+                result = sg.popup_ok_cancel('No.'+str(last_number)+'のランキングを削除します\nこの操作はOKを押すと取り消せません\n実行しますか？',no_titlebar=True)
+                if result:
+                    import RollBack
+                    break
+                else:
+                    break
+                
         rank_window.close()
 
     if event == 'ランキング表示':

@@ -729,3 +729,13 @@ def ResetData():
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
     print('DB関連処理終了')
     conn.commit()
+
+def GetLastNumber():
+     # クエリの実行
+    query = "SELECT MAX(Last_Number) FROM music_master;"
+    cursor.execute(query)
+    # 結果の取得
+    max_last_number = cursor.fetchone()[0]
+    last_number = int(max_last_number)
+
+    return last_number
