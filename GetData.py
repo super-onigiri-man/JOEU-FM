@@ -711,17 +711,62 @@ def GetSelectWeekDate():
 
 def OriconWeekUrl():
     Oriconday = OriconTodays()
-    load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
+
+    while True:
+            # print(count)
+            # print(Oriconday)
+            load_url = "https://www.oricon.co.jp/rank/js/w/" + str(Oriconday) + "/"
+            html = requests.get(load_url)
+            soup = BeautifulSoup(html.text, 'lxml')
+            main_content = soup.find(class_="content-rank-main")
+            if main_content:
+                break
+
+            # 日付を一日減らす
+            Oriconday = Oriconday - datetime.timedelta(days=1)
+
+            # count = count + 1
+
     return load_url
 
 def OriconDigitalUrl():
     Oriconday = OriconTodays()
-    load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/"
+
+    while True:
+            # print(count)
+            # print(Oriconday)
+            load_url = "https://www.oricon.co.jp/rank/dis/w/" + str(Oriconday) + "/"
+            html = requests.get(load_url)
+            soup = BeautifulSoup(html.text, 'lxml')
+            main_content = soup.find(class_="content-rank-main")
+            if main_content:
+                break
+
+            # 日付を一日減らす
+            Oriconday = Oriconday - datetime.timedelta(days=1)
+
+            # count = count + 1
+
     return load_url
 
 def BillboardUrl():
     Oriconday = OriconTodays()
-    load_url = 'https://www.billboard-japan.com/charts/detail?a=hot100&year='+str(Oriconday.year)+'&month='+str(Oriconday.month)+'&day='+str(Oriconday.day)
+        # URLの日付はOricondayと同じ
+
+    while True:
+        
+        #URL(ここを変更すると読み込まなくなります)
+        load_url = 'https://www.billboard-japan.com/charts/detail?a=hot100&year='+str(Oriconday.year)+'&month='+str(Oriconday.month)+'&day='+str(Oriconday.day)
+        #URLを取得してくる
+        response = requests.get(load_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        songs = soup.find_all('p', class_='musuc_title') #曲名
+        if songs:
+            break
+            # count = count + 1
+
+        Oriconday = Oriconday - datetime.timedelta(days=1)
+
     return load_url
 
 def ResetData():
