@@ -117,7 +117,7 @@ layout = [
      sg.Button('削除',size=(10,1),key='削除',button_color=('white','red')),
      sg.Button('エラーログ出力',size=(15,1),key='エラーログ',button_color=('black','#ff6347')),
      sg.Button('元データ復元',size=(15,1),key='csv',button_color=('white','#4b0082')),
-     sg.Button('内部ファイルを開く',size=(18,1),key='修正',button_color=('white','#ffa500')),
+     sg.Button('内部ファイルを開く',size=(18,1),key='setting',button_color=('white','#ffa500')),
      sg.Button('終了・書き込み',size=(16,1),key='end',button_color=('black', '#00ff00')),
     ]
 ]
@@ -282,6 +282,9 @@ while True:
             sys.exit()
         else:
             break
+
+    elif event == 'setting':
+        os.startfile('C:\FM Besthit Automatic Create System')
 
     elif event == 'end':
         window.close()
