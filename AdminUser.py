@@ -102,6 +102,40 @@ def insert_music_data(Title,Artist,LastRank,LastNumber,Onchart,NewUnique_id):
     params = (Title,Artist,LastRank,LastNumber,Onchart,NewUnique_id)
     cursor.execute("INSERT OR REPLACE INTO music_master VALUES (?, ?, 0, ?, ?, ?, ?);", params)
 
+def FormatCheck(Title,Artist,LastRank,LastNumber,Onchart):
+
+    Flag = True
+
+    if Title is None or Title == '' or Artist is None  or Artist == '':
+        sg.popup_error('曲名、アーティスト名が入力されていません',no_titlebar=True)
+        return False
+        
+    
+    if LastRank == '0'  or LastNumber == '0' or Onchart == '0':
+        sg.popup_error('最終順位、最終ランクイン、ランクイン回数に0が含まれています\n0は登録できません',no_titlebar=True)
+        return False
+    
+    if LastRank == ''  or LastNumber == '' or Onchart == '':
+        sg.popup_error('最終順位、最終ランクイン、ランクイン回数が入力されていません',no_titlebar=True)
+        return False
+    
+    Unique_id = GetData.generate_unique_id(Title, Artist)
+    query = "SELECT EXISTS(SELECT * FROM music_master WHERE Unique_id = ?) AS unique_check;"
+    # SQLクエリを実行
+    cursor.execute(query, (Unique_id,))
+    results = cursor.fetchone() 
+
+    if results[0] == 1:
+        popupresult = sg.popup_ok_cancel('既に同じ曲が登録されています\n更新しますか？\n※曲名、アーティスト名の頭3文字で判定しています',no_titlebar=True)
+        if popupresult == 'OK':
+            return True
+        else:
+            return False
+        
+    else:
+        return True
+
+    
 
 # データフレームをPySimpleGUIの表に変換
 table_data = df.values.tolist()
@@ -177,17 +211,25 @@ while True:
                 Onchart = values['NewOnchart']
                 Unique_id = GetData.generate_unique_id(Title,Artist)
 
-                result = sg.popup_ok_cancel('曲名：'+str(Title)+'\nアーティスト：'+str(Artist)+'\n最終順位：'+str(LastRank)+'位\n最終ランクインNo：'+str(LastNumber)+'回\nランクイン回数：'+str(Onchart)+'回\nに更新しますか？',no_titlebar=True)
-                if result == 'OK':
-                    deleterow(select_Title,select_Artist)
-                    insert_music_data(Title,Artist,LastRank,LastNumber,Onchart,Unique_id)
-                    sg.popup('データベースに書き込みました',no_titlebar=True)
-                    reload()
-                    # テーブルのデータを更新
-                    table_data = df.values.tolist()
-                    # テーブルを更新
-                    window['-TABLE-'].update(values=table_data)
-                    window2.close()
+                if FormatCheck(Title,Artist,LastRank,LastNumber,Onchart):
+
+                    result = sg.popup_ok_cancel('曲名：'+str(Title)+'\nアーティスト：'+str(Artist)+'\n最終順位：'+str(LastRank)+'位\n最終ランクインNo：'+str(LastNumber)+'回\nランクイン回数：'+str(Onchart)+'回\nに更新しますか？',no_titlebar=True)
+                    if result == 'OK':
+                        deleterow(select_Title,select_Artist)
+                        insert_music_data(Title,Artist,LastRank,LastNumber,Onchart,Unique_id)
+                        sg.popup('データベースに書き込みました',no_titlebar=True)
+                        reload()
+                        # テーブルのデータを更新
+                        table_data = df.values.tolist()
+                        # テーブルを更新
+                        window['-TABLE-'].update(values=table_data)
+                        window2.close()
+                    else:
+                        continue
+
+                else:
+                    continue
+
             elif event == '戻る':
                 result = sg.popup_ok_cancel('変更した内容は保存されません\n終了しますか？',no_titlebar=True)
                 if result == 'OK':
