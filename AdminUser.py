@@ -104,8 +104,6 @@ def insert_music_data(Title,Artist,LastRank,LastNumber,Onchart,NewUnique_id):
 
 def FormatCheck(Title,Artist,LastRank,LastNumber,Onchart):
 
-    Flag = True
-
     if Title is None or Title == '' or Artist is None  or Artist == '':
         sg.popup_error('曲名、アーティスト名が入力されていません',no_titlebar=True)
         return False
