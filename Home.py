@@ -145,7 +145,7 @@ while True:
              sg.InputText('ファイルを選択', key='-HaruyaExcel-', enable_events=True, size=(41, 1)),
              sg.FileBrowse(button_text='選択', font=('メイリオ', 8), size=(5, 1), key="-RankExcel-"),
              sg.Button('OK')],
-            [sg.Button('ロールバックする')]
+            [sg.Button('ロールバックする',button_color=('white','red'))]
         ]
         rank_window = sg.Window('ランキング登録・修正', rank_layout,icon='FM-BACS.ico')
 
@@ -166,11 +166,11 @@ while True:
                   
             elif rank_event == 'ロールバックする':
                 result = sg.popup_ok_cancel('No.'+str(last_number)+'のランキングを削除します\nこの操作はOKを押すと取り消せません\n実行しますか？',no_titlebar=True)
-                if result:
+                if result == 'OK':
                     import RollBack
                     break
                 else:
-                    break
+                    continue
                 
         rank_window.close()
 
