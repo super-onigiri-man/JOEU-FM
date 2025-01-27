@@ -141,7 +141,7 @@ header_list = ['楽曲名','アーティスト','得点','前回の順位','前�
 window_size = [25,25,8,8,8,8,8]
 # PySimpleGUIのレイアウト
 layout = [
-    [sg.Text('並び替え'),sg.Combo(['曲名で並び替え', 'アーティスト名で並び替え', 'ランクイン回数順で並び替え','最新回順に並び替え'], default_value="選択して下さい", size=(60,1),key='Combo'),sg.Button('並び替え',key='Select')],
+    [sg.Text('並び替え'),sg.Combo(['曲名で並び替え', 'アーティスト名で並び替え', 'ランクイン回数順で並び替え','最新回順に並び替え'], default_value="選択して下さい", size=(60,1),key='Combo'),sg.Button('並び替え',key='Select'),sg.Text('現在No.'+str(GetData.GetLastNumber())+'まで登録されています',justification='right')],
     [sg.Table(values=table_data, headings=header_list, col_widths=window_size,auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(200))))],
 
