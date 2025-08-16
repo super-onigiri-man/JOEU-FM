@@ -15,11 +15,13 @@ path = 'Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx'
 count = 0
 is_file = os.path.isfile(path)
 if is_file:
+    GetData.WriteLog(3,"重複確認：重複があった")
     sg.popup('今週のデータはすでに生成済みです。\n今週のデータを作り直すにはデータベースの変更が必要です',no_titlebar=True)
 
     result = sg.popup_yes_no("今週のランキングデータを消してランキング生成しますか？", title="確認",no_titlebar=True)
 
     if result == 'Yes':
+        GetData.WriteLog(3,"重複確認：重複の削除を承認")
         try:
             # import CreateDB
             # 最終回の確認
@@ -46,11 +48,14 @@ if is_file:
                     break
 
                 count = count + 1
+
+            GetData.WriteLog(3,"重複確認：重複の削除処理実行完了")
         
         except Exception as e:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc( file=f)
+            GetData.WriteLog(4,"重複確認：ロールバック処理に失敗")
             sg.popup_error('ロールバック処理に失敗しました',no_titlebar=True)
             
 
@@ -58,4 +63,5 @@ if is_file:
         sg.popup('システムを終了します',no_titlebar=True)
         sys.exit()
 else:
+    GetData.WriteLog(3,"重複確認：重複は存在しなかった")
     pass # パスが存在しないかファイルではない

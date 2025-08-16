@@ -15,6 +15,9 @@ cursor = conn.cursor() #カーソルオブジェクトを作成
 
 
 def RevisionRank(RevisionPath):
+
+    GetData.WriteLog(3,"ランキング修正：ランキング修正を実行")
+
     # Excelファイルの読み込み
     excel_file = RevisionPath
     workbook = openpyxl.load_workbook(excel_file)

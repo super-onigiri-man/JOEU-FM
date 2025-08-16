@@ -6,6 +6,7 @@ import PySimpleGUI as sg
 
 
 import GetData
+GetData.WriteLog(2,"原稿作成：原稿作成を開始")
 Oriconday = GetData.OriconTodays()
 # コピー元のExcelファイルを開く
 source_wb = load_workbook('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
@@ -112,7 +113,7 @@ try:
 
     # メッセージ表示
     sg.popup('原稿を作成しました',no_titlebar=True)
-
+    GetData.WriteLog(2,"原稿作成：原稿作成が終了")
     # ダウンロードフォルダーを開く
     os.startfile(folder)
 
@@ -121,4 +122,5 @@ except Exception as e:
     import traceback
     with open('error.log', 'a') as f:
         traceback.print_exc( file=f)
+    GetData.WriteLog(4,"原稿作成：原稿作成に失敗")
     sg.popup_error('原稿Excelに書き込めませんでした。\n原稿Excelが開かれている可能性があります',no_titlebar=True)

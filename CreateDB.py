@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 import traceback
 import sys
 import os
+import GetData
 
 dbname = 'test.db'  # データベース名
 csv_file = '楽曲データ.csv'  # CSVファイル名
@@ -26,6 +27,7 @@ try:
     ]
 
     window = sg.Window('システム起動中', layout, finalize=True, icon='FM-BACS.ico')
+    GetData.WriteLog(0,"システム起動：データベースからシステム起動")
 
     progress_bar = window['progressbar']
     progmsg = window['progmsg']
@@ -75,13 +77,17 @@ try:
 except Exception as e:
     with open('error.log', 'a') as f:
         traceback.print_exc(file=f)
+    GetData.WriteLog(4,"システム起動：データベースから情報を取得できなかった")
     window.close()
     result = sg.popup_yes_no("DBを作成できませんでした。\n過去のデータを用いて復元しますか？", title="エラー", no_titlebar=True)
     if result == 'Yes':
+        GetData.WriteLog(1,"システム起動：csvデータからDBを作ることを承認")
         import CreateDB2
         import LearningRank
         sg.popup('処理が終了しました。\nシステムを終了します。',no_titlebar=True)
+        GetData.WriteLog(5,"システム起動：csvデータでDBを作成→システム終了")
         sys.exit()
     else:
         sg.popup('システムを終了します',no_titlebar=True)
+        GetData.WriteLog(5,"システム起動：csvデータからDBを作ることをキャンセル→システム終了")
         sys.exit()

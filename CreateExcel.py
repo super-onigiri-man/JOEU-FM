@@ -4,7 +4,10 @@ from openpyxl.styles.alignment import Alignment
 import sqlite3
 import PySimpleGUI as sg
 import sys,os
+import GetData
 def MajicalExcel(Oriconday):
+
+    GetData.WriteLog(2,"最新回Excel作成：Excelデータを作成")
 
     dbname = ('test.db')
     conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -107,6 +110,7 @@ def MajicalExcel(Oriconday):
     try:
         # Excelファイルを保存
         workbook.save('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
+        GetData.WriteLog(2,"最新回Excel作成：ランキングデータをBackUpへ保存")
 
         user_folder = os.path.expanduser("~")
         folder = os.path.join(user_folder, "Downloads")
@@ -118,6 +122,7 @@ def MajicalExcel(Oriconday):
         os.chdir(os.path.dirname(sys.argv[0]))
 
         sg.popup_ok(str(Oriconday)+'付け、第'+str(this_rank_number)+'回ベストヒットランキング \n正常に処理されました',no_titlebar=True)
+        GetData.WriteLog(2,"最新回Excel作成：ランキングデータをDownloadへ保存")
 
 
     except Exception as e:
@@ -125,6 +130,7 @@ def MajicalExcel(Oriconday):
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
+        GetData.WriteLog(4,"最新回Excel作成：Excelランキング書き込みに失敗")
         sg.popup_error('ランキングExcelに書き込みができませんでした。\nランキングExcelが開かれている可能性があります',no_titlebar=True)
         
 

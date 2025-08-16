@@ -37,6 +37,8 @@ LIMIT 60''', conn)
 
 def RankingUpdate():
 
+    GetData.WriteLog(2,'ランキング再取得')
+
     with open('Reload.txt','r',encoding='UTF-8') as f:
         info = str(f.read())
     print(info)
@@ -90,27 +92,32 @@ def reload():
 def deleterow(Title,Artist):
     params = (Title, Artist)
     cursor.execute("DELETE FROM music_master WHERE Title = ? AND Artist = ?;", params)
+    GetData.WriteLog(2,"ランキング調整画面：データベース："+Title+"/"+Artist+"を削除")
 
 def deleteartist(Artist):
     params = (Artist,)
     cursor.execute("DELETE FROM music_master WHERE Artist = ?;", params)
-
+    GetData.WriteLog(2,"ランキング調整画面：データベース："+Artist+"をアーティスト名で削除")
         
 def updatescore(Title,Artist,Score):
     params = (Score,Title,Artist)
     cursor.execute("UPDATE music_master SET Score = ? WHERE Title = ? AND Artist= ?;",params)
+    GetData.WriteLog(2,"ランキング調整画面：データベース："+Title+"/"+Artist+"の得点を"+Score+"へ変更")
 
 def update3score(Title,Artist):
     params = (Title,Artist)
     cursor.execute("UPDATE music_master SET Score = Score + 3 WHERE Title = ? AND Artist= ?;",params)
+    GetData.WriteLog(2,"ランキング調整画面：データベース："+Title+"/"+Artist+"の得点を+3点")
 
 def updatetitle(Title,Artist,oldUnique):
     params = (Title,Artist,oldUnique)
     cursor.execute("UPDATE music_master SET Title = ? WHERE Artist= ? AND Unique_id = ?;",params)
+    GetData.WriteLog(2,"ランキング調整画面：データベース："+Title+"へ修正")
 
 def updateartist(Title,Artist,oldUnique):
     params = (Artist,Title,oldUnique)
     cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
+    GetData.WriteLog(2,"ランキング調整画面：データベース："+Artist+"へ修正")
 
 def updateunique(Title,Artist,newUnique):
     params = (newUnique,Artist,Title)
@@ -140,26 +147,35 @@ layout = [
 ]
 
 window = sg.Window('FM Besthit Automatic Create System', layout,resizable=False,icon='FM-BACS.ico',finalize=True)
+GetData.WriteLog(0,"ランキング調整画面を起動")
 
 # イベントループ
 while True:
     event, values = window.read()
 
     if event == sg.WINDOW_CLOSED:
+        GetData.WriteLog(1,"ランキング調整画面終了を選択")
         cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
         cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
         conn.commit()
+        GetData.WriteLog(2,"DBのScoreを0に・ランキング外データを削除")
         sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください',no_titlebar=True)
+        GetData.WriteLog(5,"FM BACS ランキング調整画面から終了\n")
         sys.exit()
 
     if event is None:
+        GetData.WriteLog(1,"ランキング調整画面終了を選択")
         cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
         cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
         conn.commit()
+        GetData.WriteLog(2,"DBのScoreを0に・ランキング外データを削除")
         sg.popup('ランキングは作成されませんでした\n作るには最初から操作をやり直してください',no_titlebar=True)
+        GetData.WriteLog(5,"FM BACS ランキング調整画面から終了\n")
         sys.exit()
 
     elif event == '削除':
+
+        GetData.WriteLog(1,"ランキング調整画面から削除を選択")
         
         selected_rows = values['-TABLE-']
         if selected_rows:
@@ -173,6 +189,7 @@ while True:
             # print(selected_row_Artist)
             result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
+                GetData.WriteLog(2,selected_row_Title+'/'+selected_row_Artist+'の削除を承認')
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 deleterow(selected_row_Title,selected_row_Artist)
@@ -182,10 +199,13 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result == 'Cancel':
+                GetData.WriteLog(2,selected_row_Title+'/'+selected_row_Artist+'の削除をキャンセル')
                 # sg.popup('キャンセルが選択されました')
                 continue
 
     elif event == 'アーティスト名で削除':
+
+        GetData.WriteLog(1,"ランキング調整画面からアーティスト削除を選択")
         
         selected_rows = values['-TABLE-']
         if selected_rows:
@@ -199,6 +219,7 @@ while True:
             # print(selected_row_Artist)
             result = sg.popup_ok_cancel('【警告！】'+selected_row_Artist+'の曲をすべて削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
+                GetData.WriteLog(2,selected_row_Artist+'のすべての楽曲の削除を承認')
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 deleteartist(selected_row_Artist)
@@ -208,10 +229,14 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result == 'Cancel':
+                GetData.WriteLog(2,selected_row_Artist+'のすべての楽曲の削除をキャンセル')
                 # sg.popup('キャンセルが選択されました')
                 continue
 
     elif event ==  '得点修正':
+
+        GetData.WriteLog(1,"ランキング調整画面から得点修正を選択")
+
         selected_rows = values['-TABLE-']
         if selected_rows:
             # 選択された行を取得
@@ -231,6 +256,7 @@ while True:
 
             result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点を\n'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新しますか？',no_titlebar=True)
             if result2 == 'OK':
+                GetData.WriteLog(2,selected_row_Title+'/'+selected_row_Artist+'の得点を'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新を承認')
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 updatescore(selected_row_Title,selected_row_Artist,NewScore)
@@ -240,10 +266,14 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result2 == 'Cancel':
+                GetData.WriteLog(2,selected_row_Title+'/'+selected_row_Artist+'の得点を'+str(selected_row_Score)+'点から'+str(NewScore)+'点に更新をキャンセル')
                 # sg.popup('キャンセルが選択されました')
                 continue
 
     elif event ==  '3点追加':
+
+        GetData.WriteLog(1,"ランキング調整画面から3点追加を選択")
+
         selected_rows = values['-TABLE-']
         if selected_rows:
             # 選択された行を取得
@@ -256,6 +286,7 @@ while True:
 
             result2 = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'の得点に＋３点しますか？',no_titlebar=True)
             if result2 == 'OK':
+                GetData.WriteLog(2,selected_row_Title+'/'+selected_row_Artist+'の得点に＋３点に更新を承認')
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 update3score(selected_row_Title,selected_row_Artist)
@@ -265,10 +296,14 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result2 == 'Cancel':
+                GetData.WriteLog(2,selected_row_Title+'/'+selected_row_Artist+'の得点に＋３点に更新をキャンセル')
                 # sg.popup('キャンセルが選択されました')
                 continue
     
     elif event == '曲名修正':
+
+        GetData.WriteLog(1,"ランキング調整画面から曲名修正を選択")
+
         selected_rows = values['-TABLE-']
         if selected_rows:
             # 選択された行を取得
@@ -288,6 +323,7 @@ while True:
 
             result2 = sg.popup_ok_cancel(selected_row_Title+'の曲名を\n'+str(NewTitle)+'に更新しますか？',no_titlebar=True)
             if result2 == 'OK':
+                GetData.WriteLog(2,selected_row_Title+'の曲名を\n'+str(NewTitle)+'に更新を承認')
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 NewID = GetData.generate_unique_id(NewTitle,selected_row_Artist)
@@ -299,10 +335,14 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result2 == 'Cancel':
+                GetData.WriteLog(2,selected_row_Title+'の曲名を\n'+str(NewTitle)+'に更新をキャンセル')
                 # sg.popup('キャンセルが選択されました')
                 continue
 
     elif event == 'アーティスト名修正':
+
+        GetData.WriteLog(1,"ランキング調整画面からアーティスト名修正を選択")
+
         selected_rows = values['-TABLE-']
         if selected_rows:
             # 選択された行を取得
@@ -322,6 +362,7 @@ while True:
 
             result2 = sg.popup_ok_cancel(selected_row_Title+'のアーティスト名を\n'+str(selected_row_Artist)+'から'+str(NewArtist)+'に更新しますか？',no_titlebar=True)
             if result2 == 'OK':
+                GetData.WriteLog(2,selected_row_Title+'のアーティスト名を\n'+str(selected_row_Artist)+'から'+str(NewArtist)+'に更新を承認')
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 NewID = GetData.generate_unique_id(selected_row_Title,NewArtist)
@@ -334,12 +375,17 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result2 == 'Cancel':
+                GetData.WriteLog(2,selected_row_Title+'のアーティスト名を\n'+str(selected_row_Artist)+'から'+str(NewArtist)+'に更新をキャンセル')
                 # sg.popup('キャンセルが選択されました')
                 continue
 
     elif event == 'ランキング再取得':
+
+        GetData.WriteLog(1,"ランキング調整画面からランキング再取得を選択")
+
         result2 = sg.popup_ok_cancel('選択すると今まで変更したデータはすべて失われます\n実行しますか？',no_titlebar=True)
         if result2 == 'OK':
+            GetData.WriteLog(2,'ランキング再取得を承認')
             table_data = df[:0] #データフレームを一旦すべて空にする
             RankingUpdate()
             reload()
@@ -349,10 +395,12 @@ while True:
             window['-TABLE-'].update(values=table_data)
             continue
         elif result2 == 'Cancel':
+            GetData.WriteLog(2,'ランキング再取得をキャンセル')
             continue
 
 
     elif event == '書き込み':
+        GetData.WriteLog(1,"ランキング調整画面から書き込みを選択")
         break
         
 

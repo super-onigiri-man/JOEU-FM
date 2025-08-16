@@ -5,6 +5,7 @@ import datetime
 import webbrowser
 import GetData
 
+
 # カレントディレクトリをスクリプトのディレクトリに変更
 os.chdir(os.path.dirname(sys.argv[0]))
 
@@ -35,6 +36,7 @@ layout = [
 
 # ウィンドウを作成
 window = sg.Window('FM Besthit Automatic Create System', layout, resizable=False,icon='FM-BACS.ico')
+GetData.WriteLog(0,"FM BACS（ホーム画面）起動")
 
 # GUI表示実行部分
 while True:
@@ -48,7 +50,6 @@ while True:
         if HaruyaPath == 'ファイルを選択':
             sg.popup_ok('明屋書店が選択されていません\n明屋書店以外のデータでランキングを生成します', no_titlebar=True)
             import Check
-            import GetData
             GetData.NGetThisWeekRank()
             import ViewData
             if GetData.Flags()==True:
@@ -65,7 +66,6 @@ while True:
         
         else:
             import Check  # ファイルが重複してないか確認
-            import GetData  # データ取得
             if values['format'] == True:
                 GetData.GetThisWeekRank(HaruyaPath,True) #新しいフォーマットを読みます
             else:
@@ -85,7 +85,6 @@ while True:
 
     if event == '先週データ生成':
       sg.popup_ok('このモードでは明屋書店のデータは取得しません', no_titlebar=True)
-      import GetData
       GetData.GetLastWeekRank()
       import ViewData
       import OldCreateExcel
@@ -104,6 +103,7 @@ while True:
         ]
 
         date_window = sg.Window('カレンダーからの入力', date_layout)
+        GetData.WriteLog(0,"任意週作成のカレンダーを起動")
 
         while True:
             date_event, date_values = date_window.read()
@@ -120,7 +120,8 @@ while True:
                     continue
                 try:
                     date_window.close()
-                    import GetData
+                    GetData.WriteLog(1,"カレンダーで"+str(SelectDay)+"を選択")
+                    GetData.WriteLog(5,"任意週作成のカレンダーを終了")
                     GetData.GetSelectWeekRank(SelectDay,False)
                     import ViewData
                     import OldCreateExcel
@@ -138,6 +139,9 @@ while True:
         
 
     if event == 'ランキング修正':
+
+        GetData.WriteLog(1,"ランキング修正を選択")
+
         last_number = GetData.GetLastNumber()
         rank_layout = [
             [sg.Text('No.'+str(last_number)+'より前のランキングデータは登録・修正できません')],
@@ -148,10 +152,12 @@ while True:
             [sg.Button('ロールバックする',button_color=('white','red'))]
         ]
         rank_window = sg.Window('ランキング登録・修正', rank_layout,icon='FM-BACS.ico')
+        GetData.WriteLog(0,"ホーム：ランキング登録・修正画面を起動")
 
         while True:
             rank_event, rank_values = rank_window.read()
             if rank_event in (sg.WINDOW_CLOSED, None):
+                
                 break
             elif rank_event == 'OK':
                 FilePath = rank_values['-RankExcel-']
@@ -165,13 +171,17 @@ while True:
                       break
                   
             elif rank_event == 'ロールバックする':
+                GetData.WriteLog(2,"ホーム：ロールバックを選択")
                 result = sg.popup_ok_cancel('No.'+str(last_number)+'のランキングを削除します\nこの操作はOKを押すと取り消せません\n実行しますか？',no_titlebar=True)
                 if result == 'OK':
+                    GetData.WriteLog(1,"ホーム：ロールバック操作を承認")
                     import RollBack
                     break
                 else:
+                    GetData.WriteLog(1,"ホーム：ロールバック操作をキャンセル")
                     continue
-                
+        
+        GetData.WriteLog(5,"ホーム：ランキング登録・修正画面を終了")
         rank_window.close()
 
     if event == 'ランキング表示':
@@ -200,4 +210,6 @@ while True:
 
 if os.path.exists('Reload.txt'):
     os.remove('Reload.txt')
+
+GetData.WriteLog(5,"ホーム：FM BACS（ホーム画面）から終了\n")
 window.close()

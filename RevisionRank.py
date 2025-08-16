@@ -17,6 +17,8 @@ cursor = conn.cursor() #カーソルオブジェクトを作成
 
 def ExcelCheck(RevisionPath):
 
+    GetData.WriteLog(3,"ランキング修正：Excelチェックを実行")
+
     try:
         # Excelファイルの読み込み
         excel_file = RevisionPath
@@ -49,11 +51,13 @@ def ExcelCheck(RevisionPath):
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
+            GetData.WriteLog(4,"ランキング修正：Excelチェックに失敗")
             sg.popup_error("ランキングが取得できませんでした\nベストヒットランキングを登録してください", title="エラー",no_titlebar=True)
 
 
 
 def RevisionRank(RevisionPath):
+    GetData.WriteLog(3,"ランキング修正：ランキング修正を実行")
     # Excelファイルの読み込み
     excel_file = RevisionPath
     workbook = openpyxl.load_workbook(excel_file)
@@ -106,6 +110,7 @@ def RevisionRank(RevisionPath):
         for row in rows:
             csv_writer.writerow(row)
 
+    GetData.WriteLog(3,"ランキング修正：Excelチェックに成功")
     sg.popup_ok('CSVファイルに書き込みました',no_titlebar=True)
 
 def CopyFile(RevisionPath):
@@ -123,4 +128,6 @@ def CopyFile(RevisionPath):
     # datetimeオブジェクトを指定の形式の文字列に変換
     formatted_date = date_object.strftime('%Y-%m-%d')
 
+    
     shutil.copy(RevisionPath, 'Rank_BackUp/'+str(formatted_date)+'ベストヒットランキング.xlsx')
+    GetData.WriteLog(3,"ランキング修正：Rank_BackUp/"+str(formatted_date)+"ベストヒットランキング.xlsxをコピーを実行")

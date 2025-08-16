@@ -50,6 +50,4 @@ except Exception as e:
         traceback.print_exc(file=f)
     sg.popup_error("データベースを作成できませんでした。\n システムを終了します", title="エラー", no_titlebar=True)
     sys.exit()
-finally:
-    # 接続を閉じる
-    conn.close()
+

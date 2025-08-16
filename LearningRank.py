@@ -31,7 +31,7 @@ layout = [
     ]
 
 window = sg.Window('楽曲データ復元中', layout, finalize=True, icon='FM-BACS.ico',no_titlebar=True)
-
+GetData.WriteLog(0,"楽曲データ復元：復元用プログレスバー起動")
 
 dbname = ('test2.db')
 conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -107,6 +107,7 @@ while True:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
+            GetData.WriteLog(4,"楽曲データ復元：楽曲データの復元に失敗（2ランキング.xlsx）")
             sg.popup_error("楽曲データを復元できませんでした（2ランキング.xlsx）", title="エラー",no_titlebar=True)
             break
         
@@ -159,7 +160,9 @@ while True:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
+            GetData.WriteLog(4,"楽曲データ復元：楽曲データの復元に失敗（分割データ）")
             sg.popup_error("楽曲データを復元できませんでした（分割ファイル）", title="エラー",no_titlebar=True)
             break
 
+GetData.WriteLog(5,"楽曲データ復元：楽曲データ復元終了")
 window.close()

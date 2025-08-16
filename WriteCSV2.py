@@ -11,6 +11,8 @@ cursor = conn.cursor()
 cursor.execute("SELECT * FROM music_master")
 data = cursor.fetchall()
 
+GetData.WriteLog(3,"csv書き込み：csv書き込みを実行")
+
 # 重複チェックとデータ加工
 unique_ids = {}
 for row in data:
@@ -42,4 +44,5 @@ with open('楽曲データ.csv', 'w', newline='',encoding='UTF-8') as csvfile:
 # 接続を閉じる
 conn.close()
 
+GetData.WriteLog(3,"csv書き込み：csv書き込みが完了")
 sg.popup("データがCSVファイルに書き込まれました。\nデータの整合性を確実にするため、ソフトを再起動してください",no_titlebar=True)

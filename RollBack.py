@@ -11,6 +11,7 @@ conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
 try:
+    GetData.WriteLog(3,"ロールバック：ロールバックを実行")
     Oriconday = GetData.OriconTodays()
     print(Oriconday)
     # path = 'Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx'
@@ -64,6 +65,7 @@ except Exception as e:
     import traceback
     with open('error.log', 'a') as f:
         traceback.print_exc( file=f)
+    GetData.WriteLog(4,"ロールバック：ロールバック処理に失敗")
     sg.popup_error('ロールバック処理に失敗しました',no_titlebar=True)
 
 finally:

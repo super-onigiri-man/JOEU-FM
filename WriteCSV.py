@@ -10,6 +10,7 @@ conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成
 cursor = conn.cursor() #カーソルオブジェクトを作成
 
 def WriteCSV(Oriconday):
+    GetData.WriteLog(3,"csv書き込み：csv書き込みを実行")
     excel_file = 'Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx'
     workbook = openpyxl.load_workbook(excel_file)
     sheet = workbook.active
@@ -59,6 +60,7 @@ def WriteCSV(Oriconday):
         for row in rows:
             csv_writer.writerow(row)
 
+    GetData.WriteLog(3,"csv書き込み：csv書き込みが完了")
     sg.popup_ok('CSVファイルを更新しました',no_titlebar=True)
 
     
