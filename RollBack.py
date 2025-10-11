@@ -1,6 +1,6 @@
 import os
 import sys
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import GetData
 import sqlite3
 import datetime
@@ -52,7 +52,7 @@ try:
                     rollbackday2 = rollbackday2 - datetime.timedelta(days=1)
 
                 filepath2 = 'Rank_BackUp/'+str(rollbackday2)+'ベストヒットランキング.xlsx'
-                print(os.path.isfile(filepath2)) 
+                # print(os.path.isfile(filepath2)) 
                 if os.path.isfile(filepath2):
                     flag = True
                     break

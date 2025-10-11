@@ -2,7 +2,7 @@ from openpyxl.styles import Font, PatternFill
 from openpyxl import load_workbook
 from openpyxl.styles.alignment import Alignment
 import sqlite3
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import sys
 import os
 import unicodedata

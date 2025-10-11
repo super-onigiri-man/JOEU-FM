@@ -1,6 +1,6 @@
 import csv
 import sqlite3
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import traceback
 import sys
 import os

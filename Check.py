@@ -1,6 +1,6 @@
 import os
 import sys
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import GetData
 import sqlite3
 import datetime

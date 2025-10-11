@@ -1,4 +1,4 @@
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import pandas as pd
 import sqlite3
 import sys
@@ -124,11 +124,11 @@ def updateunique(Title,Artist,newUnique):
     cursor.execute("UPDATE music_master SET Unique_id = ? WHERE Artist = ? AND Title= ?;",params)
 # df = df.head(20)
 
-# データフレームをPySimpleGUIの表に変換
+# データフレームをFreeSimpleGUIの表に変換
 table_data = df.values.tolist()
 header_list = ['楽曲名','アーティスト','得点','前回の順位','LastNumber','Onchart']
 window_size = [20,20,8,8,8,8]
-# PySimpleGUIの,レイアウト
+# FreeSimpleGUIの,レイアウト
 layout = [
     [sg.Table(values=table_data, headings=header_list, col_widths=window_size,auto_size_columns=False,enable_events=True,key='-TABLE-',
               display_row_numbers=False, justification='left', num_rows=min(25, len(df.head(20))))],

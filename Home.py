@@ -1,9 +1,10 @@
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import os
 import sys
 import datetime
 import webbrowser
 import GetData
+# import WindowGUI as GUI
 
 
 # カレントディレクトリをスクリプトのディレクトリに変更
@@ -143,6 +144,7 @@ while True:
         GetData.WriteLog(1,"ランキング修正を選択")
 
         last_number = GetData.GetLastNumber()
+
         rank_layout = [
             [sg.Text('No.'+str(last_number)+'より前のランキングデータは登録・修正できません')],
             [sg.Text("ランキングデータ"),
@@ -151,6 +153,7 @@ while True:
              sg.Button('OK')],
             [sg.Button('ロールバックする',button_color=('white','red'))]
         ]
+        
         rank_window = sg.Window('ランキング登録・修正', rank_layout,icon='FM-BACS.ico')
         GetData.WriteLog(0,"ホーム：ランキング登録・修正画面を起動")
 

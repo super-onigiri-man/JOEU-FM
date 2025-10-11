@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 import openpyxl
 import os
 import sys
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 
 
 import GetData

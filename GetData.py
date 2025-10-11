@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup #スクレイピング（取得）用
 import datetime #日付計算用
 import openpyxl
 import sqlite3
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import asyncio #非同期処理
 import unicodedata #全角文字を半角文字に変換
 import re
@@ -97,7 +97,7 @@ def OriconLastWeek():
     elif (weekday >= 2):  # 今日が水曜日以降
         Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
-    WriteLog(2,str(dt)+"から"+str(Oriconday)+"に変換")
+    WriteLog(2,"データ取得："+str(dt)+"から"+str(Oriconday)+"に変換")
 
     return Oriconday
 
@@ -118,7 +118,7 @@ def OriconSelectWeek(SelectDay):
     elif (weekday >= 2):  # 今日が水曜日以降
         Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
-    WriteLog(2,str(dt)+"から"+str(Oriconday)+"に変換")
+    WriteLog(2,"データ取得："+str(dt)+"から"+str(Oriconday)+"に変換")
 
     return Oriconday
 
@@ -227,14 +227,14 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
 
         # print(OriconWeekData)
         print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
-        WriteLog(2,str(Oriconday)+"付けオリコン週間シングルランキング取得")
+        WriteLog(2,"データ取得："+str(Oriconday)+"付けオリコン週間シングルランキング取得")
 
 
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,'「オリコン週間シングルランキング」取得でエラー')
+        WriteLog(4,"データ取得："+'「オリコン週間シングルランキング」取得でエラー')
         sg.popup_error("「オリコン週間ランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
@@ -291,13 +291,13 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         # print(OriconDigitalData)
 
         print(str(Oriconday) + "付けオリコンデジタルランキングOK")
-        WriteLog(2,str(Oriconday)+"付けオリコンデジタルランキング取得")
+        WriteLog(2,"データ取得："+str(Oriconday)+"付けオリコンデジタルランキング取得")
 
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,'「オリコンデジタルランキング取得」でエラー')
+        WriteLog(4,"データ取得："+'「オリコンデジタルランキング取得」でエラー')
         sg.popup_error("「オリコンデジタルランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
@@ -347,7 +347,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         # オリコンの日付とビルボードの発表日の差を埋めるための計算(表示用)
         Billday = Oriconday - datetime.timedelta(days=5)
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
-        WriteLog(2,str(Billday)+"付けビルボードJAPAN HOT100ランキング取得")
+        WriteLog(2,"データ取得："+str(Billday)+"付けビルボードJAPAN HOT100ランキング取得")
 
         # print(BillboardData)
 
@@ -356,7 +356,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
 
-        WriteLog(4,'「ビルボードランキング」取得でエラー')
+        WriteLog(4,"データ取得："+'「ビルボードランキング」取得でエラー')
         sg.popup_error("「ビルボードランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
@@ -391,7 +391,7 @@ async def OldHaruyaRank(HaruyaPath): # 2024年6月末までの明屋書店フォ
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
-            WriteLog(4,'「旧・明屋書店」ランキング取得でエラー')
+            WriteLog(4,"データ取得："+'「旧・明屋書店」ランキング取得でエラー')
             sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
 
 async def NewHaruyaRank(HaruyaPath): # 2024年7月からの明屋書店フォーマット
@@ -455,14 +455,14 @@ async def NewHaruyaRank(HaruyaPath): # 2024年7月からの明屋書店フォー
 
         # print(HaruyaData)
         print('新・明屋書店データOK')
-        WriteLog(2,"新・明屋書店データ取得")
+        WriteLog(2,"データ取得："+"新・明屋書店データ取得")
 
 
     except Exception as e:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
-            WriteLog(4,'「新・明屋書店」ランキング取得でエラー')
+            WriteLog(4,"データ取得："+'「新・明屋書店」ランキング取得でエラー')
             sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
 
 async def insertOriconWeekData():
@@ -483,7 +483,7 @@ async def insertOriconWeekData():
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,'オリコン週間シングルランキングをデータベースへ挿入でエラー')
+        WriteLog(4,'データ取得：オリコン週間シングルランキングをデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertOriconDigitalData():
@@ -505,7 +505,7 @@ async def insertOriconDigitalData():
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-            WriteLog(4,'オリコンデジタルランキングをデータベースへ挿入でエラー')
+            WriteLog(4,'データ取得：オリコンデジタルランキングをデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertBillboardData():
@@ -527,7 +527,7 @@ async def insertBillboardData():
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
 
-        WriteLog(4,'ビルボードJAPAN HOT100をデータベースへ挿入でエラー')
+        WriteLog(4,'データ取得：ビルボードJAPAN HOT100をデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertHaruyaData():
@@ -549,7 +549,7 @@ async def insertHaruyaData():
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,'明屋書店データをデータベースへ挿入でエラー')
+        WriteLog(4,'データ取得：明屋書店データをデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 def GetThisWeekRank(HaruyaPath,Flag):
@@ -600,14 +600,14 @@ def GetThisWeekRank(HaruyaPath,Flag):
 
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                WriteLog(1,"得点取得画面を閉じる操作")
+                WriteLog(1,"データ取得：得点取得画面を閉じる操作")
                 break
 
     window.close()
 
 def NGetThisWeekRank():
 
-    WriteLog(1,"今週のデータ（明屋書店データなし）を選択")
+    WriteLog(1,"データ取得：今週のデータ（明屋書店データなし）を選択")
 
     # レイアウト（共通設定）
     layout = [
@@ -655,7 +655,7 @@ def NGetThisWeekRank():
 
 def GetLastWeekRank():
 
-    WriteLog(1,"先週のデータ取得を選択")
+    WriteLog(1,"データ取得：先週のデータ取得を選択")
 
     # レイアウト（共通設定）
     layout = [
@@ -703,7 +703,7 @@ def GetLastWeekRank():
 
 def GetSelectWeekRank(SelectDay,Flag):
 
-    WriteLog(1,"任意週データ取得を選択")
+    WriteLog(1,"データ取得：任意週データ取得を選択")
 
     # レイアウト（共通設定）
     layout = [
@@ -817,7 +817,7 @@ def ResetData():
     cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
     print('DB関連処理終了')
-    WriteLog(2,"DBのScoreを0に・ランキング外データを削除")
+    WriteLog(2,"データ取得：DBのScoreを0に・ランキング外データを削除")
     conn.commit()
 
 def GetLastNumber():
@@ -848,7 +848,7 @@ def WriteLog(label,logmessage):
         log.write(str(datetime_str)+" 実行：" +logmessage + "\n")
 
     elif(label == 4):
-        log.write(str(datetime_str)+" エラー：" +logmessage+"\n")
+        log.write(str(datetime_str)+" 【エラー】：" +logmessage+"\n")
 
     elif(label == 5):
         log.write(str(datetime_str)+" 終了：" +logmessage+"\n")

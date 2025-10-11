@@ -5,7 +5,7 @@ import openpyxl
 import unicodedata
 import sqlite3
 import csv
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import GetData
 
 

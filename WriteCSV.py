@@ -2,7 +2,7 @@ import unicodedata
 import openpyxl
 import sqlite3
 import csv
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import GetData
 
 dbname = ('test.db')
