@@ -45,39 +45,39 @@ def reload():
 def deleterow(Title,Artist):
     params = (Title, Artist)
     cursor.execute("DELETE FROM music_master WHERE Title = ? AND Artist = ?;", params)
-    GetData.WriteLog(2,"管理者画面：データベース："+Title+"/"+Artist+"を削除")
+    GetData.WriteLog(2,"AdminUser：データベース："+Title+"/"+Artist+"を削除")
         
 def updatescore(Title,Artist,Score):
     params = (Score,Title,Artist)
     cursor.execute("UPDATE music_master SET Score = ? WHERE Title = ? AND Artist= ?;",params)
-    GetData.WriteLog(2,"管理者画面：データベース："+Title+"/"+Artist+"の得点を"+Score+"へ変更")
+    GetData.WriteLog(2,"AdminUser：データベース："+Title+"/"+Artist+"の得点を"+Score+"へ変更")
 
 def sortrankin():
     global df
     df = pd.read_sql("SELECT * FROM music_master ORDER BY On_Chart DESC;",conn)
-    GetData.WriteLog(2,"管理者画面：データベース：ランクイン回数順に並び替えを実行")
+    GetData.WriteLog(2,"AdminUser：データベース：ランクイン回数順に並び替えを実行")
 
 def sortlastepisode():
     global df
     df = pd.read_sql("SELECT * FROM music_master ORDER BY Last_Number DESC;",conn)
-    GetData.WriteLog(2,"管理者画面：データベース：最終ランクイン順に並び替えを実行")
+    GetData.WriteLog(2,"AdminUser：データベース：最終ランクイン順に並び替えを実行")
 
 def addmusic(Title,Artist):
     params = (Title,Artist)
     cursor.execute('''INSERT INTO music_master
      (Title, Artist, Score, Last_Rank, Last_Number, On_chart)
      VALUES (?, ?, 0.0, 0, 0, 0)''',params)
-    GetData.WriteLog(2,"管理者画面：データベース："+Title+"/"+Artist+"を追加")
+    GetData.WriteLog(2,"AdminUser：データベース："+Title+"/"+Artist+"を追加")
 
 def sorttitle():
     global df 
     df = pd.read_sql("SELECT * FROM music_master ORDER BY Title ASC;",conn)
-    GetData.WriteLog(2,"管理者画面：データベース：曲名順に並び替えを実行")
+    GetData.WriteLog(2,"AdminUser：データベース：曲名順に並び替えを実行")
 
 def sortartist():
     global df 
     df = pd.read_sql("SELECT * FROM music_master ORDER BY Artist ASC;",conn)
-    GetData.WriteLog(2,"管理者画面：データベース：アーティスト名順に並び替えを実行")
+    GetData.WriteLog(2,"AdminUser：データベース：アーティスト名順に並び替えを実行")
 
 def serchtitle(title):
     # クエリの実行
@@ -91,12 +91,12 @@ def serchtitle(title):
 def updatetitle(Title,Artist,oldUnique):
     params = (Title,Artist,oldUnique)
     cursor.execute("UPDATE music_master SET Title = ? WHERE Artist= ? AND Unique_id = ?;",params)
-    GetData.WriteLog(2,"管理者画面：データベース："+Title+"を修正")
+    GetData.WriteLog(2,"AdminUser：データベース："+Title+"を修正")
 
 def updateartist(Title,Artist,oldUnique):
     params = (Artist,Title,oldUnique)
     cursor.execute("UPDATE music_master SET Artist = ? WHERE Title= ? AND Unique_id = ?;",params)
-    GetData.WriteLog(2,"管理者画面：データベース："+Artist+"を修正")
+    GetData.WriteLog(2,"AdminUser：データベース："+Artist+"を修正")
 
 def updateunique(Title,Artist,Unique): #Unique_id更新用（使用していません）
     params = (Unique,Artist,Title)
@@ -110,7 +110,7 @@ def updateunique(Title,Artist,Unique): #Unique_id更新用（使用していま�
 def insert_music_data(Title,Artist,LastRank,LastNumber,Onchart,NewUnique_id):
     params = (Title,Artist,LastRank,LastNumber,Onchart,NewUnique_id)
     cursor.execute("INSERT OR REPLACE INTO music_master VALUES (?, ?, 0, ?, ?, ?, ?);", params)
-    GetData.WriteLog(2,"管理者画面：データベース："+Title+"/"+Artist+"を追加")
+    GetData.WriteLog(2,"AdminUser：データベース："+Title+"/"+Artist+"を追加")
 
 def FormatCheck(Title,Artist,LastRank,LastNumber,Onchart):
 
@@ -120,10 +120,12 @@ def FormatCheck(Title,Artist,LastRank,LastNumber,Onchart):
         
     
     if LastRank == '0'  or LastNumber == '0' or Onchart == '0':
+        GetData.WriteLog(2,"AdminUser：最終順位、最終ランクイン、ランクイン回数に0が含まれているため登録不可")
         sg.popup_error('最終順位、最終ランクイン、ランクイン回数に0が含まれています\n0は登録できません',no_titlebar=True)
         return False
     
     if LastRank == ''  or LastNumber == '' or Onchart == '':
+        GetData.WriteLog(2,"AdminUser：最終順位、最終ランクイン、ランクイン回数が入力されていないため登録不可")
         sg.popup_error('最終順位、最終ランクイン、ランクイン回数が入力されていません',no_titlebar=True)
         return False
     
@@ -134,10 +136,13 @@ def FormatCheck(Title,Artist,LastRank,LastNumber,Onchart):
     results = cursor.fetchone() 
 
     if results[0] == 1:
+        GetData.WriteLog(2,"AdminUser：Unique_idで重複が発生")
         popupresult = sg.popup_ok_cancel('既に同じ曲が登録されています\n更新しますか？\n※曲名、アーティスト名の頭3文字で判定しています',no_titlebar=True)
         if popupresult == 'OK':
+            GetData.WriteLog(1,"AdminUser：Unique_idで重複が発生したが楽曲の追加を承認")
             return True
         else:
+            GetData.WriteLog(1,"AdminUser：Unique_idで重複が発生したが楽曲の追加をキャンセル")
             return False
         
     else:
@@ -166,7 +171,7 @@ layout = [
 
 # ウィンドウを作成
 window = sg.Window('管理者画面', layout,resizable=True,icon='FM-BACS.ico')
-GetData.WriteLog(0,"管理者画面：管理者画面起動")
+GetData.WriteLog(0,"AdminUser：管理者画面起動")
 
 # イベントループ
 while True:
@@ -177,7 +182,7 @@ while True:
 
     elif event == '修正':
 
-        GetData.WriteLog(1,"管理者画面：楽曲修正を選択")
+        GetData.WriteLog(1,"AdminUser：楽曲修正を選択")
 
         selected_rows = values['-TABLE-']
         if selected_rows:
@@ -206,7 +211,7 @@ while True:
         ]
 
         window2 = sg.Window('楽曲データ修正', layout,finalize=True,icon='FM-BACS.ico')
-        GetData.WriteLog(0,"管理者画面：楽曲データ修正画面起動")
+        GetData.WriteLog(0,"AdminUser：楽曲データ修正画面起動")
 
         while True:
             event, values = window2.read()
@@ -236,7 +241,7 @@ while True:
                         table_data = df.values.tolist()
                         # テーブルを更新
                         window['-TABLE-'].update(values=table_data)
-                        GetData.WriteLog(5,"管理者画面：楽曲データ修正画面終了")
+                        GetData.WriteLog(5,"AdminUser：楽曲データ修正画面終了")
                         window2.close()
                     else:
                         continue
@@ -247,7 +252,7 @@ while True:
             elif event == '戻る':
                 result = sg.popup_ok_cancel('変更した内容は保存されません\n終了しますか？',no_titlebar=True)
                 if result == 'OK':
-                    GetData.WriteLog(5,"管理者画面：楽曲データ修正画面終了")
+                    GetData.WriteLog(5,"AdminUser：楽曲データ修正画面終了")
                     window2.close()
                 else:
                     continue
@@ -256,7 +261,7 @@ while True:
 
     elif event == '削除':
 
-        GetData.WriteLog(1,"管理者画面：削除を選択")
+        GetData.WriteLog(1,"AdminUser：削除を選択")
     
         selected_rows = values['-TABLE-']
         if selected_rows:
@@ -270,7 +275,7 @@ while True:
             # print(selected_row_Artist)
             result = sg.popup_ok_cancel(selected_row_Title+'/'+selected_row_Artist+'を削除しますか？',title='削除確認',no_titlebar=True)
             if result == 'OK':
-                GetData.WriteLog(1,"管理者画面："+selected_row_Title+"/"+selected_row_Artist+"の削除を承認")
+                GetData.WriteLog(1,"AdminUser："+selected_row_Title+"/"+selected_row_Artist+"の削除を承認")
                 # sg.popup('削除しました')
                 # 選択された行を削除
                 deleterow(selected_row_Title,selected_row_Artist)
@@ -280,13 +285,14 @@ while True:
                 # テーブルを更新
                 window['-TABLE-'].update(values=table_data)
             elif result == 'Cancel':
-                GetData.WriteLog(1,"管理者画面："+selected_row_Title+"/"+selected_row_Artist+"の削除をキャンセル")
+                GetData.WriteLog(1,"AdminUser："+selected_row_Title+"/"+selected_row_Artist+"の削除をキャンセル")
                 # sg.popup('キャンセルが選択されました')
                 continue
     elif event == 'Select':
         value = values['Combo']
         
         if value == 'ランクイン回数順で並び替え':
+            GetData.WriteLog(1,"AdminUser：並び替え（ランクイン回数順）を選択")
             sortrankin()
             # reload()
             # テーブルのデータを更新
@@ -295,6 +301,7 @@ while True:
             window['-TABLE-'].update(values=table_data)
 
         elif value == '最新回順に並び替え':
+            GetData.WriteLog(1,"AdminUser：並び替え（最新回順）を選択")
             sortlastepisode()
             # reload()
             # テーブルのデータを更新
@@ -303,6 +310,7 @@ while True:
             window['-TABLE-'].update(values=table_data)
             
         elif value == '曲名で並び替え':
+            GetData.WriteLog(1,"AdminUser：並び替え（曲名）を選択")
             sorttitle()
             # reload()
             # テーブルのデータを更新
@@ -311,6 +319,7 @@ while True:
             window['-TABLE-'].update(values=table_data)
 
         elif value == 'アーティスト名で並び替え':
+            GetData.WriteLog(1,"AdminUser：並び替え（アーティスト名）を選択")
             sortartist()
             # reload()
             # テーブルのデータを更新
@@ -320,18 +329,21 @@ while True:
 
     elif event == 'エラーログ':
          # logファイルをダウンロードフォルダーに保存します
-
+        GetData.WriteLog(1,"AdminUser：ログ出力を選択")
         if os.path.isfile('error.log'):
             import shutil
+            GetData.WriteLog(2,"AdminUser：エラーログと操作ログを出力")
             user_folder = os.path.expanduser("~")
             folder = os.path.join(user_folder, "Downloads")
             shutil.copy('error.log', folder)
+            shutil.copy('MasterLog.log', folder)
             os.chdir(os.path.dirname(sys.argv[0]))
             os.remove('error.log')
-            sg.popup_ok('エラーログをダウンロードフォルダにコピーしました',no_titlebar=True)
+            sg.popup_ok('エラーログ・操作ログをダウンロードフォルダにコピーしました',no_titlebar=True)
 
         else:
             import shutil
+            GetData.WriteLog(1,"AdminUser：操作ログを出力")
             user_folder = os.path.expanduser("~")
             folder = os.path.join(user_folder, "Downloads")
             shutil.copy('MasterLog.log', folder)
@@ -340,24 +352,24 @@ while True:
 
 
     elif event == 'csv':
-        GetData.WriteLog(1,"管理者画面：csv復元を選択")
+        GetData.WriteLog(1,"AdminUser：csv復元を選択")
         result = sg.popup_ok_cancel('csvを2120回から復元しますか？\n復元するともとには戻せません',title='csv復元確認',no_titlebar=True)
         if result == 'OK':
-            GetData.WriteLog(1,"管理者画面：csv復元を承認")
+            GetData.WriteLog(1,"AdminUser：csv復元を承認")
             import CreateDB2
             import LearningRank
             sg.popup('処理が終了しました。システムを終了します',no_titlebar=True)
-            GetData.WriteLog(5,"管理者画面：FM BACS終了\n")
+            GetData.WriteLog(5,"AdminUser：FM BACS終了\n")
             sys.exit()
         else:
-            GetData.WriteLog(1,"管理者画面：csv復元をキャンセル")
+            GetData.WriteLog(1,"AdminUser：csv復元をキャンセル")
             break
 
     elif event == 'setting':
         os.startfile('C:\FM Besthit Automatic Create System')
 
     elif event == 'end':
-        GetData.WriteLog(5,"管理者画面：管理者画面終了")
+        GetData.WriteLog(5,"AdminUser：管理者画面終了")
         window.close()
 
 

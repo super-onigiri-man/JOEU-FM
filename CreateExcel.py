@@ -7,7 +7,7 @@ import sys,os
 import GetData
 def MajicalExcel(Oriconday):
 
-    GetData.WriteLog(2,"最新回Excel作成：Excelデータを作成")
+    GetData.WriteLog(2,"CreateExcel：Excelデータを作成")
 
     dbname = ('test.db')
     conn = sqlite3.connect(dbname, isolation_level=None)#データベースを作成、自動コミット機能ON
@@ -50,10 +50,13 @@ def MajicalExcel(Oriconday):
 
     sheet.cell(row=3, column=6).value = str(Oriconday.year)+"年"+str(Oriconday.month)+"月"+str(Oriconday.day)+"日"#日付の書き込み
 
+    GetData.WriteLog(2,"CreateExcel："+str(Oriconday.year)+"年"+str(Oriconday.month)+"月"+str(Oriconday.day)+"日付け No"+str(this_rank_number)+"のExcel書き込みを開始" )
     # ランキングセルにデータを書き込み
     for idx in range(1, len(top_20_results)*2, 2):
         result = top_20_results[idx // 2]  # idxを2で割った商を使って結果を取得
         title, artist, score, last_rank, last_number, on_chart,unique_id= result
+
+        GetData.WriteLog(2,"CreateExcel："+str(title)+"/"+str(artist)+"を書き込み")
 
         # ランキング初登場曲
         # Last_Rankが空文字もしくはnullの場合、文字色を赤に変更
@@ -110,7 +113,7 @@ def MajicalExcel(Oriconday):
     try:
         # Excelファイルを保存
         workbook.save('Rank_BackUp/'+str(Oriconday)+'ベストヒットランキング.xlsx')
-        GetData.WriteLog(2,"最新回Excel作成：ランキングデータをBackUpへ保存")
+        GetData.WriteLog(2,"CreateExcel：ランキングデータをBackUpへ保存")
 
         user_folder = os.path.expanduser("~")
         folder = os.path.join(user_folder, "Downloads")
@@ -122,7 +125,7 @@ def MajicalExcel(Oriconday):
         os.chdir(os.path.dirname(sys.argv[0]))
 
         sg.popup_ok(str(Oriconday)+'付け、第'+str(this_rank_number)+'回ベストヒットランキング \n正常に処理されました',no_titlebar=True)
-        GetData.WriteLog(2,"最新回Excel作成：ランキングデータをDownloadへ保存")
+        GetData.WriteLog(2,"CreateExcel：ランキングデータをDownloadへ保存")
 
 
     except Exception as e:
@@ -130,7 +133,7 @@ def MajicalExcel(Oriconday):
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        GetData.WriteLog(4,"最新回Excel作成：Excelランキング書き込みに失敗")
+        GetData.WriteLog(4,"CreateExcel：Excelランキング書き込みに失敗")
         sg.popup_error('ランキングExcelに書き込みができませんでした。\nランキングExcelが開かれている可能性があります',no_titlebar=True)
         
 

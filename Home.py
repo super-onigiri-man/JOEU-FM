@@ -11,6 +11,7 @@ import GetData
 os.chdir(os.path.dirname(sys.argv[0]))
 
 # DBがなかったらCreateDBをインポートしてDBを作成
+GetData.WriteLog(6,"システム起動")
 if os.path.exists('test.db'):
     import CreateDB
 
@@ -38,6 +39,7 @@ layout = [
 # ウィンドウを作成
 window = sg.Window('FM Besthit Automatic Create System', layout, resizable=False,icon='FM-BACS.ico')
 GetData.WriteLog(0,"FM BACS（ホーム画面）起動")
+GetData.WriteLog(7,"システム起動")
 
 # GUI表示実行部分
 while True:
@@ -135,7 +137,8 @@ while True:
     if event == '管理者':
        
         import AdminUser  # 管理者画面の設置
-        import WriteCSV2 #DBからcsvに直接書き込む 
+        import WriteCSV2 #DBからcsvに直接書き込む
+        GetData.WriteLog(2,"AdminUser→Home：データ保存のため終了処理へ") 
         break
         
 
@@ -214,5 +217,5 @@ while True:
 if os.path.exists('Reload.txt'):
     os.remove('Reload.txt')
 
-GetData.WriteLog(5,"ホーム：FM BACS（ホーム画面）から終了\n")
+GetData.WriteLog(5,"Home：FM BACS（ホーム画面）から終了\n")
 window.close()

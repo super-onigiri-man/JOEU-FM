@@ -59,7 +59,7 @@ def OriconTodays():
     else:  # 木曜日から日曜日（来週月曜日の日付を返す）
         Oriconday = dt + datetime.timedelta(days=(7 - weekday))
 
-    WriteLog(2,str(dt)+"から"+str(Oriconday)+"に変換")
+    WriteLog(2,"GetData："+str(dt)+"から"+str(Oriconday)+"に変換")
 
     return Oriconday
 
@@ -97,7 +97,7 @@ def OriconLastWeek():
     elif (weekday >= 2):  # 今日が水曜日以降
         Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
-    WriteLog(2,"データ取得："+str(dt)+"から"+str(Oriconday)+"に変換")
+    WriteLog(2,"GetData："+str(dt)+"から"+str(Oriconday)+"に変換")
 
     return Oriconday
 
@@ -118,7 +118,7 @@ def OriconSelectWeek(SelectDay):
     elif (weekday >= 2):  # 今日が水曜日以降
         Oriconday = dt - datetime.timedelta(days=(weekday +7) % 7)
 
-    WriteLog(2,"データ取得："+str(dt)+"から"+str(Oriconday)+"に変換")
+    WriteLog(2,"GetData："+str(dt)+"から"+str(Oriconday)+"に変換")
 
     return Oriconday
 
@@ -227,14 +227,14 @@ def OriconWeekRank(Oriconday):#オリコン週間ランキング
 
         # print(OriconWeekData)
         print(str(Oriconday) + "付けオリコン週間シングルランキングOK")
-        WriteLog(2,"データ取得："+str(Oriconday)+"付けオリコン週間シングルランキング取得")
+        WriteLog(2,"GetData："+str(Oriconday)+"付けオリコン週間シングルランキング取得")
 
 
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,"データ取得："+'「オリコン週間シングルランキング」取得でエラー')
+        WriteLog(4,"GetData：「オリコン週間シングルランキング」取得でエラー")
         sg.popup_error("「オリコン週間ランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
@@ -291,13 +291,13 @@ def OriconDigitalRank(Oriconday):#オリコンデジタルシングルランキ�
         # print(OriconDigitalData)
 
         print(str(Oriconday) + "付けオリコンデジタルランキングOK")
-        WriteLog(2,"データ取得："+str(Oriconday)+"付けオリコンデジタルランキング取得")
+        WriteLog(2,"GetData："+str(Oriconday)+"付けオリコンデジタルランキング取得")
 
     except Exception as e:
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,"データ取得："+'「オリコンデジタルランキング取得」でエラー')
+        WriteLog(4,"GetData：「オリコンデジタルランキング取得」でエラー")
         sg.popup_error("「オリコンデジタルランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
@@ -347,7 +347,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         # オリコンの日付とビルボードの発表日の差を埋めるための計算(表示用)
         Billday = Oriconday - datetime.timedelta(days=5)
         print(str(Billday) + "付けビルボードJAPAN HOT100ランキングOK")
-        WriteLog(2,"データ取得："+str(Billday)+"付けビルボードJAPAN HOT100ランキング取得")
+        WriteLog(2,"GetData："+str(Billday)+"付けビルボードJAPAN HOT100ランキング取得")
 
         # print(BillboardData)
 
@@ -356,7 +356,7 @@ def BillboadRank(Oriconday):#ビルボードJAPAN HOT100ランキング
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
 
-        WriteLog(4,"データ取得："+'「ビルボードランキング」取得でエラー')
+        WriteLog(4,"GetData：「ビルボードランキング」取得でエラー")
         sg.popup_error("「ビルボードランキング」が取得できませんでした",title="エラー",no_titlebar=True)
 
 
@@ -391,7 +391,7 @@ async def OldHaruyaRank(HaruyaPath): # 2024年6月末までの明屋書店フォ
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
-            WriteLog(4,"データ取得："+'「旧・明屋書店」ランキング取得でエラー')
+            WriteLog(4,"GetData："+'「旧・明屋書店」ランキング取得でエラー')
             sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
 
 async def NewHaruyaRank(HaruyaPath): # 2024年7月からの明屋書店フォーマット
@@ -455,14 +455,14 @@ async def NewHaruyaRank(HaruyaPath): # 2024年7月からの明屋書店フォー
 
         # print(HaruyaData)
         print('新・明屋書店データOK')
-        WriteLog(2,"データ取得："+"新・明屋書店データ取得")
+        WriteLog(2,"GetData："+"新・明屋書店データ取得")
 
 
     except Exception as e:
             import traceback
             with open('error.log', 'a') as f:
                 traceback.print_exc(file=f)
-            WriteLog(4,"データ取得："+'「新・明屋書店」ランキング取得でエラー')
+            WriteLog(4,"GetData："+'「新・明屋書店」ランキング取得でエラー')
             sg.popup_error("「明屋書店ランキング」が取得できませんでした", title="エラー",no_titlebar=True)
 
 async def insertOriconWeekData():
@@ -483,7 +483,7 @@ async def insertOriconWeekData():
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,'データ取得：オリコン週間シングルランキングをデータベースへ挿入でエラー')
+        WriteLog(4,'GetData：オリコン週間シングルランキングをデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertOriconDigitalData():
@@ -505,7 +505,7 @@ async def insertOriconDigitalData():
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-            WriteLog(4,'データ取得：オリコンデジタルランキングをデータベースへ挿入でエラー')
+            WriteLog(4,'GetData：オリコンデジタルランキングをデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertBillboardData():
@@ -527,7 +527,7 @@ async def insertBillboardData():
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
 
-        WriteLog(4,'データ取得：ビルボードJAPAN HOT100をデータベースへ挿入でエラー')
+        WriteLog(4,'GetData：ビルボードJAPAN HOT100をデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 async def insertHaruyaData():
@@ -549,7 +549,7 @@ async def insertHaruyaData():
         import traceback
         with open('error.log', 'a') as f:
             traceback.print_exc( file=f)
-        WriteLog(4,'データ取得：明屋書店データをデータベースへ挿入でエラー')
+        WriteLog(4,'GetData：明屋書店データをデータベースへ挿入でエラー')
         sg.popup_error("データベースを更新できませんでした。",title="エラー",no_titlebar=True)
 
 def GetThisWeekRank(HaruyaPath,Flag):
@@ -580,6 +580,7 @@ def GetThisWeekRank(HaruyaPath,Flag):
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconTodays()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
+        WriteLog(6,"")
         OriconWeekRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(Oriconday)
@@ -590,25 +591,28 @@ def GetThisWeekRank(HaruyaPath,Flag):
             asyncio.run(NewHaruyaRank(HaruyaPath))
         else:
             asyncio.run(OldHaruyaRank(HaruyaPath))
+        WriteLog(7,"スクレイピング・明屋書店データ読み込み")
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
+        WriteLog(6,"")
         asyncio.run(insertOriconWeekData())    
         asyncio.run(insertOriconDigitalData())
         asyncio.run(insertBillboardData())
         asyncio.run(insertHaruyaData())
+        WriteLog(7,"データベース挿入")
         
         window.close()
 
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'キャンセル':
-                WriteLog(1,"データ取得：得点取得画面を閉じる操作")
+                WriteLog(1,"GetData：得点取得画面を閉じる操作")
                 break
 
     window.close()
 
 def NGetThisWeekRank():
 
-    WriteLog(1,"データ取得：今週のデータ（明屋書店データなし）を選択")
-
+    WriteLog(1,"GetData：今週のデータ（明屋書店データなし）を選択")
+    
     # レイアウト（共通設定）
     layout = [
         [sg.Text('読み込み中...', size=(15, 1)), sg.ProgressBar(72, orientation='h', size=(20, 20), key='progressbar')],
@@ -633,18 +637,22 @@ def NGetThisWeekRank():
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconTodays()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
+        WriteLog(6,"")
         OriconWeekRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録・集計中')
+        WriteLog(7,"スクレイピング")
+        WriteLog(6,"")
         asyncio.run(insertOriconWeekData())    
         asyncio.run(insertOriconDigitalData())
         asyncio.run(insertBillboardData())
+        WriteLog(7,"データベース挿入")
         
         window.close()
-
+        
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'キャンセル':
                 WriteLog(1,"得点取得画面を閉じる操作")
@@ -655,7 +663,7 @@ def NGetThisWeekRank():
 
 def GetLastWeekRank():
 
-    WriteLog(1,"データ取得：先週のデータ取得を選択")
+    WriteLog(1,"GetData：先週のデータ取得を選択")
 
     # レイアウト（共通設定）
     layout = [
@@ -680,15 +688,19 @@ def GetLastWeekRank():
         update_progress_bar(window['progressbar'],window['progmsg'], 8,'日付取得中')
         Oriconday=OriconLastWeek()
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(Oriconday)+'付けオリコン週間ランキング取得中')
+        WriteLog(6,"")
         OriconWeekRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(Oriconday)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(Oriconday - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(Oriconday)
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
+        WriteLog(7,"スクレイピング")
+        WriteLog(6,"")
         asyncio.run(insertOriconWeekData())    
         asyncio.run(insertOriconDigitalData())
         asyncio.run(insertBillboardData())
+        WriteLog(7,"データベース挿入")
         
         window.close()
 
@@ -703,7 +715,7 @@ def GetLastWeekRank():
 
 def GetSelectWeekRank(SelectDay,Flag):
 
-    WriteLog(1,"データ取得：任意週データ取得を選択")
+    WriteLog(1,"GetData：任意週データ取得を選択")
 
     # レイアウト（共通設定）
     layout = [
@@ -730,15 +742,19 @@ def GetSelectWeekRank(SelectDay,Flag):
                 SelectDay,Selecttime = str(SelectDay).split()
                 f.write('3,,'+str(SelectDay)+',')
         update_progress_bar(window['progressbar'],window['progmsg'], 16,str(OSW)+'付けオリコン週間ランキング取得中')
+        WriteLog(6,"")
         OriconWeekRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 24,str(OSW)+'付けオリコンデジタルランキング取得中')
         OriconDigitalRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 32,str(OSW - datetime.timedelta(days=5))+'付けビルボードランキング取得中')
         BillboadRank(OSW)
         update_progress_bar(window['progressbar'],window['progmsg'], 48,'DB登録中')
+        WriteLog(7,"スクレイピング")
+        WriteLog(6,"")
         asyncio.run(insertOriconWeekData())    
         asyncio.run(insertOriconDigitalData())
         asyncio.run(insertBillboardData())
+        WriteLog(7,"データベース挿入")
         
         window.close()
 
@@ -771,6 +787,7 @@ def OriconWeekUrl():
 
             # count = count + 1
 
+    WriteLog(2,"GetData：オリコン週間ランキングのURLを取得")
     return load_url
 
 def OriconDigitalUrl():
@@ -791,6 +808,7 @@ def OriconDigitalUrl():
 
             # count = count + 1
 
+    WriteLog(2,"GetData：オリコンデジタルランキングのURLを取得")
     return load_url
 
 def BillboardUrl():
@@ -811,13 +829,14 @@ def BillboardUrl():
 
         Oriconday = Oriconday - datetime.timedelta(days=1)
 
+    WriteLog(2,"GetData：ビルボードランキングのURLを取得")
     return load_url
 
 def ResetData():
     cursor.execute('UPDATE music_master SET Score = 0;') #Scoreの値を全消し
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = '' OR Last_Number = 0;''') #Last_Numberの値が0もしくは空文字の場合消す
     print('DB関連処理終了')
-    WriteLog(2,"データ取得：DBのScoreを0に・ランキング外データを削除")
+    WriteLog(2,"GetData：DBのScoreを0に・ランキング外データを削除")
     conn.commit()
 
 def GetLastNumber():
@@ -832,26 +851,43 @@ def GetLastNumber():
 
 def WriteLog(label,logmessage):
     # コントロールログ（操作履歴を残す）
-    # ラベル：ラベル0→起動、ラベル1→操作ログ（ボタン押したなど）、ラベル2→実行ログ、ラベル3→エラーログ
+    # ラベル：
+    # ラベル0→起動
+    # ラベル1→操作ログ（ボタン押したなど）
+    # ラベル2→実行ログ（実行内容など）
+    # ラベル4→エラーログ
+    # ラベル5→終了ログ
+    # ラベル6→実行時間測定開始（ラベル7と一緒に使うこと）書き込み無し
+    # ラベル7→実行時間測定終了、結果出力
     log = open("MasterLog.log",'a') # ファイルオープン
+    global starttime
 
     # 現在時刻を取得
-    datetime_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    datetime_str = datetime.datetime.now()
+    displaytime = datetime_str.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
     if(label == 0):
-        log.write("\n"+str(datetime_str)+" 起動：" +logmessage+"\n")
+        log.write("\n"+str(displaytime)+" 起動：" +logmessage+"\n")
 
     elif(label == 1):
-        log.write(str(datetime_str)+" 操作：" +logmessage + "\n")
+        log.write(str(displaytime)+" 操作：" +logmessage + "\n")
 
     elif(label == 2):
-        log.write(str(datetime_str)+" 実行：" +logmessage + "\n")
+        log.write(str(displaytime)+" 実行：" +logmessage + "\n")
 
     elif(label == 4):
-        log.write(str(datetime_str)+" 【エラー】：" +logmessage+"\n")
+        log.write(str(displaytime)+" 【エラー】：" +logmessage+"\n")
 
     elif(label == 5):
-        log.write(str(datetime_str)+" 終了：" +logmessage+"\n")
+        log.write(str(displaytime)+" 終了：" +logmessage+"\n")
+
+    elif(label == 6):
+        starttime = datetime_str
+
+    elif(label == 7):
+        finishtime = datetime_str
+        totaltime = f"{(finishtime - starttime).total_seconds()}"
+        log.write(f"{displaytime} {logmessage} 実行時間：{totaltime:.5s}s\n")
 
     log.close()
 

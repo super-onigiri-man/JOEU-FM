@@ -71,7 +71,6 @@ try:
     cursor.execute('''DELETE FROM music_master WHERE Last_Number = "ベストヒットえひめ";''')
 
     update_progress_bar(progress_bar, progmsg, 3, '完了')
-
     window.close()
 
 except Exception as e:
